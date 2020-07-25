@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/contentBodyColor"
+    tools:context=".chat.ChatRoomActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginBottom="7dp"
+        tools:targetApi="lollipop"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_scrollFlags="scroll|enterAlways">
+
+        <com.vanniktech.emoji.EmojiTextView
+            android:id="@+id/toolbarTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/odin_rounded_bold"
+            android:textSize="32sp"
+            android:layout_marginStart="55dp"
+            android:layout_marginLeft="55dp"
+            android:textColor="@color/QweekColorAccent"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="55dp"
+        android:layout_marginBottom="40dp"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            android:scrollbars="vertical" />
+
+    </LinearLayout>
+
+    <include layout="@layout/qweekchat_empty" />
+
+    <ImageButton android:id="@+id/customClose"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@drawable/custom_back_btn"
+        app:srcCompat="@drawable/q_back"
+        android:tint="@color/contentTextColor"
+        android:layout_gravity="top|start"
+        android:scaleType="fitCenter"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:onClick="onClick"
+        android:contentDescription="@string/custom_go_back" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_gravity="bottom"
+        android:background="@android:color/transparent"
+        android:descendantFocusability="beforeDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="280dp"
+                android:minWidth="100dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="-1dp"
+                app:cardBackgroundColor="@color/contentBodyColor"
+                android:visibility="gone"
+                android:id="@+id/post_photoCard">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="280dp"
+                    android:maxHeight="350dp"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="start"
+                    android:scaleType="fitCenter"
+                    android:layout_marginStart="10dp"
+                    android:visibility="gone"
+                    android:id="@+id/mediaImage"
+                    android:contentDescription="@string/media_image"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="350dp"
+                android:minWidth="100dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/message"
+                android:layout_marginEnd="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="-1dp"
+                app:cardBackgroundColor="@color/contentBodyColor"
+                android:visibility="gone"
+                android:id="@+id/post_videoCard">
+
+                <VideoView
+                    android:id="@+id/mediaVideo"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"/>
+
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <com.vanniktech.emoji.EmojiEditText
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="9"
+                android:layout_marginStart="10dp"
+                android:textColorHint="@color/SlateGray"
+                android:backgroundTint="@color/settingsCardColor"
+                android:background="@drawable/comment_edittext"
+                android:textColor="@color/contentTextColor"
+                android:inputType="textCapSentences|textMultiLine"
+                tools:targetApi="lollipop"
+                android:scrollHorizontally="false"
+                android:scrollbars="none"
+                android:singleLine="false"
+                android:textSize="14sp"
+                android:fontFamily="@font/roboto_light"
+                android:hint="@string/comment_hint"
+                android:id="@+id/chat_message"/>
+
+            <ImageView
+                android:id="@+id/mediaBtn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/q_media"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="7dp"
+                android:tint="@color/contentTextColor"
+                android:contentDescription="@string/media_image" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_send"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:clickable="true"
+                app:srcCompat="@drawable/ic_send"
+                app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
+                android:focusable="true"
+                app:pressedTranslationZ="12dp"
+                app:backgroundTint="@android:color/transparent"
+                android:tint="@color/contentTextColor"
+                android:scaleType="centerCrop"
+                app:fabSize="normal"
+                app:fabCustomSize="30dp"
+                app:elevation="0dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="4dp"
+                tools:ignore="VectorDrawableCompat" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

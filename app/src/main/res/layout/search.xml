@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:id="@+id/profile_feed_fragment">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/search_swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/activity_margin_content"
+            android:paddingBottom="@dimen/activity_margin_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/mSearchProgressBar"
+        style="@style/SpinKitView.Small.ChasingDots"
+        android:layout_width="@dimen/progress_width"
+        android:layout_height="@dimen/progress_height"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@color/QweekColorAccent" />
+
+    <include layout="@layout/error_search"/>
+    <include layout="@layout/empty_search"/>
+</FrameLayout>

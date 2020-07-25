@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "/Users/creator/Documents/AndroidStudioProjects/Qweekdots/picasso/build/intermediates/res/merged/debug/layout/notification_action_tombstone.xml",
+        "source": "/Users/creator/.gradle/caches/transforms-2/files-2.1/98d4c257d352cb3b4ababb06b1c9105c/core-1.2.0/res/layout/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/Users/creator/Documents/AndroidStudioProjects/Qweekdots/picasso/build/intermediates/res/merged/debug/layout/notification_template_part_chronometer.xml",
+        "source": "/Users/creator/.gradle/caches/transforms-2/files-2.1/98d4c257d352cb3b4ababb06b1c9105c/core-1.2.0/res/layout/notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "/Users/creator/Documents/AndroidStudioProjects/Qweekdots/picasso/build/intermediates/res/merged/debug/layout/custom_dialog.xml",
+        "source": "/Users/creator/.gradle/caches/transforms-2/files-2.1/98d4c257d352cb3b4ababb06b1c9105c/core-1.2.0/res/layout/custom_dialog.xml"
+    },
+    {
+        "merged": "/Users/creator/Documents/AndroidStudioProjects/Qweekdots/picasso/build/intermediates/res/merged/debug/layout/notification_action.xml",
+        "source": "/Users/creator/.gradle/caches/transforms-2/files-2.1/98d4c257d352cb3b4ababb06b1c9105c/core-1.2.0/res/layout/notification_action.xml"
+    },
+    {
+        "merged": "/Users/creator/Documents/AndroidStudioProjects/Qweekdots/picasso/build/intermediates/res/merged/debug/layout/notification_template_icon_group.xml",
+        "source": "/Users/creator/.gradle/caches/transforms-2/files-2.1/98d4c257d352cb3b4ababb06b1c9105c/core-1.2.0/res/layout/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/Users/creator/Documents/AndroidStudioProjects/Qweekdots/picasso/build/intermediates/res/merged/debug/layout/notification_template_part_time.xml",
+        "source": "/Users/creator/.gradle/caches/transforms-2/files-2.1/98d4c257d352cb3b4ababb06b1c9105c/core-1.2.0/res/layout/notification_template_part_time.xml"
+    }
+]

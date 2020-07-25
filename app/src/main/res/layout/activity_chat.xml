@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/contentBodyColor"
+    android:fitsSystemWindows="true">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginBottom="7dp"
+        tools:targetApi="lollipop"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_scrollFlags="scroll|enterAlways">
+
+        <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/q_chat"
+            android:fontFamily="@font/odin_rounded_bold"
+            android:textSize="32sp"
+            android:layout_marginStart="55dp"
+            android:textColor="@color/QweekColorAccent"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/content_main"
+        android:layout_marginTop="55dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recycler_view"
+            android:scrollbars="vertical" />
+
+    </RelativeLayout>
+
+    <include layout="@layout/qweekdots_error"/>
+    <include layout="@layout/qweekchat_empty" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:fabCustomSize="48dp"
+        app:srcCompat="@drawable/ic_float_button"
+        />
+
+    <ImageButton android:id="@+id/customClose"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@drawable/custom_back_btn"
+        app:srcCompat="@drawable/q_back"
+        android:tint="@color/contentTextColor"
+        android:layout_gravity="top|start"
+        android:scaleType="fitCenter"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:onClick="onClick"
+        android:contentDescription="@string/custom_go_back" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageButton android:id="@+id/customClose"
+    android:layout_width="26dp"
+    android:layout_height="26dp"
+    android:background="@drawable/custom_back_btn"
+    app:srcCompat="@drawable/q_back"
+    android:tint="@color/contentTextColor"
+    android:layout_gravity="top|start"
+    android:scaleType="fitCenter"
+    android:layout_marginLeft="20dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginTop="18dp"
+    android:onClick="onClick"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:contentDescription="@string/custom_go_back" />

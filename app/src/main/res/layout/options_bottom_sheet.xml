@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/contentBodyColor"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    style="@style/parent.contentLayout"
+    android:id="@+id/optionsPage"
+    android:padding="15dp">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/frameOpt">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/contentBodyColor">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/optTitleSheetTxt"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/contentTextColor"
+                android:text="@string/options"
+                android:fontFamily="@font/amatic_regular"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                style="@style/viewParent.headerText.settingsMiniTitle"
+                android:text="@string/options_profile"
+                android:textAllCaps="true"
+                android:textColor="@color/chartreuse"
+                android:textFontWeight="800"
+                android:layout_marginBottom="5dp"
+                tools:targetApi="p" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optFullnameCard">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextNoIcon"
+                        android:text="@string/options_fullname"
+                        android:layout_weight="3"
+                        android:textColor="@color/contentTextColor"
+                        android:layout_margin="0dp"/>
+
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextIcon"
+                        android:layout_weight="1"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/SlateGray"
+                        android:layout_margin="0dp"
+                        android:id="@+id/optFullnameTxt"
+                        android:textSize="12sp"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optUsernameCard">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextNoIcon"
+                        android:text="@string/options_username"
+                        android:layout_weight="3"
+                        android:textColor="@color/contentTextColor"
+                        android:layout_margin="0dp"/>
+
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextIcon"
+                        android:layout_weight="1"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/SlateGray"
+                        android:layout_margin="0dp"
+                        android:id="@+id/optUsernameTxt"
+                        android:textSize="12sp"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optBirthdayCard">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextNoIcon"
+                        android:text="@string/options_birthday"
+                        android:layout_weight="3"
+                        android:textColor="@color/contentTextColor"
+                        android:layout_margin="0dp"/>
+
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextIcon"
+                        android:layout_weight="1"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/SlateGray"
+                        android:layout_margin="0dp"
+                        android:id="@+id/optBirthdayTxt"
+                        android:textSize="12sp"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optEmailCard">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextNoIcon"
+                        android:text="@string/options_email"
+                        android:layout_weight="3"
+                        android:textColor="@color/contentTextColor"
+                        android:layout_margin="0dp"/>
+
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextIcon"
+                        android:layout_weight="1"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/SlateGray"
+                        android:layout_margin="0dp"
+                        android:id="@+id/optEmailTxt"
+                        android:textSize="12sp"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optTelephoneCard">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextNoIcon"
+                        android:text="@string/options_telephone"
+                        android:layout_weight="3"
+                        android:textColor="@color/contentTextColor"
+                        android:layout_margin="0dp"/>
+
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextIcon"
+                        android:layout_weight="1"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/SlateGray"
+                        android:layout_margin="0dp"
+                        android:id="@+id/optTelephoneTxt"
+                        android:textSize="12sp"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optPasswordCard">
+
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextIcon"
+                        android:text="@string/options_password"
+                        android:layout_weight="1"
+                        android:textColor="@color/contentTextColor"
+                        android:layout_margin="0dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                style="@style/viewParent.headerText.settingsMiniTitle"
+                android:text="@string/options_theme"
+                android:textAllCaps="true"
+                android:textColor="@color/SlateBlue"
+                android:textStyle="italic"
+                android:textFontWeight="800"
+                android:layout_marginBottom="5dp"
+                tools:targetApi="p" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                app:contentPadding="10dp"
+                android:id="@+id/optThemeCard">
+
+                <TextView
+                    style="@style/viewParent.headerText.settingsTextIcon"
+                    android:text="@string/theming"
+                    android:textColor="@color/contentTextColor"
+                    android:layout_margin="0dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                style="@style/viewParent.headerText.settingsMiniTitle"
+                android:text="@string/options_feedback"
+                android:textAllCaps="true"
+                android:textColor="@color/IndianRed"
+                android:textFontWeight="800"
+                android:layout_marginBottom="5dp"
+                tools:targetApi="p" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginTop="20dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optFeedbackCard">
+
+                <TextView
+                    style="@style/viewParent.headerText.settingsTextIcon"
+                    android:text="@string/options_i_have_a_suggestion"
+                    android:textColor="@color/contentTextColor"
+                    android:layout_margin="0dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                style="@style/viewParent.headerText.settingsMiniTitle"
+                android:text="@string/options_more_information"
+                android:textAllCaps="true"
+                android:textColor="@color/HotPink"
+                android:textFontWeight="800"
+                android:layout_marginBottom="5dp"
+                tools:targetApi="p" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginTop="20dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optPrivacyPolicyCard">
+
+                <TextView
+                    style="@style/viewParent.headerText.settingsTextIcon"
+                    android:text="@string/options_privacy_policy"
+                    android:textColor="@color/contentTextColor"
+                    android:layout_margin="0dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginTop="20dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optTermsCard">
+
+                <TextView
+                    style="@style/viewParent.headerText.settingsTextIcon"
+                    android:text="@string/terms_of_service"
+                    android:textColor="@color/contentTextColor"
+                    android:layout_margin="0dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginTop="20dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optAboutCard">
+
+                <TextView
+                    style="@style/viewParent.headerText.settingsTextIcon"
+                    android:text="@string/about"
+                    android:textColor="@color/contentTextColor"
+                    android:layout_margin="0dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                style="@style/viewParent.headerText.settingsMiniTitle"
+                android:text="@string/options_account"
+                android:textAllCaps="true"
+                android:textColor="@color/OrangeRed"
+                android:textFontWeight="800"
+                android:layout_marginBottom="5dp"
+                tools:targetApi="p" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginTop="20dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optBlockedCard">
+
+                <TextView
+                    style="@style/viewParent.headerText.settingsTextIcon"
+                    android:text="@string/options_blocked"
+                    android:textColor="@color/contentTextColor"
+                    android:layout_margin="0dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginTop="20dp"
+                app:contentPadding="10dp"
+                android:id="@+id/logoutBtn">
+
+            <TextView
+                style="@style/viewParent.headerText.settingsTextIcon"
+                android:drawableLeft="@drawable/ic_logout"
+                android:text="@string/logout"
+                android:textColor="@color/contentTextColor"
+                android:drawableStart="@drawable/ic_logout"
+                android:layout_margin="0dp" />
+
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                style="@style/viewParent.headerText.settingsMiniTitle"
+                android:text="@string/qweekdots_v_alpha"
+                android:textSize="10sp"
+                android:textAlignment="center"
+                android:paddingBottom="70dp"
+                tools:ignore="SmallSp" />
+
+            <View
+                android:id="@+id/extraSpace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

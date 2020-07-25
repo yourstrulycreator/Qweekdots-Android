@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--colors for dark mode-->
+    <color name="contentBodyColor">#000</color>
+    <color name="contentTextColor">#fff</color>
+    <color name="contentColorOpp">#fff</color>
+    <color name="bottomNavigationBackground">#000</color>
+    <color name="miniTitleColor">#fff</color>
+    <color name="contentStatusBar">#000</color>
+    <color name="settingsCardColor">#1C1D24</color>
+    <color name="settingsCardColor2">#1D1C1C</color>
+</resources>

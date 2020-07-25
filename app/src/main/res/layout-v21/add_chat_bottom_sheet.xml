@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/optTitleSheetTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:textColor="@color/contentTextColor"
+                    android:text="Start A Chat"
+                    android:fontFamily="@font/amatic_regular"
+                    android:textSize="34sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <com.google.android.material.appbar.AppBarLayout
+                    android:id="@+id/add_chat_appbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:fitsSystemWindows="true"
+                    android:layout_marginTop="10dp"
+                    android:elevation="0dp"
+                    app:elevation="0dp"
+                    android:theme="@style/AppTheme.NoActionBar">
+
+                    <androidx.appcompat.widget.SearchView
+                        android:id="@+id/searchbar"
+                        android:layout_width="match_parent"
+                        android:hint="@string/search_qweekdots"
+                        android:textColorHint="@color/contentTextColor"
+                        android:background="@drawable/searchbar"
+                        android:textSize="14sp"
+                        app:iconifiedByDefault="false"
+                        app:defaultQueryHint="Search User"
+                        app:searchHintIcon="@color/contentTextColor"
+                        android:layout_height="40dp"
+                        android:importantForAutofill="no"
+                        tools:targetApi="lollipop"
+                        android:focusableInTouchMode="true"
+                        android:fontFamily="@font/montserrat_regular" />
+
+                </com.google.android.material.appbar.AppBarLayout>
+
+
+                    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                        android:id="@+id/search_swiperefresh"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/search_recycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:paddingTop="@dimen/activity_margin_content"
+                            android:paddingBottom="@dimen/activity_margin_content"
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+                    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+                    <com.github.ybq.android.spinkit.SpinKitView
+                        android:id="@+id/mSearchProgressBar"
+                        style="@style/SpinKitView.Small.ChasingDots"
+                        android:layout_width="@dimen/progress_width"
+                        android:layout_height="@dimen/progress_height"
+                        android:layout_gravity="center"
+                        app:SpinKit_Color="@color/QweekColorAccent" />
+
+                    <include layout="@layout/qweekdots_error"/>
+                    <include layout="@layout/qweekdots_empty"/>
+
+                <View
+                    android:id="@+id/extraSpace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

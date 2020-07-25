@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/follows_swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/follows_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/activity_margin_content"
+            android:paddingBottom="@dimen/activity_margin_content"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/follows_spin_kit"
+        style="@style/SpinKitView.Small.ChasingDots"
+        android:layout_width="@dimen/progress_width"
+        android:layout_height="@dimen/progress_height"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@color/QweekColorAccent" />
+
+    <include layout="@layout/qweekdots_error"/>
+    <include layout="@layout/qweekdots_empty"/>
+
+    <View
+        android:id="@+id/extraSpace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</FrameLayout>

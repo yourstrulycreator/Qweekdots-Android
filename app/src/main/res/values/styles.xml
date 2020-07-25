@@ -1,0 +1,274 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">?themeColorPrimary</item>
+        <item name="colorPrimaryDark">@color/QweekColorPrimaryDark</item>
+        <item name="colorAccent">@color/QweekColorAccent</item>
+        <item name="themeColorPrimary">@color/QweekColorPrimary</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:textColor">@color/contentTextColor</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:fontFamily">@font/odin_rounded_bold</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <!-- Gets rid of the search icon -->
+        <item name="searchIcon">@drawable/satellite</item>
+        <!-- Gets rid of the "underline" in the text -->
+        <item name="queryBackground">@android:color/transparent</item>
+        <!-- Gets rid of the search icon when the SearchView is expanded -->
+        <item name="searchHintIcon">@drawable/satellite</item>
+        <!-- The hint text that appears when the user has not typed anything -->
+        <item name="queryHint">@string/search_qweekdots</item>
+        <!-- Query Text Color -->
+        <item name="android:textColorPrimary">@color/contentTextColor</item>
+        <!-- Hint Color -->
+        <item name="android:textColorHint">@color/SlateGray</item>
+        <!-- Icon Color -->
+        <item name="android:tint">@color/QweekColorAccent</item>
+        <item name="android:iconTint" tools:targetApi="o">@color/QweekColorAccent</item>
+        <item name="android:drawableTint" tools:targetApi="m">@color/QweekColorAccent</item>
+        <item name="android:buttonTint" tools:targetApi="lollipop">@color/QweekColorAccent</item>
+    </style>
+
+    <!--Styles for app-->
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ToolBarStyle" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:homeAsUpIndicator">@drawable/q_back</item>
+        <item name="homeAsUpIndicator">@drawable/q_back</item>
+    </style>
+
+    <!--Rose-->
+    <style name="RoseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">?themeColorPrimary</item>
+        <item name="colorPrimaryDark">@color/DeepPurple</item>
+        <item name="colorAccent">@color/RoseBonBon</item>
+        <item name="android:textColor">@color/darkTextColor</item>
+        <item name="themeColorPrimary">@color/FrostedTulip</item>
+    </style>
+
+    <!--Valentine-->
+    <style name="ValentineTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">?themeColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ValentineDeep</item>
+        <item name="colorAccent">@color/ValentinePink</item>
+        <item name="android:textColor">@color/darkTextColor</item>
+        <item name="themeColorPrimary">@color/BurbonPink</item>
+    </style>
+
+    <!--Chocolate-->
+    <style name="ChocolateTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">?themeColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ChocolateKiss</item>
+        <item name="colorAccent">@color/HoneyTeriyaki</item>
+        <item name="android:textColor">@color/darkTextColor</item>
+        <item name="themeColorPrimary">@color/AngoraGoat</item>
+    </style>
+
+    <!--Sailor-->
+    <style name="SailorTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">?themeColorPrimary</item>
+        <item name="colorPrimaryDark">@color/HarbourMist</item>
+        <item name="colorAccent">@color/JungleMist</item>
+        <item name="android:textColor">@color/darkTextColor</item>
+        <item name="themeColorPrimary">@color/BlueOpulence</item>
+    </style>
+
+    <!--War-->
+    <style name="WarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">?themeColorPrimary</item>
+        <item name="colorPrimaryDark">@color/MineShaft</item>
+        <item name="colorAccent">@color/AshGray</item>
+        <item name="android:textColor">@color/darkTextColor</item>
+        <item name="themeColorPrimary">@color/BattleShipGray</item>
+    </style>
+
+    <!--df dialog-->
+
+    <style name="viewParent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="viewParent.headerText">
+        <item name="android:textColor">@color/contentTextColor</item>
+        <item name="android:textSize">@dimen/headerTextSize</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="viewParent.headerText.NoMode">
+        <item name="android:textColor">@color/darkTextColor</item>
+    </style>
+
+    <style name="parent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+    <style name="parent.contentLayout">
+        <item name="android:background">@color/contentBodyColor</item>
+        <item name="android:padding">@dimen/normalPadding</item>
+    </style>
+
+
+    <style name="modifiedEditText" parent="parent">
+        <item name="android:textSize">@dimen/newsMoreTextSize</item>
+        <item name="android:backgroundTint" tools:targetApi="lollipop">@color/primaryTextColor</item>
+    </style>
+
+    <style name="loginButton" parent="viewParent">
+        <item name="android:background">@drawable/button_background_qweek</item>
+        <item name="android:textColor">@color/whiteTextColor</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="followButton" parent="viewParent">
+        <item name="android:background">@drawable/follow_btn</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="spinnerHintText" parent="parent">
+        <item name="android:textSize">@dimen/newsMoreTextSize</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:paddingLeft">5dp</item>
+    </style>
+
+    <style name="viewParent.headerText.spotlightTitle">
+        <item name="android:textColor">@color/contentTextColor</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:fontFamily">@font/amatic_bold</item>
+        <item name="android:textSize">35sp</item>
+        <item name="android:layout_marginTop">20dp</item>
+    </style>
+
+    <style name="viewParent.headerText.settingsMiniTitle">
+        <item name="android:textColor">#5D5C5C</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_marginTop">20dp</item>
+    </style>
+
+    <style name="settingsText" parent="viewParent.headerText.settingsMiniTitle">
+        <item name="android:textColor">@color/miniTitle</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">20dp</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+    <style name="viewParent.headerText.settingsTextIcon" parent="settingsText">
+        <item name="android:drawableRight">@drawable/ic_more</item>
+    </style>
+
+    <style name="viewParent.headerText.settingsTextNoIcon" parent="settingsText" />
+
+
+    <style name="rs_style_dialog_progress" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/rs_popup_toast_anim</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="rs_popup_toast_anim" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+    <style name="rs_vertical_progressBar">
+        <item name="android:maxWidth">12dp</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal</item>
+        <item name="android:progressDrawable">@drawable/rs_volume_progress_bg</item>
+        <item name="android:indeterminateDuration">3500</item>
+        <item name="android:indeterminateBehavior">repeat</item>
+        <item name="android:minWidth">1dp</item>
+    </style>
+
+    <style name="viewParent.headerText.PageTitle">
+        <item name="android:textColor">@color/contentTextColor</item>
+        <item name="android:textSize">55sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/amatic_bold</item>
+    </style>
+    <style name="viewParent.headerText.contentText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/miniTitleColor</item>
+    </style>
+
+    <style name="homeCardImage">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:cropToPadding">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="viewParent.headerText.homeCardContent" parent="viewParent.headerText.contentText">
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:textColor">@color/whiteTextColor</item>
+    </style>
+
+    <style name="viewParent.headerText.HomeCardTitle">
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:textColor">@color/whiteTextColor</item>
+        <item name="android:layout_alignParentTop">true</item>
+    </style>
+
+    <style name="DarkModeHidden">
+        <item name="android:visibility">visible</item>
+    </style>
+
+    <style name="AppTheme.Headlines.TabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="AppTheme.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:fontFamily">@font/dancingscript_regular</item>
+    </style>
+
+    <style name="AppTheme.Headline.Title" parent="TextAppearance.AppCompat.Title">
+
+    </style>
+
+    <style name="AppTheme.OptionsBottomSheetButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">@dimen/options_bottom_sheet_medium</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:textColor">@color/option_item_tint_color</item>
+        <item name="android:textSize">@dimen/options_bottom_sheet_text</item>
+        <item name="android:drawablePadding">@dimen/options_bottom_sheet_medium</item>
+    </style>
+
+    <!-- set the rounded drawable as background to your bottom sheet -->
+    <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bottom_sheet_dialog_fragment</item>
+    </style>
+
+    <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="bottomSheetStyle">@style/BottomSheet</item>
+    </style>
+
+    <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
+</resources>

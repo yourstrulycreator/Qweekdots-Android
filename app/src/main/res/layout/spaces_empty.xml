@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/empty_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginTop="100dp">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/q_spaces"
+            android:tint="@color/contentTextColor"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/empty_txt_cause"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/activity_margin_quarter"
+            android:text="Space is empty!. Be the first to drop here!"
+            android:textColor="@color/SlateGray"/>
+
+    </LinearLayout>
+
+</merge>

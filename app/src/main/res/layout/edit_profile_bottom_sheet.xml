@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/optTitleSheetTxt"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/contentTextColor"
+                android:text="Edit Profile Picture"
+                android:fontFamily="@font/amatic_regular"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/optViewProfile"
+                android:gravity="center">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/optProfilePic"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    app:civ_border_width="4dp"
+                    app:civ_border_color="@color/imageBorderColor"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginStart="45dp"
+                    android:backgroundTint="@color/contentTextColor"
+                    android:tint="@color/contentTextColor"
+                    tools:targetApi="lollipop"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/optPicEditBtn"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:clickable="true"
+                    app:backgroundTint="@color/DeepSkyBlue"
+                    app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
+                    android:focusable="true"
+                    app:pressedTranslationZ="12dp"
+                    android:scaleType="centerCrop"
+                    android:visibility="visible"
+                    android:layout_toRightOf="@id/optProfilePic"
+                    android:layout_alignBottom="@id/optProfilePic"
+                    app:fabSize="normal"
+                    app:fabCustomSize="45dp"
+                    app:srcCompat="@drawable/q_edit"
+                    android:tint="@color/contentTextColor"
+                    android:layout_toEndOf="@id/optProfilePic"
+                    android:layout_marginLeft="-10dp"
+                    android:layout_marginStart="-10dp" />
+
+            </RelativeLayout>
+
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/optProfileSheetSaveButton"
+                style="@style/loginButton"
+                app:spinning_bar_width="4dp"
+                app:spinning_bar_color="#FFF"
+                android:text="@string/options_save"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/loginViewsMargin"
+                app:initialCornerAngle="27dp"
+                app:spinning_bar_padding="6dp"/>
+
+            <View
+                android:id="@+id/extraSpace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

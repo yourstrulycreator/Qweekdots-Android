@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="default_horizontal_margin">8dp</dimen>
+    <dimen name="expanded_horizontal_margin">16dp</dimen>
+    <dimen name="reduced_horizontal_margin">4dp</dimen>
+    <dimen name="default_vertical_margin">8dp</dimen>
+    <dimen name="expanded_vertical_margin">16dp</dimen>
+    <dimen name="reduced_vertical_margin">4dp</dimen>
+
+    <!-- App Dimensions -->
+    <dimen name="headerTextSize">25sp</dimen>
+    <dimen name="newsMoreTextSize">12sp</dimen>
+    <dimen name="loginViewsMargin">20dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="image_header_dimen">100dp</dimen>
+    <dimen name="image_header_top_margin">50dp</dimen>
+    <dimen name="login_layout_padding">8dp</dimen>
+    <dimen name="login_layout_padding_top">36dp</dimen>
+    <dimen name="login_button_margin">16dp</dimen>
+    <dimen name="text_size_h1">22dp</dimen>
+    <dimen name="text_size_h2">20dp</dimen>
+    <dimen name="text_size_h3">18dp</dimen>
+    <dimen name="text_content_padding">8dp</dimen>
+    <dimen name="text_content_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="normalPadding">20dp</dimen>
+    <dimen name="headerMoreTextSize">18sp</dimen>
+    <dimen name="card_margin">5dp</dimen>
+    <dimen name="spaces_title">15sp</dimen>
+
+    <!-- FeedItem Dimensions -->
+    <dimen name="feed_item_margin">10dp</dimen>
+    <dimen name="feed_item_padding_top_bottom">20dp</dimen>
+    <dimen name="feed_item_padding_left_right">15dp</dimen>
+    <dimen name="feed_item_profile_pic">50dp</dimen>
+    <dimen name="feed_item_profile_info_padd">10dp</dimen>
+    <dimen name="feed_item_profile_name">15dp</dimen>
+    <dimen name="feed_item_timestamp">13dp</dimen>
+    <dimen name="feed_item_status_pad_left_right">15dp</dimen>
+    <dimen name="feed_item_status_pad_top">13dp</dimen>
+    <dimen name="feed_item_corner_radius">10dp</dimen>
+    <dimen name="feed_item_border_width">1dp</dimen>
+
+    <dimen name="activity_margin">16dp</dimen>
+    <dimen name="activity_margin_quarter">4dp</dimen>
+    <dimen name="activity_margin_content">35dp</dimen>
+    <dimen name="activity_margin_half">8dp</dimen>
+
+    <dimen name="paddingItemDecorationDefault">8dp</dimen>
+    <dimen name="paddingItemDecorationEdge">24dp</dimen>
+
+    <dimen name="rs_start_button_w_h_normal">45dp</dimen>
+    <dimen name="rs_start_button_w_h_fullscreen">62dp</dimen>
+
+    <dimen name="indicator_right_padding">10dp</dimen>
+    <dimen name="indicator_corner_radius">12dp</dimen>
+    <dimen name="indicator_internal_padding">4dp</dimen>
+    <dimen name="header_footer_left_right_padding">24dp</dimen>
+    <dimen name="header_footer_top_bottom_padding">12dp</dimen>
+
+    <!-- Radius -->
+    <dimen name="border_radius">3dp</dimen>
+    <dimen name="margin_normal">5dp</dimen>
+    <dimen name="padding_small">2dp</dimen>
+    <dimen name="padding_normal">10dp</dimen>
+
+    <!--  ProgressBar -->
+    <dimen name="progress_width">48dp</dimen>
+    <dimen name="progress_height">48dp</dimen>
+
+    <!--  -->
+    <dimen name="cam_toolbar_elevation">4dp</dimen>
+    <dimen name="cam_content_inset_primary">8dp</dimen>
+    <dimen name="cam_content_inset_secondary">10dp</dimen>
+    <dimen name="cam_content_inset">16dp</dimen>
+    <dimen name="cam_content_inset_double">32dp</dimen>
+    <dimen name="cam_regular_content_fontsize">14sp</dimen>
+    <dimen name="cam_regular_title_fontsize">16sp</dimen>
+    <dimen name="cam_regular_header_fontsize">36sp</dimen>
+    <dimen name="cam_action_icon_size">56dp</dimen>
+    <dimen name="cam_action_icon_size_smaller">48dp</dimen>
+    <dimen name="cam_widget_margin_bottom">20dp</dimen>
+    <dimen name="cam_widget_margin_top">30dp</dimen>
+    <dimen name="cam_widget_margin_right">10dp</dimen>
+    <dimen name="cam_widget_margin_left">10dp</dimen>
+    <dimen name="cam_widget_margin_top_sides">35dp</dimen>
+
+    <!--  -->
+    <dimen name="stillshot_widget_spacing">10dp</dimen>
+    <dimen name="stillshot_widget_margin_sides">4dp</dimen>
+    <dimen name="stillshot_widget_margin_sides_bottom">10dp</dimen>
+    <dimen name="stillshot_widget_margin_top">10dp</dimen>
+    <dimen name="stillshot_widget_margin_bottom">4dp</dimen>
+
+    <!-- Headlines -->
+    <dimen name="tab_layout_elevation">2dp</dimen>
+    <dimen name="rv_vertical_offset">26dp</dimen>
+    <dimen name="rv_horizontal_offset">12dp</dimen>
+    <dimen name="recycler_view_divider_height">1dp</dimen>
+    <dimen name="recycler_view_divider_radius">10dp</dimen>
+    <dimen name="options_bottom_sheet_icon">46dp</dimen>
+    <dimen name="options_bottom_sheet_small">8dp</dimen>
+    <dimen name="options_bottom_sheet_medium">16dp</dimen>
+    <dimen name="options_bottom_sheet_text">18sp</dimen>
+    <dimen name="snackbar_margin_vertical">8dp</dimen>
+    <dimen name="snackbar_margin_horizontal">16dp</dimen>
+    <dimen name="snackbar_padding">8dp</dimen>
+
+    <!-- BottomSheet -->
+    <dimen name="bottom_sheet_corner_radius">16dp</dimen>
+    <dimen name="bottom_sheet_top_padding">8dp</dimen>
+
+    <!-- QweekChat -->
+    <dimen name="fab_size_normal">100dp</dimen>
+    <dimen name="text_size">12sp</dimen>
+    <dimen name="tab_max_width">264dp</dimen>
+    <dimen name="tab_padding_bottom">16dp</dimen>
+    <dimen name="tab_label">14sp</dimen>
+    <dimen name="custom_tab_layout_height">72dp</dimen>
+
+    <!-- Gallery Picker -->
+    <dimen name="grid_expected_size">120dp</dimen>
+    <dimen name="item_margin_horizontal">24dp</dimen>
+    <dimen name="item_margin_vertical">8dp</dimen>
+
+</resources>

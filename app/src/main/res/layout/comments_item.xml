@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:id="@+id/reply_layout"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/commentParent">
+
+        <ImageView
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/comment_divider"
+            android:contentDescription="@string/comment_identifier" />
+
+        <TextView
+            android:id="@+id/usernameTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/feed_item_profile_name"
+            android:textStyle="bold"
+            android:textColor="?attr/colorAccent"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="7dp"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profilePic"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/imageBorderColor"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="7dp"
+            android:backgroundTint="@color/contentTextColor"
+            android:tint="@color/contentTextColor"
+            tools:targetApi="lollipop"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp">
+
+            <com.vanniktech.emoji.EmojiTextView
+                android:id="@+id/txtDrop"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingLeft="@dimen/feed_item_status_pad_left_right"
+                android:paddingRight="@dimen/feed_item_status_pad_left_right"
+                android:paddingTop="10dp"
+                android:textColor="@color/contentTextColor"
+                android:fontFamily="@font/vera_mono"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/drop_actions"
+                android:visibility="visible">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="10dp"
+                    app:srcCompat="@drawable/ic_upvote"
+                    android:padding="5dp"
+                    android:tint="@color/Gray"
+                    android:id="@+id/upvote_btn"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:contentDescription="@string/upvote_this_drop"/>
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="10dp"
+                    app:srcCompat="@drawable/ic_like"
+                    android:padding="5dp"
+                    android:tint="@color/Gray"
+                    android:id="@+id/like_btn"
+                    android:layout_marginEnd="20dp"
+                    android:contentDescription="@string/like_this_drop" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="10dp"
+                    app:srcCompat="@drawable/ic_downvote"
+                    android:padding="5dp"
+                    android:tint="@color/Gray"
+                    android:id="@+id/downvote_btn"
+                    android:layout_marginEnd="20dp"
+                    android:contentDescription="@string/downvote_this_drop" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="10dp"
+                    app:srcCompat="@drawable/ic_more"
+                    android:padding="5dp"
+                    android:tint="@color/Gray"
+                    android:visibility="gone"
+                    android:id="@+id/expand_btn"
+                    android:layout_marginEnd="20dp"
+                    android:contentDescription="@string/expand_this_drop"/>
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="10dp"
+                    app:srcCompat="@drawable/ic_share"
+                    android:padding="5dp"
+                    android:tint="@color/Gray"
+                    android:id="@+id/share_btn"
+                    android:layout_marginEnd="20dp"
+                    android:visibility="gone"
+                    android:contentDescription="@string/share_this_drop" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="10dp"
+                    app:srcCompat="@drawable/ic_delete"
+                    android:padding="5dp"
+                    android:id="@+id/delete_btn"
+                    android:tint="@color/Gray"
+                    android:visibility="gone"
+                    android:contentDescription="@string/delete_this_drop" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

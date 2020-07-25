@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@android:color/transparent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/search_appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:fitsSystemWindows="true"
+                android:layout_marginTop="10dp"
+                app:elevation="0dp"
+                android:elevation="0dp"
+                android:theme="@style/AppTheme.NoActionBar"
+                tools:targetApi="lollipop">
+
+                <TextView
+                    android:id="@+id/optTitleSheetTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_gravity="start"
+                    android:gravity="start"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:maxLines="1"
+                    android:textColor="@color/contentTextColor"
+                    android:text="Start A Chat"
+                    android:fontFamily="@font/amatic_regular"
+                    android:textSize="34sp"
+                    android:textStyle="bold"
+                    android:drawableLeft="@drawable/ic_close"
+                    android:drawableTint="@color/contentTextColor"
+                    android:drawablePadding="20dp"
+                    android:layout_marginTop="5dp"
+                    android:drawableStart="@drawable/ic_close"
+                    tools:targetApi="m" />
+
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/searchbar"
+                    style="@style/SearchViewStyle"
+                    android:layout_width="match_parent"
+                    android:hint="@string/search_qweekdots"
+                    app:queryHint="@string/search_qweekdots"
+                    android:textColorHint="@color/contentTextColor"
+                    android:background="@drawable/searchbar"
+                    android:textSize="14sp"
+                    app:iconifiedByDefault="false"
+                    app:defaultQueryHint="Search Qweekdots"
+                    app:searchHintIcon="@color/contentTextColor"
+                    android:layout_height="40dp"
+                    android:importantForAutofill="no"
+                    tools:targetApi="lollipop"
+                    android:focusableInTouchMode="true"
+                    android:fontFamily="@font/montserrat_regular"/>
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/searchtabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabGravity="fill"
+                    app:tabMode="fixed"
+                    app:tabIndicatorGravity="bottom"
+                    android:background="@color/contentBodyColor"
+                    app:tabIndicatorAnimationDuration="300"
+                    app:tabRippleColor="?attr/colorAccent"
+                    app:tabUnboundedRipple="true"
+                    app:tabTextColor="@color/contentTextColor"
+                    app:tabIndicatorColor="@color/QweekThemeColor"
+                    app:tabPaddingStart="10dp"
+                    app:tabPaddingTop="10dp"
+                    app:tabPaddingEnd="10dp"
+                    app:tabPaddingBottom="10dp"
+                    app:tabPadding="10dp"
+                    android:layout_marginTop="10dp"/>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/search_vPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/search_appbar"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+            <View
+                android:id="@+id/extraSpace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/search_vPager" />
+
+        </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

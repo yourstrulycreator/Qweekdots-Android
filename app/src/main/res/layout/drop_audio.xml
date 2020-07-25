@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@color/contentBodyColor">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="top|center">
+
+        <com.vanniktech.emoji.EmojiEditText
+            android:id="@+id/drop_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:background="@color/contentBodyColor"
+            android:hint="What's this about?..."
+            android:lineHeight="28dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:textAlignment="textStart"
+            android:textColor="@color/contentTextColor"
+            android:textColorHint="@color/SlateGray"
+            android:textSize="18sp"
+            tools:targetApi="p" />
+
+        <Chronometer
+            android:id="@+id/record_timer"
+            app:layout_constraintTop_toBottomOf="@id/drop_title"
+            android:layout_marginTop="30dp"
+            android:textSize="44sp"
+            android:textColor="@color/SkyBlue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.visualizer.amplitude.AudioRecordView
+            android:id="@+id/audioRecordView"
+            android:layout_width="256dp"
+            android:layout_height="64dp"
+            app:chunkAlignTo="bottom"
+            app:chunkRoundedCorners="true"
+            app:chunkSoftTransition="true"
+            app:chunkColor="@color/QweekColorAccent"
+            app:chunkSpace="1dp"
+            app:chunkWidth="2dp"
+            app:chunkMaxHeight="48dp"
+            app:chunkMinHeight="2dp"
+            android:layout_marginTop="30dp"/>
+
+        <ImageButton
+            android:id="@+id/record_btn"
+            android:background="@color/contentBodyColor"
+            android:src="@drawable/record_btn_stopped"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="35dp">
+            <com.github.jorgecastilloprz.FABProgressCircle
+                android:id="@+id/dropAudioProgress"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:padding="10dp"
+                app:arcColor="@color/DeepSkyBlue"
+                app:arcWidth="5dp"
+                app:reusable="true">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/postAudioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    app:srcCompat="@drawable/ic_send"
+                    app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
+                    android:focusable="true"
+                    app:elevation="0dp"
+                    android:elevation="0dp"
+                    app:pressedTranslationZ="12dp"
+                    app:backgroundTint="@color/DeepSkyBlue"
+                    android:scaleType="centerCrop"
+                    tools:ignore="VectorDrawableCompat"
+                    tools:targetApi="lollipop" />
+            </com.github.jorgecastilloprz.FABProgressCircle>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/drop_audio_playback" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

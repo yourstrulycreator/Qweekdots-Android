@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/parent.contentLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:padding="0dp"
+    android:background="@color/contentBodyColor">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:background="@color/contentBodyColor">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="@string/spaces"
+                        style="@style/viewParent.headerText.PageTitle"
+                        android:layout_gravity="bottom"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="25dp"
+                        android:layout_alignParentStart="true"
+                        android:textColor="@color/contentTextColor"/>
+                </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/topic_focused_conversations"
+                        android:textColor="@color/contentTextColor"
+                        android:textSize="12sp"
+                        android:layout_marginStart="25dp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/my_spaces"
+                        android:textColor="@color/contentTextColor"
+                        android:layout_marginTop="10dp"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/vera_mono"
+                        android:layout_marginStart="25dp"
+                        android:textStyle="bold"/>
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center"
+                            android:padding="10dp">
+                            <com.github.ybq.android.spinkit.SpinKitView
+                                android:id="@+id/myRingsProgress"
+                                style="@style/SpinKitView.Small.ChasingDots"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center"
+                                app:SpinKit_Color="@color/QweekColorAccent" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/myRingsRecyclerView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:scrollbars="none" />
+
+                            <include layout="@layout/error_my_rings" />
+                            <include layout="@layout/empty_my_rings" />
+                        </FrameLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="25dp"
+                    android:paddingStart="25dp"
+                    android:paddingEnd="25dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:id="@+id/more_spaces"
+                        android:drawableEnd="@drawable/flame" />
+
+                    <com.creator.qweekdots.view.StaggeredGridView
+                        android:id="@+id/rings_grid"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="25dp"
+                        android:paddingTop="@dimen/activity_margin_content"
+                        android:paddingBottom="@dimen/activity_margin_content"/>
+
+                    <com.github.ybq.android.spinkit.SpinKitView
+                        android:id="@+id/ringsProgress"
+                        style="@style/SpinKitView.Small.ChasingDots"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_gravity="center"
+                        app:SpinKit_Color="@color/QweekColorAccent" />
+
+                    <include layout="@layout/error_rings" />
+                    <include layout="@layout/empty_rings" />
+
+                </FrameLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

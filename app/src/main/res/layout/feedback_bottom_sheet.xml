@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/optTitleSheetTxt"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/contentTextColor"
+                android:text="ANY FEEDBACK IS WELCOME"
+                android:fontFamily="@font/amatic_regular"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/optFeedbackSheetTxt"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                style="@style/modifiedEditText"
+                android:inputType="textMultiLine"
+                android:textColor="@color/contentTextColor"
+                android:textSize="16sp"
+                android:hint="Any Feedback, Gotta bug to report ? Tell us what it is"
+                android:importantForAutofill="no"
+                android:textColorHint="@color/SlateGray"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="12sp"
+                android:text="This bug report will be sent via email using a mail client of your choice with any email address of your choice. It's all feedback :)"/>
+
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/optSendFeedbackButton"
+                style="@style/loginButton"
+                app:spinning_bar_width="4dp"
+                app:spinning_bar_color="#FFF"
+                android:text="Send"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/loginViewsMargin"
+                app:initialCornerAngle="27dp"
+                app:spinning_bar_padding="6dp"/>
+
+            <View
+                android:id="@+id/extraSpace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

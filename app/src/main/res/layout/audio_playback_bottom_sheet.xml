@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/optTitleSheetTxt"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/contentTextColor"
+                android:text="@string/play_audio"
+                android:fontFamily="@font/amatic_regular"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"/>
+
+            <com.creator.qweekdots.audio.visualizer.VisualizerView
+                android:id="@+id/visualizerView"
+                android:layout_width="fill_parent"
+                android:layout_height="100dp"
+                android:layout_margin="16dp" >
+            </com.creator.qweekdots.audio.visualizer.VisualizerView>
+
+            <View
+                android:id="@+id/extraSpace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="themeColorPrimary" format="reference"/>
+
+    <declare-styleable name="StaggeredGridView">
+
+        <!-- Number of columns displayed in StaggeredGridView -->
+        <attr name="columnCount" format="integer" />
+
+        <!-- Set mode for the StaggeredGridView. -->
+        <attr name="mode" format="string" />
+
+    </declare-styleable>
+
+    <declare-styleable name="MyStaggeredGridView">
+        <attr name="column_count" format="integer" />
+        <attr name="column_count_portrait" format="integer" />
+        <attr name="column_count_landscape" format="integer" />
+        <attr name="item_margin" format="dimension" />
+        <attr name="grid_paddingLeft" format="dimension" />
+        <attr name="grid_paddingRight" format="dimension" />
+        <attr name="grid_paddingTop" format="dimension" />
+        <attr name="grid_paddingBottom" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="CircleProgressBar">
+        <attr name="min" format="integer" />
+        <attr name="max" format="integer" />
+        <attr name="progress" format="integer" />
+        <attr name="progressbarColor" format="color" />
+        <attr name="progressBarThickness" format="dimension" />
+
+    </declare-styleable>
+
+    <declare-styleable name="StickerView">
+        <attr name="showIcons" format="boolean" />
+        <attr name="showBorder" format="boolean" />
+        <attr name="bringToFrontCurrentSticker" format="boolean" />
+        <attr name="borderColor" format="color"/>
+        <attr name="borderAlpha" format="integer"/>
+    </declare-styleable>
+</resources>

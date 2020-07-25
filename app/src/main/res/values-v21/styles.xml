@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="modifiedEditText" parent="parent">
+        <item name="android:textSize">@dimen/newsMoreTextSize</item>
+        <item name="android:backgroundTint">@color/primaryTextColor</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">?themeColorPrimary</item>
+        <item name="colorPrimaryDark">@color/QweekColorPrimaryDark</item>
+        <item name="colorAccent">@color/QweekColorAccent</item>
+        <item name="themeColorPrimary">@color/QweekColorPrimary</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/contentBodyColor</item>
+    </style>
+</resources>

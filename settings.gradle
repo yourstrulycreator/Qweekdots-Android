@@ -1,0 +1,2 @@
+include ':app', ':loading-button-android', ':toasty', ':spinkit', ':circleimageview', ':picasso', ':progressFAB'
+rootProject.name='Qweekdots'

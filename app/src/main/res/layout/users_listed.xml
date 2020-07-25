@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="5dp"
+        android:background="@drawable/bg_parent_rounded_corner"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:paddingBottom="10dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="3"
+                android:gravity="start"
+                android:orientation="horizontal"
+                android:id="@+id/qClickLayout">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profilePic"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:civ_border_color="@color/imageBorderColor"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="2dp"
+                    android:backgroundTint="@color/contentTextColor"
+                    android:tint="@color/contentTextColor"
+                    tools:targetApi="lollipop"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/fullnameTextView"
+                        style="@style/viewParent.headerText"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/roboto_light"
+                        android:layout_marginTop="7dp"
+                        android:textColor="@color/contentTextColor"
+                        android:layout_marginBottom="7dp"/>
+
+                    <TextView
+                        android:id="@+id/usernameTextView"
+                        style="@style/viewParent.headerText"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/roboto_light"
+                        android:textColor="@color/QweekThemeColor"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/profileActions"
+                    android:layout_marginTop="22dp"
+                    android:paddingLeft="15dp"
+                    android:paddingStart="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingEnd="15dp">
+
+                    <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                        android:id="@+id/followActionButton"
+                        style="@style/followButton"
+                        android:layout_width="125dp"
+                        android:layout_height="35dp"
+                        app:spinning_bar_width="4dp"
+                        app:spinning_bar_color="@color/contentTextColor"
+                        android:text="@string/following"
+                        android:textSize="12sp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginEnd="20dp"
+                        app:spinning_bar_padding="6dp"
+                        app:initialCornerAngle="26dp"
+                        android:visibility="visible"/>
+                </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

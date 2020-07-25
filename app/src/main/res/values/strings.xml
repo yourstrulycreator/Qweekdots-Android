@@ -1,0 +1,257 @@
+<resources>
+    <string name="app_name">Qweekdots</string>
+    <string name="app_version">v. alpha</string>
+
+    <string name="back">Back</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_fullname">Fullname</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_bio">Bio</string>
+    <string name="hint_birthday">Birthday</string>
+    <string name="hint_telephone">Mobile</string>
+    <string name="text_signup">SIGN UP</string>
+    <string name="text_signin">SIGN IN</string>
+    <string name="error_msg">Oops! Let\'s give it another go.</string>
+    <string name="btn_retry">Retry</string>
+    <string name="error_msg_no_internet">Not connected to internet</string>
+    <string name="error_msg_timeout">The server took too long to respond</string>
+    <string name="error_msg_unknown">An unexpected error occurred</string>
+    <string name="tap_to_reload">Tap to reload</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="tips_not_wifi">You are currently using the mobile network, the player will continue to consume traffic</string>
+    <string name="tips_not_wifi_confirm">Resume</string>
+    <string name="tips_not_wifi_cancel">Stop play</string>
+    <string name="no_url">No Url</string>
+    <string name="snap">QweekSnap</string>
+    <string name="loading_more">Incoming…</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="spotlight">Spotlight</string>
+    <string name="spotlight_tv">Spotlight Tv</string>
+    <string name="qweekdots_v_alpha">Qweekdots v.alpha</string>
+    <string name="qweekdots_v_beta">Qweekdots v.beta</string>
+    <string name="logout">Logout</string>
+    <string name="language">Language</string>
+    <string name="regional">Regional</string>
+    <string name="notifications">Notifications</string>
+    <string name="change_password">Change Password</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="profile">Profile</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="view_profile">View Profile</string>
+    <string name="options">Options</string>
+    <string name="home">Home</string>
+    <string name="suggestions">Suggestions</string>
+    <string name="explore">Explore</string>
+    <string name="search_qweekdots">Search Qweekdots</string>
+    <string name="profile_cover">Profile Cover</string>
+    <string name="follow_button">Follow Button</string>
+    <string name="ring_button">Ring Button</string>
+    <string name="poke_button">Poke Button</string>
+    <string name="diary_button">Diary Button</string>
+    <string name="drop">Drop</string>
+    <string name="comment_hint">Say Something nice…hopefully</string>
+    <string name="spaces">Spaces</string>
+    <string name="search_spaces">Search Spaces</string>
+    <string name="go_back">Go back</string>
+    <string name="picture">Picture</string>
+    <string name="description_info">Info</string>
+    <string name="request_permission">This sample needs camera permission.</string>
+    <string name="camera_error">This device doesn\'t support Camera API.</string>
+    <string name="intro_message">intro message</string>
+    <!-- fragment tags -->
+    <string name="fragment_qweekCam">QweekCamera</string>
+    <string name="fragment_view_stickers">View Stickers</string>
+    <!-- media tags -->
+    <string name="audioActivity">Audio Recording</string>
+    <string name="videoActivity">Video Recording</string>
+    <string name="playActivity">Playback</string>
+
+    <string-array name="activities">
+        <item name="audio">@string/audioActivity</item>
+        <item name="video">@string/videoActivity</item>
+    </string-array>
+
+    <string name="recordBtn">Record</string>
+    <string name="stopRecordBtn">Stop</string>
+    <string name="playBtn">Play</string>
+
+    <string name="noExtStorageAvailable">External storage is unavailable</string>
+    <string name="recordingError">Error recording audio</string>
+    <string name="saveRecordError">Error saving audio record</string>
+    <string name="videoRecordingError">Recording video failed</string>
+    <string name="fullscreen_view">Fullscreen View</string>
+    <string name="cancel_txt">Cancel</string>
+    <string name="downvote_txt">downvote</string>
+    <string name="share_txt">share</string>
+    <string name="like_txt">like</string>
+    <string name="expand_txt">expand</string>
+    <string name="upvote_txt">upvote</string>
+    <string name="explore_qweeksnaps">Explore QweekSnaps</string>
+    <string name="delete_this_drop">Delete this drop</string>
+    <string name="share_this_drop">Share this drop</string>
+    <string name="expand_this_drop">Expand this drop</string>
+    <string name="downvote_this_drop">Downvote this drop</string>
+    <string name="like_this_drop">Like this drop</string>
+    <string name="upvote_this_drop">Upvote this drop</string>
+    <string name="view_space">View Space</string>
+    <string name="find_a_space">Find a Space…</string>
+    <string name="trending">Trending</string>
+    <string name="trends">Trends</string>
+    <string name="search_rings">Search Rings…</string>
+    <string name="rings">Rings</string>
+    <string name="image_desc_share_button">share button</string>
+    <string name="image_desc_save_button">save button</string>
+    <string name="image_desc_open_in_browser_button">open in browser button</string>
+    <string name="image_btn_desc_next">Next Button</string>
+    <string name="image_btn_desc_prev">Previous Button</string>
+    <string name="bottom_sheet_option_save">Save for later</string>
+    <string name="bottom_sheet_option_share">Share</string>
+    <string name="bottom_sheet_option_open_in_browser">Open in browser</string>
+    <string name="button_read_full_story">read full story</string>
+    <string name="sample_source">BBC News • 1h</string>
+    <string name="sample_title">Why would Putin want to nuke Florida?</string>
+    <string name="sample_title_long">PM Narendra Modi\'s frivolous statements won\'t help create wedge between me and Congress: Amarinder Singh</string>
+    <string name="sample_description">The Sunshine State is home to Mr Trump\'s golf resort, but bigger targets lie elsewhere in the US.</string>
+    <string name="image_desc">Image for the News Post</string>
+    <string name="title_headlines">Headlines</string>
+    <string name="title_saved">Saved</string>
+    <string name="title_sources">Sources</string>
+    <string name="image_desc_source_image">Source Image</string>
+    <string name="sample_category">General</string>
+    <string name="message_item_saved">Article added to Saved</string>
+    <string name="message_item_removed">Article removed from Saved</string>
+    <string name="info_no_saved_articles">No Saved Articles</string>
+    <string name="custom_go_back">Go Back</string>
+    <string name="follow">Follow</string>
+    <string name="following">Following</string>
+    <string name="qweekdots_on_your_mind">What\'s On Your Mind?</string>
+    <string name="options_my_profile">My Profile</string>
+    <string name="options_fullname">FullName</string>
+    <string name="options_username">Username</string>
+    <string name="options_birthday">Birthday</string>
+    <string name="options_telephone">Mobile</string>
+    <string name="options_password">Password</string>
+    <string name="options_theme">Theme</string>
+    <string name="options_support">Support</string>
+    <string name="options_help_faq">Help / FAQ</string>
+    <string name="options_feedback">Feedback / Bug Report</string>
+    <string name="options_bug_report">Bug Report</string>
+    <string name="options_i_have_a_suggestion">I Have a Suggestion / Bug Report</string>
+    <string name="options_more_information">More Information</string>
+    <string name="options_privacy_policy">Privacy Policy</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="options_other_legal">Other Legal</string>
+    <string name="options_account">Account</string>
+    <string name="options_clear_conversations">Clear Conversations</string>
+    <string name="options_clear_search_history">Clear Search History</string>
+    <string name="options_blocked">Blocked</string>
+    <string name="options_profile">Profile</string>
+    <string name="options_email">Email</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="dont_have_an_account">Don\'t have an account?</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="general_error">Oops! There was an error</string>
+    <string name="video_file_size_warning">The selected video must be less than 10MB</string>
+    <string name="error_external_storage">There was an error accessing the gallery</string>
+    <string name="error_opening_file">There was an error opening the file</string>
+    <string name="error_file_size_too_large">The selected file is too large! Please select a new file.</string>
+    <string name="options_save">Save</string>
+    <string name="hint_location">Location</string>
+    <string name="icons_description">animation frames container</string>
+    <string name="created_by">Created by </string>
+
+    <string name="msg_error_unable_select_profile_pic">Unable to set profile image. Please try again!</string>
+    <string name="lbl_set_profile_photo">Set profile image</string>
+    <string name="lbl_take_camera_picture">Take a picture</string>
+    <string name="lbl_choose_from_gallery">Choose from gallery</string>
+    <string name="toast_image_intent_null">Image picker option is missing!</string>
+    <string name="dialog_permission_title">Grant Permissions</string>
+    <string name="dialog_permission_message">This app needs permission to use this feature. You can grant them in app settings.</string>
+    <string name="go_to_settings">GOTO SETTINGS</string>
+
+    <!-- QweekChat -->
+    <string name="hint_enter_a_message">Type a message…</string>
+    <string name="on_log_click_message">Your custom long click handler</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_copy">Copy</string>
+    <string name="copied_message">Message copied!</string>
+
+    <string name="date_header_today">Today</string>
+    <string name="date_header_yesterday">Yesterday</string>
+
+    <string-array name="view_types_dialog">
+        <item name="image">Image (default)</item>
+        <item name="voice">Voice message (custom)</item>
+    </string-array>
+
+    <string name="start_typing_status">Start typing</string>
+    <string name="stop_typing_status">Stop typing</string>
+    <string name="hint_password_repeat">Confirm Password</string>
+
+    <string name="about">About</string>
+    <string name="login_success">login success</string>
+    <string name="login">LOGIN</string>
+    <string name="Username">Email</string>
+    <string name="Password">Password</string>
+    <string name="forgot_your_password">Forgot your password ?</string>
+    <string name="go">GO</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="next">NEXT</string>
+    <string name="register">REGISTER</string>
+
+    <string name="qc_hint_username">Enter a new username</string>
+    <string name="hint_email_reset">Enter your email</string>
+    <string name="enter_group_name">Enter group name</string>
+    <string name="qweekchat">QweekChat</string>
+
+    <string name="title_activity_chat_room_discussion">ChatRoomDiscussionActivity</string>
+
+    <string name="msg_subscribed">Subscribed to Qweekdots App</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+
+    <string name="default_notification_channel_name" translatable="true">Qweekdots</string>
+    <string name="msg_subscribe_failed">Failed to subscribe to weather topic</string>
+
+    <string name="fcm_message">Qweekdots</string>
+
+    <string name="GOOGLE_MAP_KEY">AIzaSyAtzNVFdQ8M1cdYmNL4i8gqOmEsbHEb0vY</string>
+    <string name="profile_txt_followers">Followers</string>
+    <string name="profile_txt_following">Following</string>
+    <string name="profile_txt_drops">Drops</string>
+    <string name="play_audio">Play Audio</string>
+    <string name="q">Q.</string>
+    <string name="q_chat">Q. Chat</string>
+
+    <string name="error_gif">x or y bound size should be at least %1$dpx and file size should be no more than %2$sM</string>
+    <string name="theming">Theming</string>
+    <string name="gifimage">GifImage</string>
+    <string name="media_image">Media Image</string>
+    <string name="space_image">Space Image</string>
+
+    <string name="toast_recording_start">Recording started</string>
+    <string name="toast_recording_saved">Recording Saved</string>
+    <string name="toast_permissions_denied">Permission Denied</string>
+
+    <string name="audioview_recording">recording…</string>
+    <string name="audioview_waiting">waiting…</string>
+
+    <string name="record_elapsed">elapsed:</string>
+    <string name="record_prompt">Tap to start recording</string>
+    <string name="record_in_progress">Recording…</string>
+    <string name="ready">Ready</string>
+    <string name="playback_now">Playback now</string>
+    <string name="spaces_edittext_string1">Let \'em hear it!</string>
+    <string name="reply_txt">Reply</string>
+    <string name="qweeksnap">QweekSnap</string>
+    <string name="no_comments">No comments</string>
+    <string name="comment_identifier">comment_identifier</string>
+    <string name="discover">Discover</string>
+    <string name="topic_focused_conversations">Topic focused conversations</string>
+    <string name="my_spaces">MySpaces</string>
+    <string name="take_a_trip">Take A Trip</string>
+</resources>
