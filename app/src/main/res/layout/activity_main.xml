@@ -10,7 +10,6 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/contentBodyColor"
         android:id="@+id/main_layout">
 
         <androidx.appcompat.widget.Toolbar
@@ -70,14 +69,16 @@
             app:tabPadding="1dp"
             app:tabIconTint="@color/tab_icon_selector"
             app:tabTextAppearance="@style/AppTheme.Headlines.TabTextAppearance"
-            app:tabTextColor="@color/tab_icon_selector"/>
+            app:tabTextColor="@color/tab_icon_selector"
+            app:tabRippleColor="@null" />
 
         <com.creator.qweekdots.utils.CircleProgressBar
             android:id="@+id/dropBtn"
             android:layout_height="55dp"
             android:layout_width="55dp"
-            app:progress="0"
+            app:progress="100"
             app:progressBarThickness="5dp"
+            app:progressbarColor="@color/QweekColorAccent"
             android:layout_gravity="center"
             android:layout_marginBottom="55dp"
             android:scaleType="fitCenter"

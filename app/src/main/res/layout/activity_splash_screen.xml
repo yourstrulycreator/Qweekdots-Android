@@ -28,13 +28,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_centerHorizontal="true"
+        android:src="@drawable/love"
         android:layout_centerVertical="true"/>
 
     <TextView
         android:id="@+id/tv_created_by"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="With Love From The Qweek Company"
+        android:text="@string/with_love_from_the_qweek_company"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:textSize="12sp"

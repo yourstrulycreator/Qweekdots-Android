@@ -1,4 +1,5 @@
 package com.creator.qweekdots.ui;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -6,23 +7,19 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 
-import android.view.View;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.Switch;
-import android.widget.TextView;
-
 import com.creator.qweekdots.R;
 import com.creator.qweekdots.activity.ActivityThemeOptions;
 import com.creator.qweekdots.activity.LoginActivity;
-import com.creator.qweekdots.activity.MainActivity;
-import com.creator.qweekdots.activity.ProfileActivity;
 import com.creator.qweekdots.activity.WebViewActivity;
 import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.helper.SessionManager;
@@ -34,7 +31,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 
@@ -44,11 +40,8 @@ public class OptionsBottomSheet extends RoundedBottomSheetDialogFragment {
     private SQLiteHandler db;
     private SessionManager session;
     private View RootView;
-
-    private final String TAG = OptionsBottomSheet.class.getSimpleName();
-
+    //private final String TAG = OptionsBottomSheet.class.getSimpleName();
     private Context context;
-    private String username;
 
     public OptionsBottomSheet(Context context) {
         this.context = context;
@@ -73,7 +66,7 @@ public class OptionsBottomSheet extends RoundedBottomSheetDialogFragment {
         // Fetching user details from SQLite
         HashMap<String, String> user = db.getUserDetails();
 
-        username = user.get("username");
+        String username = user.get("username");
         String fullname = user.get("fullname");
         String email = user.get("email");
         String telephone = user.get("telephone");
@@ -92,20 +85,18 @@ public class OptionsBottomSheet extends RoundedBottomSheetDialogFragment {
         birthdayText.setText(birthday);
         telephoneText.setText(telephone);
 
-        // Info Edit
-        CardView usernameCard = RootView.findViewById(R.id.optUsernameCard);
+        // Init Options Button Card
         CardView fullnameCard = RootView.findViewById(R.id.optFullnameCard);
         CardView birthdayCard = RootView.findViewById(R.id.optBirthdayCard);
         CardView telephoneCard = RootView.findViewById(R.id.optTelephoneCard);
         CardView emailCard = RootView.findViewById(R.id.optEmailCard);
         CardView passwordCard = RootView.findViewById(R.id.optPasswordCard);
         CardView themeCard = RootView.findViewById(R.id.optThemeCard);
+        CardView optTermsCard = RootView.findViewById(R.id.optTermsCard);
+        CardView optPrivacyCard = RootView.findViewById(R.id.optPrivacyPolicyCard);
+        CardView optAboutCard = RootView.findViewById(R.id.optAboutCard);
 
         // Card Option Sheets
-        usernameCard.setOnClickListener(v -> {
-            //EditUsernameBottomSheet bottomSheet = new EditUsernameBottomSheet();
-            //bottomSheet.show(Objects.requireNonNull(getFragmentManager()),bottomSheet.getTag());
-        });
         fullnameCard.setOnClickListener(v -> {
             EditFullnameBottomSheet bottomSheet = new EditFullnameBottomSheet();
             bottomSheet.show(requireFragmentManager(),bottomSheet.getTag());
@@ -130,30 +121,28 @@ public class OptionsBottomSheet extends RoundedBottomSheetDialogFragment {
         CardView optFeedback = RootView.findViewById(R.id.optFeedbackCard);
 
         optFeedback.setOnClickListener(v-> {
-            FeedbackBottomSheet bottomSheet = new FeedbackBottomSheet(getContext(), username);
+            FeedbackBottomSheet bottomSheet = new FeedbackBottomSheet(getContext());
             bottomSheet.show(requireFragmentManager(),bottomSheet.getTag());
         });
 
-        CardView optTermsCard = RootView.findViewById(R.id.optTermsCard);
-        CardView optPrivacyCard = RootView.findViewById(R.id.optPrivacyPolicyCard);
-        CardView optAboutCard = RootView.findViewById(R.id.optAboutCard);
-
+        // Terms button click event
         optTermsCard.setOnClickListener(v->{
             Intent i = new Intent(getActivity(), WebViewActivity.class);
             i.putExtra("url", "https://qweek.fun/genjitsu/terms");
             startActivity(i);
         });
 
+        // Privacy button click event
         optPrivacyCard.setOnClickListener(v-> {
             Intent i = new Intent(getActivity(), WebViewActivity.class);
             i.putExtra("url", "https://qweek.fun/genjitsu/privacy");
             startActivity(i);
         });
 
-        optAboutCard.setOnClickListener(V-> {
-            Toasty.info(context, "Qweekdots v. alpha", Toasty.LENGTH_LONG).show();
-        });
+        // About button click event
+        optAboutCard.setOnClickListener(V-> Toasty.info(context, "With Love From The Qweek Company \n All lovely icons from FlatIcon", Toasty.LENGTH_LONG).show());
 
+        // Theme button click event
         themeCard.setOnClickListener(v-> {
             Intent i = new Intent(getActivity(), ActivityThemeOptions.class);
             startActivity(i);
@@ -161,9 +150,6 @@ public class OptionsBottomSheet extends RoundedBottomSheetDialogFragment {
             customType(getActivity(), "fadein-to-fadeout");
             dismissAllowingStateLoss();
         });
-
-
-
 
         // Logout button click event
         CardView btnLogout = RootView.findViewById(R.id.logoutBtn);
@@ -176,48 +162,28 @@ public class OptionsBottomSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         BottomSheetDialog bottomSheet = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-
         //inflating layout
         RootView = View.inflate(context, R.layout.options_bottom_sheet, null);
 
         View extraSpace = RootView.findViewById(R.id.extraSpace);
-
         //setting layout with bottom sheet
         bottomSheet.setContentView(RootView);
-
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from((View) (RootView.getParent()));
-
-
         //setting Peek
         bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
-
-
         //setting min height of bottom sheet
         extraSpace.setMinimumHeight((Resources.getSystem().getDisplayMetrics().heightPixels) / 2);
-
 
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-                if (BottomSheetBehavior.STATE_EXPANDED == i) {
-
-                }
-                if (BottomSheetBehavior.STATE_COLLAPSED == i) {
-
-                }
-
                 if (BottomSheetBehavior.STATE_HIDDEN == i) {
                     dismiss();
                 }
-
             }
-
             @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
+            public void onSlide(@NonNull View view, float v) {}
         });
-
         return bottomSheet;
     }
 
@@ -232,9 +198,7 @@ public class OptionsBottomSheet extends RoundedBottomSheetDialogFragment {
      * */
     private void logoutUser() {
         session.setLogin(false);
-
         db.deleteUsers();
-
         // Launching the login activity
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);

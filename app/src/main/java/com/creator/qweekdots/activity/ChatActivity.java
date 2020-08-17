@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -26,11 +25,10 @@ import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.adapter.ChatActivityAdapter;
 import com.creator.qweekdots.app.AppConfig;
 import com.creator.qweekdots.app.AppController;
 import com.creator.qweekdots.app.EndPoints;
-import com.creator.qweekdots.chat.ChatRoomsAdapter;
-import com.creator.qweekdots.chat.ChatUserActivity;
 import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.helper.SessionManager;
 import com.creator.qweekdots.models.ChatRoom;
@@ -58,7 +56,7 @@ public class ChatActivity extends AppCompatActivity {
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private ArrayList<ChatRoom> chatRoomArrayList;
-    private ChatRoomsAdapter mAdapter;
+    private ChatActivityAdapter mAdapter;
     private SQLiteHandler db;
     private SessionManager session;
     private LinearLayout emptyLayout, errorLayout;
@@ -111,7 +109,6 @@ public class ChatActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onReceive(Context context, Intent intent) {
-
                 // checking for type intent filter
                 if (Objects.equals(intent.getAction(), AppConfig.REGISTRATION_COMPLETE)) {
                     // gcm successfully registered
@@ -129,13 +126,13 @@ public class ChatActivity extends AppCompatActivity {
         };
 
         chatRoomArrayList = new ArrayList<>();
-        mAdapter = new ChatRoomsAdapter(this, chatRoomArrayList);
+        mAdapter = new ChatActivityAdapter(this, chatRoomArrayList, selfUserId);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        recyclerView.addOnItemTouchListener(new ChatRoomsAdapter.RecyclerTouchListener(getApplicationContext(), recyclerView, new ChatRoomsAdapter.ClickListener() {
+        recyclerView.addOnItemTouchListener(new ChatActivityAdapter.RecyclerTouchListener(getApplicationContext(), recyclerView, new ChatActivityAdapter.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 // when chat is clicked, launch full chat thread activity
@@ -215,7 +212,7 @@ public class ChatActivity extends AppCompatActivity {
      */
     private void fetchUserChatRooms() {
         String endPoint = EndPoints.USER_CHAT_ROOMS.replace("_ID_", selfUserId);
-        Log.e(TAG, "endPoint: " + endPoint);
+        Timber.tag(TAG).e("endPoint: %s", endPoint);
 
         StringRequest strReq = new StringRequest(Request.Method.GET,
                 endPoint, response -> {
@@ -241,7 +238,9 @@ public class ChatActivity extends AppCompatActivity {
                                     cr.setType(chatRoomsObj.getString("type"));
                                     cr.setPrivate_to(chatRoomsObj.getString("private_to"));
                                     cr.setPrivate_from(chatRoomsObj.getString("private_from"));
-                                    cr.setLastMessage("");
+                                    cr.setLastMessage(chatRoomsObj.getString("last_message"));
+                                    cr.setLastMessageTo(chatRoomsObj.getString("last_message_to"));
+                                    cr.setLastMessageFrom(chatRoomsObj.getString("last_message_from"));
                                     cr.setUnreadCount(0);
                                     cr.setTimestamp(chatRoomsObj.getString("created_at"));
                                     cr.setPrivate_avatar(chatRoomsObj.getString("avatar"));

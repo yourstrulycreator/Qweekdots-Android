@@ -22,6 +22,15 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <style name="AppTheme.SelectableItemRippleTheme" parent="AppTheme">
+        <item name="colorControlHighlight">@color/tenor_sdk_primary_color</item>
+    </style>
+
+    <style name="AppTheme.SelectableItemBackground">
+        <item name="android:theme">@style/AppTheme.SelectableItemRippleTheme</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
     <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
         <!-- Gets rid of the search icon -->
         <item name="searchIcon">@drawable/satellite</item>
@@ -29,6 +38,26 @@
         <item name="queryBackground">@android:color/transparent</item>
         <!-- Gets rid of the search icon when the SearchView is expanded -->
         <item name="searchHintIcon">@drawable/satellite</item>
+        <!-- The hint text that appears when the user has not typed anything -->
+        <item name="queryHint">@string/search_qweekdots</item>
+        <!-- Query Text Color -->
+        <item name="android:textColorPrimary">@color/contentTextColor</item>
+        <!-- Hint Color -->
+        <item name="android:textColorHint">@color/SlateGray</item>
+        <!-- Icon Color -->
+        <item name="android:tint">@color/QweekColorAccent</item>
+        <item name="android:iconTint" tools:targetApi="o">@color/QweekColorAccent</item>
+        <item name="android:drawableTint" tools:targetApi="m">@color/QweekColorAccent</item>
+        <item name="android:buttonTint" tools:targetApi="lollipop">@color/QweekColorAccent</item>
+    </style>
+
+    <style name="SearchViewStyle2" parent="Widget.AppCompat.SearchView">
+        <!-- Gets rid of the search icon -->
+        <item name="searchIcon">@drawable/ic_search_white_24dp</item>
+        <!-- Gets rid of the "underline" in the text -->
+        <item name="queryBackground">@android:color/transparent</item>
+        <!-- Gets rid of the search icon when the SearchView is expanded -->
+        <item name="searchHintIcon">@drawable/ic_search_white_24dp</item>
         <!-- The hint text that appears when the user has not typed anything -->
         <item name="queryHint">@string/search_qweekdots</item>
         <!-- Query Text Color -->
@@ -128,12 +157,24 @@
 
     <style name="modifiedEditText" parent="parent">
         <item name="android:textSize">@dimen/newsMoreTextSize</item>
-        <item name="android:backgroundTint" tools:targetApi="lollipop">@color/primaryTextColor</item>
+        <item name="android:backgroundTint" tools:targetApi="lollipop">@color/white</item>
+    </style>
+
+    <style name="modifiedEditText2" parent="parent">
+        <item name="android:textSize">@dimen/newsMoreTextSize</item>
+        <item name="android:backgroundTint" tools:targetApi="lollipop">@color/QweekColorAccent</item>
     </style>
 
     <style name="loginButton" parent="viewParent">
         <item name="android:background">@drawable/button_background_qweek</item>
         <item name="android:textColor">@color/whiteTextColor</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="registerButton" parent="viewParent">
+        <item name="android:background">@drawable/button_background_qweek</item>
+        <item name="android:textColor">@color/QweekColorAccent</item>
+        <item name="android:backgroundTint">@color/white</item>
         <item name="android:textStyle">bold</item>
     </style>
 

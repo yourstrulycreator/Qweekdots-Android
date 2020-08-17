@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,7 +38,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 import es.dmoral.toasty.Toasty;
@@ -48,20 +46,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
-import static com.android.volley.VolleyLog.TAG;
-
 public class EditFullnameBottomSheet extends RoundedBottomSheetDialogFragment {
     private final String TAG = EditFullnameBottomSheet.class.getSimpleName();
-
     private SQLiteHandler db;
     private String username;
-
     private BottomSheetBehavior bottomSheetBehavior;
     private ProfileService profileService;
-
     private CircularProgressButton saveBtn;
     private EmojiEditText optFullnameTxt;
-
     private List<UserItem> userItem;
     private UserItem user;
 
@@ -70,18 +62,14 @@ public class EditFullnameBottomSheet extends RoundedBottomSheetDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         EmojiManager.install(new IosEmojiProvider());
         BottomSheetDialog bottomSheet = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-
         //inflating layout
         View view = View.inflate(getContext(), R.layout.edit_fullname_bottom_sheet, null);
 
         if(getContext()!=null) {
             // SqLite database handler
             db = new SQLiteHandler(requireActivity());
-            // session manager
-
             // Fetching user details from SQLite
             HashMap<String, String> userData = db.getUserDetails();
-
             username = userData.get("username");
 
             View extraSpace = view.findViewById(R.id.extraSpace);
@@ -117,37 +105,22 @@ public class EditFullnameBottomSheet extends RoundedBottomSheetDialogFragment {
 
             //setting layout with bottom sheet
             bottomSheet.setContentView(view);
-
             bottomSheetBehavior = BottomSheetBehavior.from((View) (view.getParent()));
-
-
             //setting Peek
             bottomSheetBehavior.setPeekHeight(600);
-
-
             //setting min height of bottom sheet
             extraSpace.setMinimumHeight((Resources.getSystem().getDisplayMetrics().heightPixels) / 2);
-
 
             bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
                 public void onStateChanged(@NonNull View view, int i) {
-                    if (BottomSheetBehavior.STATE_EXPANDED == i) {
-
-                    }
-                    if (BottomSheetBehavior.STATE_COLLAPSED == i) {
-
-                    }
-
                     if (BottomSheetBehavior.STATE_HIDDEN == i) {
                         dismiss();
                     }
-
                 }
 
                 @Override
                 public void onSlide(@NonNull View view, float v) {
-
                 }
             });
 
@@ -176,7 +149,7 @@ public class EditFullnameBottomSheet extends RoundedBottomSheetDialogFragment {
             }
 
             @Override
-            public void onFailure(Call<ProfileModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<ProfileModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
             }
         });

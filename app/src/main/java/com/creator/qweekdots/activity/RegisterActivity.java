@@ -9,10 +9,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -21,12 +21,19 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.RetryPolicy;
-import com.creator.qweekdots.R;
-
-import android.widget.Toast;
 import com.android.volley.Request.Method;
+import com.android.volley.RetryPolicy;
 import com.android.volley.toolbox.StringRequest;
+import com.creator.qweekdots.R;
+import com.creator.qweekdots.app.AppConfig;
+import com.creator.qweekdots.app.AppController;
+import com.creator.qweekdots.helper.SQLiteHandler;
+import com.creator.qweekdots.helper.SessionManager;
+import com.creator.qweekdots.models.User;
+import com.google.android.material.textfield.TextInputEditText;
+import com.vanniktech.emoji.EmojiEditText;
+import com.vanniktech.emoji.EmojiManager;
+import com.vanniktech.emoji.ios.IosEmojiProvider;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -38,23 +45,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.creator.qweekdots.app.AppConfig;
-import com.creator.qweekdots.app.AppController;
-import com.creator.qweekdots.helper.SQLiteHandler;
-import com.creator.qweekdots.helper.SessionManager;
-import com.creator.qweekdots.models.User;
-import com.google.android.material.textfield.TextInputEditText;
-
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 import es.dmoral.toasty.Toasty;
-import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import timber.log.Timber;
 
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = RegisterActivity.class.getSimpleName();
     private CircularProgressButton btnRegister;
     private TextInputEditText inputUserName, inputEmail, inputPassword, inputPasswordRepeat;
-    private EmojiconEditText inputFullName;
+    private EmojiEditText inputFullName;
     private SessionManager session;
     private SQLiteHandler db;
 
@@ -65,6 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EmojiManager.install(new IosEmojiProvider());
         setContentView(R.layout.activity_register);
         changeStatusBarColor();
 
@@ -191,7 +191,7 @@ public class RegisterActivity extends AppCompatActivity {
                         && perms.get(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                 ) {
-                    Log.d(TAG, "All permissions granted");
+                    Timber.tag(TAG).d("All permissions granted");
 
                     // here you can do your logic all Permission Success Call
                     Intent intent = new Intent(RegisterActivity.this,
@@ -200,7 +200,7 @@ public class RegisterActivity extends AppCompatActivity {
                     finish();
 
                 } else {
-                    Log.d(TAG, "Some permissions are not granted ask again ");
+                    Timber.tag(TAG).d("Some permissions are not granted ask again ");
                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         showDialogOK(
                                 (dialog, which) -> {

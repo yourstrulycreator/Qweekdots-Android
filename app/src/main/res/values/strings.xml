@@ -36,7 +36,6 @@
     <string name="language">Language</string>
     <string name="regional">Regional</string>
     <string name="notifications">Notifications</string>
-    <string name="change_password">Change Password</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="profile">Profile</string>
     <string name="dark_mode">Dark Mode</string>
@@ -254,4 +253,21 @@
     <string name="topic_focused_conversations">Topic focused conversations</string>
     <string name="my_spaces">MySpaces</string>
     <string name="take_a_trip">Take A Trip</string>
+    <string name="change_mobile_number">Change Mobile Number</string>
+    <string name="change_password">Change Password</string>
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="edit_avatar">Edit Avatar</string>
+    <string name="forgot_password_txt">Forgot Password</string>
+    <string name="code">Code</string>
+
+    <string name="with_love_from_the_qweek_company">With Love From The Qweek Company</string>
+    <string name="reply_this_drop">Reply this drop</string>
+    <string name="sticker">Sticker</string>
+    <string name="hot_spaces">Hot Spaces</string>
+    <string name="search_reactions">Search Reactions</string>
+    <string name="search_error">Enter at least 2 characters to begin the search.</string>
+    <string name="no_gifs_found">No GIFs were found</string>
+    <string name="the_drops_factory">The Drops Factory</string>
 </resources>

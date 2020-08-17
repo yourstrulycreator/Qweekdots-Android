@@ -38,7 +38,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 import es.dmoral.toasty.Toasty;
@@ -51,21 +50,15 @@ import timber.log.Timber;
 
 public class EditMobileBottomSheet extends RoundedBottomSheetDialogFragment {
     private final String TAG = EditMobileBottomSheet.class.getSimpleName();
-
     private String username;
     private SQLiteHandler db;
-
     private BottomSheetBehavior bottomSheetBehavior;
     private ProfileService profileService;
-
-    private View extraSpace;
     private CircularProgressButton saveBtn;
     private EditText optMobileTxt;
     private TextView optLocationTxt;
-
     private List<UserItem> userItem;
     private UserItem user;
-
     private PhoneNumberUtil phoneNumberUtil;
     private Phonenumber.PhoneNumber phoneNumber;
 
@@ -73,21 +66,20 @@ public class EditMobileBottomSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         BottomSheetDialog bottomSheet = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-
         //inflating layout
         View view = View.inflate(getContext(), R.layout.edit_mobile_bottom_sheet, null);
 
         if(getContext()!=null) {
             // SqLite database handler
             db = new SQLiteHandler(requireActivity());
-            // session manager
-
             // Fetching user details from SQLite
             HashMap<String, String> userData = db.getUserDetails();
-
             username = userData.get("username");
 
-            extraSpace = view.findViewById(R.id.extraSpace);
+            phoneNumberUtil = PhoneNumberUtil.createInstance(getContext());
+
+            // Init Layout
+            View extraSpace = view.findViewById(R.id.extraSpace);
             optMobileTxt = view.findViewById(R.id.optMobileSheetTxt);
             optLocationTxt = view.findViewById(R.id.optLocationSheetTxt);
             saveBtn = view.findViewById(R.id.optMobileSheetSaveButton);
@@ -134,17 +126,11 @@ public class EditMobileBottomSheet extends RoundedBottomSheetDialogFragment {
 
             //setting layout with bottom sheet
             bottomSheet.setContentView(view);
-
             bottomSheetBehavior = BottomSheetBehavior.from((View) (view.getParent()));
-
-
             //setting Peek
             bottomSheetBehavior.setPeekHeight(600);
-
-
             //setting min height of bottom sheet
             extraSpace.setMinimumHeight((Resources.getSystem().getDisplayMetrics().heightPixels) / 2);
-
 
             bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
@@ -193,7 +179,7 @@ public class EditMobileBottomSheet extends RoundedBottomSheetDialogFragment {
             }
 
             @Override
-            public void onFailure(Call<ProfileModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<ProfileModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -226,7 +212,6 @@ public class EditMobileBottomSheet extends RoundedBottomSheetDialogFragment {
         } catch (Exception e) {
             Timber.tag(TAG).i("error during parsing number");
         }
-
         if(phoneNumber == null) {
             return "N/A";
         } else {
@@ -248,12 +233,10 @@ public class EditMobileBottomSheet extends RoundedBottomSheetDialogFragment {
             try {
                 JSONObject jObj = new JSONObject(response);
                 boolean error = jObj.getBoolean("error");
-
                 // Check for error node in json
                 if (!error) {
                     // Stop animation
                     stopButtonAnimation();
-
                     // success
                     String sent = jObj.getString("sent");
                     String telephone = jObj.getString("telephone");
@@ -276,15 +259,12 @@ public class EditMobileBottomSheet extends RoundedBottomSheetDialogFragment {
                 Toasty.error(requireContext(), "Mission Control, come in !", Toast.LENGTH_LONG).show();
                 stopButtonAnimation();
             }
-
         }, error -> {
             Timber.tag(TAG).e("Settings Error: %s", error.getMessage());
             Toasty.error(requireContext(),
                     "Apollo, we have a problem !", Toast.LENGTH_LONG).show();
-
             stopButtonAnimation();
         }) {
-
             @Override
             protected Map<String, String> getParams() {
                 // Posting parameters to drop url
@@ -295,7 +275,6 @@ public class EditMobileBottomSheet extends RoundedBottomSheetDialogFragment {
 
                 return params;
             }
-
         };
 
         // disabling retry policy so that it won't make
@@ -314,7 +293,6 @@ public class EditMobileBottomSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 

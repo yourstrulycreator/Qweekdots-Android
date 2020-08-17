@@ -21,7 +21,7 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:textColor="@color/contentTextColor"
-                android:text="The Drops Factory"
+                android:text="@string/the_drops_factory"
                 android:fontFamily="@font/amatic_regular"
                 android:textSize="34sp"
                 android:textStyle="bold"
@@ -33,82 +33,153 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="45dp"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:gravity="center"
+                android:weightSum="3"
+                android:baselineAligned="false">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:layout_marginEnd="30dp">
+                    android:layout_weight="1"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    style="@style/AppTheme.SelectableItemRippleTheme"
+                    android:background="@color/gradientLightGreen">
                     <ImageView
                         android:id="@+id/postText"
                         android:layout_width="75dp"
                         android:layout_height="75dp"
-                        android:background="@drawable/drop_post_round_btn"
-                        android:backgroundTint="@color/gradientOrange"
-                        app:srcCompat="@drawable/q_text"
+                        app:srcCompat="@drawable/drop_factory_icon_text"
                         android:clickable="true"
                         android:focusable="true"
                         tools:targetApi="lollipop"
-                        android:contentDescription="@string/drop"
-                        android:padding="20dp"/>
+                        android:contentDescription="@string/drop"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Text"/>
+                        android:text="Text"
+                        android:layout_marginTop="5dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:layout_marginEnd="30dp">
+                    android:layout_weight="1"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    style="@style/AppTheme.SelectableItemRippleTheme"
+                    android:background="@color/gradientLightYellow2">
                     <ImageView
                         android:id="@+id/postSnap"
                         android:layout_width="75dp"
                         android:layout_height="75dp"
-                        android:background="@drawable/drop_post_round_btn"
-                        android:backgroundTint="@color/gradientLightOrange2"
-                        app:srcCompat="@drawable/ic_photo_camera_black_18dp"
+                        app:srcCompat="@drawable/drop_factory_icon_qweeksnap"
                         android:clickable="true"
                         android:focusable="true"
                         tools:targetApi="lollipop"
-                        android:contentDescription="@string/drop"
-                        android:padding="20dp"/>
+                        android:contentDescription="@string/drop"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="QweekSnaps"/>
+                        android:text="Snaps"
+                        android:layout_marginTop="5dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
 
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:gravity="center">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    style="@style/AppTheme.SelectableItemRippleTheme"
+                    android:background="@color/gradientLightBlue">
                     <ImageView
                         android:id="@+id/postAudio"
                         android:layout_width="75dp"
                         android:layout_height="75dp"
-                        android:background="@drawable/drop_post_round_btn"
-                        android:backgroundTint="@color/SkyBlue"
-                        app:srcCompat="@drawable/q_audio"
+                        app:srcCompat="@drawable/drop_factory_icon_audio"
                         android:clickable="true"
                         android:focusable="true"
                         tools:targetApi="lollipop"
-                        android:contentDescription="@string/drop"
-                        android:padding="20dp"/>
+                        android:contentDescription="@string/drop"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="QweekAudio"/>
+                        android:text="Audio"
+                         android:layout_marginTop="5dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:weightSum="3"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:ignore="UselessLeaf" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    style="@style/AppTheme.SelectableItemRippleTheme"
+                    android:background="@color/gradientOrange">
+                    <ImageView
+                        android:id="@+id/postReactions"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        app:srcCompat="@drawable/drop_factory_icon_reaction"
+                        android:clickable="true"
+                        android:focusable="true"
+                        tools:targetApi="lollipop"
+                        android:contentDescription="@string/drop"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Reactions"
+                        android:layout_marginTop="5dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:ignore="UselessLeaf" />
 
             </LinearLayout>
 

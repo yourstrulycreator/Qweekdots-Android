@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -41,8 +42,6 @@ import static com.android.volley.VolleyLog.TAG;
 public class DropText extends Fragment {
     private String[] textHint = {
             "What's On Your Mind?",
-            "Talk Dirty To Me... maybe not",
-            "You Have A Voice",
             "Tell The World",
             "What's Happening ?"
     };
@@ -82,14 +81,12 @@ public class DropText extends Fragment {
         // SqLite database handler
         SQLiteHandler db = new SQLiteHandler(Objects.requireNonNull(this).getContext());
         // session manager
-
         // Fetching user details from SQLite
         HashMap<String, String> user = db.getUserDetails();
-
         username = user.get("username");
 
         dropTxt = rootView.findViewById(R.id.drop_txt);
-        int randomHint = mRandom.nextInt(5);
+        int randomHint = mRandom.nextInt(3);
         dropTxt.setHint(textHint[randomHint]);
 
         dropProgress = rootView.findViewById(R.id.dropTextProgress);
@@ -109,6 +106,9 @@ public class DropText extends Fragment {
                 dropBtn.setEnabled(true);
             }
         });
+
+        ImageView goBack = rootView.findViewById(R.id.goBack);
+        goBack.setOnClickListener(v-> goBack());
 
         return rootView;
     }
@@ -172,7 +172,6 @@ public class DropText extends Fragment {
 
                 return params;
             }
-
         };
 
         // disabling retry policy so that it won't make
@@ -188,8 +187,14 @@ public class DropText extends Fragment {
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
-    public void onClick(View v) {
+    public void onClick() {
         assert getFragmentManager() != null;
         getFragmentManager().popBackStack();
     }
+
+    private void goBack() {
+        assert getFragmentManager() != null;
+        getFragmentManager().popBackStack();
+    }
+
 }

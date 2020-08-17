@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     android:id="@+id/message_layout"
     android:clickable="true"
-    android:layout_marginBottom="7dp">
+    android:layout_marginBottom="7dp"
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,7 +41,6 @@
                 android:textColor="?attr/colorAccent"
                 app:layout_constraintLeft_toRightOf="@+id/profilePic"
                 app:layout_constraintTop_toTopOf="parent"
-                android:text="q/mike"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"/>
 
@@ -54,10 +54,10 @@
             app:cardCornerRadius="22dp"
             android:clickable="true"
             android:focusable="true"
-            app:cardElevation="4dp"
+            app:cardElevation="2dp"
             app:cardBackgroundColor="@color/contentBodyColor"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginTop="10dp">
 
             <LinearLayout
@@ -90,8 +90,8 @@
             app:cardCornerRadius="@dimen/bottom_sheet_corner_radius"
             app:cardElevation="0dp"
             android:layout_marginTop="3dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:visibility="gone"
             android:layout_gravity="center"
             app:cardBackgroundColor="@color/contentBodyColor">
@@ -104,7 +104,8 @@
                 android:background="@color/QweekColorAccent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                tools:ignore="ContentDescription" />
 
             <com.creator.qweekdots.mediaplayer.RSVideoPlayerStandard
                 android:id="@+id/message_videoplayer"
@@ -130,23 +131,36 @@
                 app:srcCompat="@drawable/ic_like"
                 android:padding="5dp"
                 android:layout_marginStart="30dp"
+                android:layout_marginEnd="20dp"
                 android:tint="@color/Gray"
                 android:clickable="true"
                 android:focusable="true"
-                android:id="@+id/like_btn"
                 android:visibility="gone"
+                android:id="@+id/like_btn"
                 android:contentDescription="@string/like_txt" />
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                app:srcCompat="@drawable/ic_reply"
+                android:padding="5dp"
+                android:tint="@color/Gray"
+                android:visibility="gone"
+                android:id="@+id/reply_btn"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="20dp"
+                android:contentDescription="@string/reply_txt"/>
 
             <ImageView
                 android:layout_width="26dp"
                 android:layout_height="26dp"
-                android:layout_marginStart="30dp"
                 app:srcCompat="@drawable/ic_more"
                 android:padding="5dp"
                 android:tint="@color/Gray"
                 android:clickable="true"
                 android:focusable="true"
                 android:id="@+id/expand_btn"
+                android:layout_marginStart="10dp"
                 android:contentDescription="@string/expand_txt" />
 
         </LinearLayout>
@@ -185,7 +199,8 @@
                         android:layout_width="23dp"
                         android:layout_height="23dp"
                         android:layout_gravity="start|center_vertical"
-                        android:src="@drawable/ic_delete"/>
+                        android:src="@drawable/ic_delete"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -193,7 +208,8 @@
                         android:text="Delete"
                         android:layout_marginStart="25dp"
                         android:textColor="@color/contentTextColor"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -207,14 +223,16 @@
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:clickable="true"
-                    android:focusable="true">
+                    android:focusable="true"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="23dp"
                         android:layout_height="23dp"
                         android:layout_gravity="start|center_vertical"
                         android:src="@drawable/ic_close"
-                        android:tint="@color/SlateGray"/>
+                        android:tint="@color/SlateGray"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -222,7 +240,8 @@
                         android:text="Cancel"
                         android:layout_marginStart="25dp"
                         android:textColor="@color/contentTextColor"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 

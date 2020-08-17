@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/contentBodyColor"
-    tools:context=".chat.ChatRoomActivity">
+    tools:context=".activity.RingSpaceActivity"
+    android:paddingTop="10dp">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -29,7 +30,6 @@
             android:fontFamily="@font/odin_rounded_bold"
             android:textSize="32sp"
             android:layout_marginStart="55dp"
-            android:layout_marginLeft="55dp"
             android:textColor="@color/QweekColorAccent"/>
 
     </androidx.appcompat.widget.Toolbar>
@@ -61,7 +61,6 @@
         android:tint="@color/contentTextColor"
         android:layout_gravity="top|start"
         android:scaleType="fitCenter"
-        android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:onClick="onClick"

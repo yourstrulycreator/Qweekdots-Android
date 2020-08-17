@@ -46,16 +46,12 @@ import timber.log.Timber;
 
 public class EditEmailBottomSheet extends RoundedBottomSheetDialogFragment {
     private final String TAG = EditEmailBottomSheet.class.getSimpleName();
-
     private String username;
     private SQLiteHandler db;
-
     private BottomSheetBehavior bottomSheetBehavior;
     private ProfileService profileService;
-
     private CircularProgressButton saveBtn;
     private EditText optEmailTxt;
-
     private List<UserItem> userItem;
     private UserItem user;
 
@@ -63,20 +59,17 @@ public class EditEmailBottomSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         BottomSheetDialog bottomSheet = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-
         //inflating layout
         View view = View.inflate(getContext(), R.layout.edit_email_bottom_sheet, null);
 
         if(getContext()!=null) {
             // SqLite database handler
             db = new SQLiteHandler(requireActivity());
-            // session manager
-
             // Fetching user details from SQLite
             HashMap<String, String> userData = db.getUserDetails();
-
             username = userData.get("username");
 
+            // Init Layout
             View extraSpace = view.findViewById(R.id.extraSpace);
             optEmailTxt = view.findViewById(R.id.optEmailSheetTxt);
             saveBtn = view.findViewById(R.id.optEmailSheetSaveButton);
@@ -109,37 +102,21 @@ public class EditEmailBottomSheet extends RoundedBottomSheetDialogFragment {
 
             //setting layout with bottom sheet
             bottomSheet.setContentView(view);
-
             bottomSheetBehavior = BottomSheetBehavior.from((View) (view.getParent()));
-
-
             //setting Peek
             bottomSheetBehavior.setPeekHeight(600);
-
-
             //setting min height of bottom sheet
             extraSpace.setMinimumHeight((Resources.getSystem().getDisplayMetrics().heightPixels) / 2);
-
 
             bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
                 public void onStateChanged(@NonNull View view, int i) {
-                    if (BottomSheetBehavior.STATE_EXPANDED == i) {
-
-                    }
-                    if (BottomSheetBehavior.STATE_COLLAPSED == i) {
-
-                    }
-
                     if (BottomSheetBehavior.STATE_HIDDEN == i) {
                         dismiss();
                     }
-
                 }
-
                 @Override
                 public void onSlide(@NonNull View view, float v) {
-
                 }
             });
 
@@ -169,7 +146,7 @@ public class EditEmailBottomSheet extends RoundedBottomSheetDialogFragment {
             }
 
             @Override
-            public void onFailure(Call<ProfileModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<ProfileModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
             }
         });

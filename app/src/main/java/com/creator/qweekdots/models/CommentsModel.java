@@ -20,7 +20,7 @@ public class CommentsModel {
      * The results
      */
     public List<CommentItem> getFeedItems() {
-        return feed;
+        return ThreadedComments.toThreadedComments(feed);
     }
 
 

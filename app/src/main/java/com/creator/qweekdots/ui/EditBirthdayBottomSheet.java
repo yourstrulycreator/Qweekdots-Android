@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -41,7 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 import es.dmoral.toasty.Toasty;
@@ -52,20 +50,15 @@ import timber.log.Timber;
 
 public class EditBirthdayBottomSheet extends RoundedBottomSheetDialogFragment {
     private final String TAG = EditBirthdayBottomSheet.class.getSimpleName();
-
     private String username;
     private SQLiteHandler db;
-
     private BottomSheetBehavior bottomSheetBehavior;
     private ProfileService profileService;
-
-    private View extraSpace;
     private CircularProgressButton saveBtn;
     private EditText optBirthdayTxt;
-
     private List<UserItem> userItem;
     private UserItem user;
-    final Calendar myCalendar = Calendar.getInstance();
+    private final Calendar myCalendar = Calendar.getInstance();
     private int day, month, year;
 
     @NotNull
@@ -79,14 +72,12 @@ public class EditBirthdayBottomSheet extends RoundedBottomSheetDialogFragment {
         if(getContext()!=null) {
             // SqLite database handler
             db = new SQLiteHandler(requireActivity());
-            // session manager
-
             // Fetching user details from SQLite
             HashMap<String, String> userData = db.getUserDetails();
-
             username = userData.get("username");
 
-            extraSpace = view.findViewById(R.id.extraSpace);
+            // Init Layout
+            View extraSpace = view.findViewById(R.id.extraSpace);
             optBirthdayTxt = view.findViewById(R.id.optBirthdaySheetTxt);
             optBirthdayTxt.setFocusable(false);
             optBirthdayTxt.setClickable(true);
@@ -122,37 +113,21 @@ public class EditBirthdayBottomSheet extends RoundedBottomSheetDialogFragment {
 
             //setting layout with bottom sheet
             bottomSheet.setContentView(view);
-
             bottomSheetBehavior = BottomSheetBehavior.from((View) (view.getParent()));
-
-
             //setting Peek
             bottomSheetBehavior.setPeekHeight(600);
-
-
             //setting min height of bottom sheet
             extraSpace.setMinimumHeight((Resources.getSystem().getDisplayMetrics().heightPixels) / 2);
-
 
             bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
                 public void onStateChanged(@NonNull View view, int i) {
-                    if (BottomSheetBehavior.STATE_EXPANDED == i) {
-
-                    }
-                    if (BottomSheetBehavior.STATE_COLLAPSED == i) {
-
-                    }
-
                     if (BottomSheetBehavior.STATE_HIDDEN == i) {
                         dismiss();
                     }
-
                 }
-
                 @Override
                 public void onSlide(@NonNull View view, float v) {
-
                 }
             });
 
@@ -162,9 +137,7 @@ public class EditBirthdayBottomSheet extends RoundedBottomSheetDialogFragment {
             loadOptBirthday();
 
             //set date
-            optBirthdayTxt.setOnClickListener(v-> {
-                showDateDialog();
-            });
+            optBirthdayTxt.setOnClickListener(v-> showDateDialog());
         }
 
 
@@ -195,7 +168,7 @@ public class EditBirthdayBottomSheet extends RoundedBottomSheetDialogFragment {
             }
 
             @Override
-            public void onFailure(Call<ProfileModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<ProfileModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
             }
         });

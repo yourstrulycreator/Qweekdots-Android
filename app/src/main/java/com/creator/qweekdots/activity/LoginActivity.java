@@ -12,8 +12,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -23,22 +27,20 @@ import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request.Method;
 import com.android.volley.RetryPolicy;
+import com.android.volley.toolbox.StringRequest;
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.app.AppConfig;
+import com.creator.qweekdots.app.AppController;
+import com.creator.qweekdots.helper.SQLiteHandler;
+import com.creator.qweekdots.helper.SessionManager;
 import com.creator.qweekdots.models.User;
 import com.creator.qweekdots.service.FCMIntentService;
 import com.creator.qweekdots.service.NotificationUtils;
 import com.creator.qweekdots.ui.PasswordResetBottomSheet;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.android.volley.Request.Method;
-import com.android.volley.toolbox.StringRequest;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -49,12 +51,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import com.creator.qweekdots.app.AppConfig;
-import com.creator.qweekdots.app.AppController;
-import com.creator.qweekdots.helper.SQLiteHandler;
-import com.creator.qweekdots.helper.SessionManager;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 import es.dmoral.toasty.Toasty;
@@ -71,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
     View decorView;
 
     private static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1234;
-
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
@@ -84,6 +79,9 @@ public class LoginActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_login);
         changeStatusBarColor();
+
+        // Initialize Timber Debug Tree for Activity
+        Timber.plant(new Timber.DebugTree());
 
         inputUser = findViewById(R.id.editTextUser);
         inputPassword = findViewById(R.id.editTextPassword);
@@ -197,7 +195,7 @@ public class LoginActivity extends AppCompatActivity {
             listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
         if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[0]), REQUEST_ID_MULTIPLE_PERMISSIONS);
             return false;
         }
         return true;
@@ -226,7 +224,7 @@ public class LoginActivity extends AppCompatActivity {
                         && perms.get(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                 ) {
-                    Log.d(TAG, "All permissions granted");
+                    Timber.tag(TAG).d("All permissions granted");
 
                     // here you can do your logic all Permission Success Call
                     Intent intent = new Intent(LoginActivity.this,
@@ -235,7 +233,7 @@ public class LoginActivity extends AppCompatActivity {
                     finish();
 
                 } else {
-                    Log.d(TAG, "Some permissions are not granted ask again ");
+                    Timber.tag(TAG).d("Some permissions are not granted ask again ");
                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         showDialogOK(
                                 (dialog, which) -> {

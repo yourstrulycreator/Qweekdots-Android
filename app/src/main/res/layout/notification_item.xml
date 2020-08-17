@@ -6,21 +6,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:background="@drawable/bg_parent_rounded_corner"
-        android:orientation="vertical"
-        android:id="@+id/noteLayout">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:orientation="horizontal"/>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/noteLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardElevation="1dp"
+        app:cardBackgroundColor="@color/contentBodyColor"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="15dp"
+        app:contentPadding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,6 +26,26 @@
             android:orientation="horizontal"
             android:weightSum="5"
             android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:gravity="start"
+                android:layout_marginStart="10dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profilePic"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="@color/imageBorderColor"
+                    android:layout_marginEnd="15dp"
+                    android:backgroundTint="@color/contentTextColor"
+                    android:tint="@color/contentTextColor"
+                    tools:targetApi="lollipop"/>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -50,29 +68,8 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:gravity="end">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profilePic"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:civ_border_width="2dp"
-                    app:civ_border_color="@color/imageBorderColor"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:backgroundTint="@color/contentTextColor"
-                    android:tint="@color/contentTextColor"
-                    tools:targetApi="lollipop"/>
-
-            </LinearLayout>
-
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </FrameLayout>

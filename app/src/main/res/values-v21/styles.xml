@@ -6,6 +6,11 @@
         <item name="android:backgroundTint">@color/primaryTextColor</item>
     </style>
 
+    <style name="modifiedEditText2" parent="parent">
+        <item name="android:textSize">@dimen/newsMoreTextSize</item>
+        <item name="android:backgroundTint">@color/white</item>
+    </style>
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">?themeColorPrimary</item>

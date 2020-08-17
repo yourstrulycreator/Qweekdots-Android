@@ -5,5 +5,5 @@
         android:bottomLeftRadius="26dp"
         android:bottomRightRadius="26dp" />
     <padding android:top="@dimen/bottom_sheet_top_padding" />
-    <solid android:color="@color/contentBodyColor" />
+    <solid android:color="@color/QweekColorAccent" />
 </shape>

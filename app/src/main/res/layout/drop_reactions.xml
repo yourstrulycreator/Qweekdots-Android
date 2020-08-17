@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/contentBodyColor">
+
+    <ScrollView
+        android:id="@+id/post_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal">
+
+            <com.vanniktech.emoji.EmojiEditText
+                android:id="@+id/drop_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:background="@android:color/transparent"
+                android:textSize="16sp"
+                android:textColor="@color/contentTextColor"
+                android:hint="What's on your mind?"
+                android:textColorHint="@color/SlateGray"
+                android:layout_marginTop="50dp"
+                android:paddingTop="18dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:paddingBottom="20dp"
+                android:gravity="start|top"
+                android:inputType="textCapSentences|textMultiLine"
+                android:scrollHorizontally="false"
+                android:scrollbars="none"
+                android:singleLine="false"
+                android:textCursorDrawable="@null"
+                android:importantForAutofill="no"
+                tools:ignore="HardcodedText" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp">
+
+                <ImageView
+                    android:id="@+id/gifImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:maxHeight="350dp"
+                    android:maxWidth="350dp"
+                    tools:ignore="ContentDescription" />
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/goBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close_shadow_48dp"
+        android:tint="@color/contentTextColor"
+        android:padding="3dp"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="20dp"
+        app:layout_anchor="@id/post_container"
+        app:layout_anchorGravity="bottom|right"
+        android:orientation="horizontal">
+
+        <com.github.jorgecastilloprz.FABProgressCircle
+            android:id="@+id/dropReactionsProgress"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            app:arcColor="@color/MistyRose"
+            app:arcWidth="5dp"
+            android:padding="10dp"
+            app:reusable="true">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/postReactionsButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                app:srcCompat="@drawable/ic_send"
+                app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
+                android:focusable="true"
+                app:pressedTranslationZ="12dp"
+                app:backgroundTint="@color/SpringGreen"
+                android:scaleType="centerCrop"
+                tools:ignore="VectorDrawableCompat" />
+
+        </com.github.jorgecastilloprz.FABProgressCircle>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

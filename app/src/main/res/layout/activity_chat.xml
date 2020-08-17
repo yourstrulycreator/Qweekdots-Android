@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/contentBodyColor"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:paddingTop="10dp">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -23,11 +24,13 @@
 
         <TextView android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/q_chat"
+            android:text="Private Messages"
             android:fontFamily="@font/odin_rounded_bold"
-            android:textSize="32sp"
+            android:textSize="23sp"
+            android:layout_marginTop="5dp"
             android:layout_marginStart="55dp"
-            android:textColor="@color/QweekColorAccent"/>
+            android:textColor="@color/QweekColorAccent"
+            tools:ignore="HardcodedText" />
 
     </androidx.appcompat.widget.Toolbar>
 

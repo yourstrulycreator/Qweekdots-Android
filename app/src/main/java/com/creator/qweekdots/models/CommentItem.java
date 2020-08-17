@@ -6,13 +6,16 @@ import com.google.gson.annotations.SerializedName;
 public class CommentItem {
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
+    @SerializedName("commented_drop_id")
+    @Expose
+    private String commented_drop_id;
     @SerializedName("drop_id")
     @Expose
     private String drop_id;
     @SerializedName("parent_id")
     @Expose
-    private String parent_id;
+    private int parent_id;
     @SerializedName("user_id")
     @Expose
     private String user_id;
@@ -70,12 +73,19 @@ public class CommentItem {
     @SerializedName("downvoteNum")
     @Expose
     private String downvoteNum;
+    @SerializedName("depth")
+    @Expose
+    private int depth;
+    @SerializedName("childCount")
+    @Expose
+    private int childCount;
+
     /**
      *
      * @return
      * The Initial Id
      */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -83,7 +93,7 @@ public class CommentItem {
      *
      * The Initial Id
      */
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -93,7 +103,7 @@ public class CommentItem {
      * @return
      * The Parent Id
      */
-    public String getParent_Id() {
+    public int getParent_Id() {
         return parent_id;
     }
 
@@ -101,8 +111,25 @@ public class CommentItem {
      *
      * The Parent Id
      */
-    public void setParent_Id(String parent_id) {
+    public void setParent_Id(int parent_id) {
         this.parent_id = parent_id;
+    }
+
+    /**
+     *
+     * @return
+     * The Commented Drop Id
+     */
+    public String getCommented_drop_id() {
+        return commented_drop_id;
+    }
+
+    /**
+     *
+     * The Commented Drop Id
+     */
+    public void setCommented_drop_id(String commented_drop_id) {
+        this.commented_drop_id = commented_drop_id;
     }
 
     /**
@@ -448,5 +475,37 @@ public class CommentItem {
         this.downvoteNum = downvoteNum;
     }
 
+    /**
+     *
+     * @return
+     * Comment Depth
+     */
+    public int getCommentDepth() {
+        return depth;
+    }
 
+    /**
+     *
+     * Set Comment Depth
+     */
+    public void setCommentDepth(int depth) {
+        this.depth = depth;
+    }
+
+    /**
+     *
+     * @return
+     * Comment Child Counts
+     */
+    public int getChildCount() {
+        return childCount;
+    }
+
+    /**
+     *
+     * Set Child Count if any
+     */
+    public void setChildCount(int childCount) {
+        this.childCount = childCount;
+    }
 }

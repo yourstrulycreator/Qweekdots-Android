@@ -5,13 +5,15 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +21,19 @@ import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -40,6 +44,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.creator.qweekdots.R;
 import com.creator.qweekdots.activity.ProfileActivity;
+import com.creator.qweekdots.adapter.ReplyAdapter;
 import com.creator.qweekdots.api.MessageService;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.api.ReplyFeedService;
@@ -58,8 +63,6 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiTextView;
@@ -87,48 +90,37 @@ import timber.log.Timber;
 import static maes.tech.intentanim.CustomIntent.customType;
 
 public class MessageBottomSheet extends RoundedBottomSheetDialogFragment implements PaginationAdapterCallback {
-
     private final String TAG = DropBottomSheet.class.getSimpleName();
-
     private String username;
     private String drop_id;
-
     private MessageService dropService;
 
-    private RelativeLayout dropLayout;
-    private ImageView qweeksnap, shareBtn, likeBtn, deleteBtn;
+    private ImageView qweeksnap, likeBtn, deleteBtn;
     private RSVideoPlayerStandard video;
-    private LinearLayout droptextLayout, droptextTextLayout, dropActions, qClickLayout;
+    private LinearLayout droptextTextLayout, qClickLayout;
     private CircleImageView profilePic;
     private TextView usernameTxt, likeNum, commentNum;
     private EmojiTextView dropText;
     private CardView qweeksnapCard;
-
-    private String p_id;
 
     private ReplyAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private SpinKitView progressBar;
     private LinearLayout errorLayout;
     private TextView txtError;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout emptyLayout;
-    private Target target;
 
     private EmojiEditText dropCommentTxt;
     private FloatingActionButton dropCommentBtn;
 
     private boolean isLoading = false;
     private boolean isLastPage = false;
-    private boolean hasParentComment = false;
 
     private static final int PAGE_START = 1;
     private static int TOTAL_PAGES;
     private int currentPage = PAGE_START;
-    private String next_link;
-    private String prev_link;
     private String max_id;
-    private String since_id;
+    //private String since_id;
 
     private ReplyFeedService commentFeedService;
     private Context context;
@@ -153,16 +145,12 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
             profilePic = view.findViewById(R.id.profilePic);
             qweeksnap = view.findViewById(R.id.drop_qweekSnap);
             video = view.findViewById(R.id.videoplayer);
-            shareBtn = view.findViewById(R.id.share_btn);
             likeBtn = view.findViewById(R.id.like_btn);
             likeNum = view.findViewById(R.id.likeNum);
             commentNum = view.findViewById(R.id.commentNum);
             deleteBtn = view.findViewById(R.id.delete_btn);
             qClickLayout = view.findViewById(R.id.qClickLayout);
-            dropLayout = view.findViewById(R.id.drop_relayout);
-            droptextLayout = view.findViewById(R.id.droptext_layout);
             droptextTextLayout = view.findViewById(R.id.droptext_text_layout);
-            dropActions = view.findViewById(R.id.drop_actions);
             qweeksnapCard = view.findViewById(R.id.drop_qweekSnapCard);
 
             //COMMENTS
@@ -172,7 +160,6 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
             emptyLayout = view.findViewById(R.id.empty_layout);
             Button btnRetry = view.findViewById(R.id.error_btn_retry);
             txtError = view.findViewById(R.id.error_txt_cause);
-            swipeRefreshLayout = view.findViewById(R.id.main_swiperefresh);
 
             adapter = new ReplyAdapter(context, this, username);
 
@@ -194,7 +181,6 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                         } else {
                             Toasty.info(requireContext(), "No Jet Fuel, connect to the internet", Toast.LENGTH_LONG).show();
                             adapter.removeLoadingFooter();
-
                             Timber.tag(TAG).d("No internet connection available");
                         }
                     }
@@ -204,12 +190,10 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 public int getTotalPageCount() {
                     return TOTAL_PAGES;
                 }
-
                 @Override
                 public boolean isLastPage() {
                     return isLastPage;
                 }
-
                 @Override
                 public boolean isLoading() {
                     return isLoading;
@@ -224,27 +208,22 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
             loadDrop();
             loadFirstCommentsPage();
 
+            // Drop comment
             dropCommentTxt = view.findViewById(R.id.dropCommentTxt);
             dropCommentBtn = view.findViewById(R.id.dropCommentBtn);
             dropCommentBtn.setOnClickListener(v -> {
                 dropCommentBtn.setClickable(false);
-
                 String drop = Objects.requireNonNull(dropCommentTxt.getText()).toString();
-                if(!drop.isEmpty() && !hasParentComment) {
-                    postComment(drop, username, drop_id, "");
-                    Toasty.info(requireContext(), "...making a drop", Toasty.LENGTH_SHORT).show();
-                } else if(!drop.isEmpty() && hasParentComment) {
-                    postComment(drop, username, drop_id, p_id);
+                if(!drop.isEmpty()) {
+                    postComment(drop, username, drop_id);
                     Toasty.info(requireContext(), "...making a drop", Toasty.LENGTH_SHORT).show();
                 } else {
                     Toasty.error(requireContext(), "Won't you say something nice ?", Toast.LENGTH_SHORT).show();
                     dropCommentBtn.setClickable(true);
                 }
             });
-
             btnRetry.setOnClickListener(v -> loadFirstCommentsPage());
         }
-
         return view;
     }
 
@@ -254,56 +233,38 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
         BottomSheetDialog bottomSheet = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         //inflating layout
         view = View.inflate(getContext(), R.layout.message_bottom_sheet, null);
-
         View extraSpace = view.findViewById(R.id.extraSpace);
 
         //setting layout with bottom sheet
         bottomSheet.setContentView(view);
-
         bottomSheetBehavior = BottomSheetBehavior.from((View) (view.getParent()));
-
-
         //setting Peek
         bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
-
-
         //setting min height of bottom sheet
         extraSpace.setMinimumHeight((Resources.getSystem().getDisplayMetrics().heightPixels) / 2);
-
 
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-                if (BottomSheetBehavior.STATE_EXPANDED == i) {
-
-                }
-                if (BottomSheetBehavior.STATE_COLLAPSED == i) {
-
-                }
-
                 if (BottomSheetBehavior.STATE_HIDDEN == i) {
                     dismiss();
                 }
-
             }
-
             @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
+            public void onSlide(@NonNull View view, float v) {}
         });
-
         return bottomSheet;
     }
 
+    /**
+     * Load Chat Room Message
+     */
     private void loadDrop() {
         callDropApi().enqueue(new Callback<DropModel>() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(@NotNull Call<DropModel> call, @NotNull Response<DropModel> response) {
-
                 Timber.tag(TAG).i("onResponse: %s", (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
                 // Got data. Send it to adapter
                 List<FeedItem> feedItem = fetchDrop(response);
                 FeedItem drop = feedItem.get(0);
@@ -311,13 +272,11 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 // Set username
                 usernameTxt.setText("q/" + drop.getUsername());
 
-                // Converting timestamp into x ago format
-
                 qClickLayout.setOnClickListener(v-> {
                     Intent i = new Intent(context, ProfileActivity.class);
                     i.putExtra("profile", drop.getUsername());
                     context.startActivity(i);
-                    customType(context, "up-to-bottom");
+                    customType(context, "fadein-to-fadeout");
                 });
 
                 //Build layout depending on type
@@ -329,34 +288,6 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                         case "photo":
                             qweeksnap.setVisibility(View.VISIBLE);
                             video.setVisibility(View.GONE);
-
-                            //qweeksnap
-                            /*
-                            target = new Target() {
-                                @Override
-                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                    //int width = bitmap.getWidth();
-                                    int height = bitmap.getHeight();
-                                    qweeksnap.setImageBitmap(bitmap);
-                                }
-
-                                @Override
-                                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                                    qweeksnap.requestLayout();
-                                    qweeksnap.getLayoutParams().height = 600;
-                                }
-
-                                @Override
-                                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                                }
-                            };
-
-                            qweeksnap.setTag(target);
-                            Picasso.get().load(drop.getQweekSnap()).into(target);
-                            dropLayout.getLayoutParams();
-                            *
-                             */
 
                             RequestOptions requestOptions = new RequestOptions()
                                     .diskCacheStrategy(DiskCacheStrategy.NONE) // because file name is always same
@@ -387,13 +318,10 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
 
                 // Check for empty status message
                 if (!TextUtils.isEmpty(drop.getDrop())) {
-
                     String dropTXT = unescapeJava(drop.getDrop());
-
                     SpannableString hashText = new SpannableString(dropTXT);
                     Matcher matcher = Pattern.compile("#([A-Za-z0-9_-]+)").matcher(hashText);
-                    while (matcher.find())
-                    {
+                    while (matcher.find()) {
                         hashText.setSpan(new BackgroundColorSpan(getResources().getColor(R.color.SkyBlue)), matcher.start(), matcher.end(), 0);
                     }
                     //if none set text and make it visible
@@ -404,18 +332,35 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                     dropText.setVisibility(View.GONE);
                 }
 
-                // load User ProfileModel Picture
-                Picasso.get()
+                // load User Avatar
+                /*Picasso.get()
                         .load(drop.getProfilePic())
                         .resize(40, 40)
                         .placeholder(R.drawable.ic_alien)
                         .error(R.drawable.ic_alien)
                         .centerCrop()
+                        .into(profilePic);*/
+
+                RequestOptions requestOptions = new RequestOptions()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE) // because file name is always same
+                        .skipMemoryCache(true);
+                Drawable placeholder = getTinted(context.getResources().getColor(R.color.contentTextColor));
+                Glide
+                        .with(context)
+                        .load(drop.getProfilePic())
+                        .override(40, 40)
+                        .placeholder(placeholder)
+                        .error(placeholder)
+                        .thumbnail(0.3f)
+                        .apply(requestOptions)
                         .into(profilePic);
 
                 // Build Drop Actions
-
-                // Text Like Button
+                /// Like Builder
+                /*
+                 * If drop is liked, set resource to liked long with resource color
+                 * else, resource is not liked yet
+                 */
                 if(drop.getLiked().equals("yes")) {
                     likeBtn.setImageResource(R.drawable.ic_liked);
                     likeBtn.setColorFilter(context.getResources().getColor(R.color.likeColor));
@@ -437,10 +382,8 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
 
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
                     alertDialog.setTitle("Confirm Delete...");
-
                     // Setting Dialog Message
-                    alertDialog.setMessage("Are you sure you want delete this message?");
-
+                    alertDialog.setMessage("Are you sure you want delete this drop?");
                     // Setting Icon to Dialog
                     alertDialog.setIcon(R.drawable.ic_delete);
 
@@ -452,15 +395,13 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                             });
                     // Setting Negative "NO" Btn
                     alertDialog.setNegativeButton("NO",
-                            (dialog, which) -> {
-                                dialog.cancel();
-                            });
+                            (dialog, which) -> dialog.cancel());
 
                     deleteBtn.setOnClickListener(v->{
                         ObjectAnimator animY = ObjectAnimator.ofFloat(deleteBtn, "translationY", -100f, 0f);
                         animY.setDuration(1000);//1sec
                         animY.setInterpolator(new BounceInterpolator());
-                        animY.setRepeatCount(1);
+                        animY.setRepeatCount(0);
                         animY.start();
                         alertDialog.show();
                     });
@@ -479,11 +420,16 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 // Set up Actions
 
                 //Like
+                /*
+                 * On click, first check if user liked already
+                 * If user liked already, unlike and set resource to pre-liked state
+                 * else, like along with resource change
+                 */
                 likeBtn.setOnClickListener(v -> {
                     ObjectAnimator animY = ObjectAnimator.ofFloat(likeBtn, "translationY", -100f, 0f);
                     animY.setDuration(1000);//1sec
                     animY.setInterpolator(new BounceInterpolator());
-                    animY.setRepeatCount(1);
+                    animY.setRepeatCount(0);
                     animY.start();
                     //check whether it is liked or unliked
                     if (drop.getLiked().equals("yes")) {
@@ -502,36 +448,51 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                         doLike("like", drop.getDrop_Id(), username, drop.getUsername());
                     }
                 });
-
-
             }
 
             @Override
-            public void onFailure(Call<DropModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<DropModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
             }
         });
     }
 
-    public static String unescapeJava(String escaped) {
+    private @Nullable
+    Drawable getTinted(@ColorInt int color) {
+        // need to mutate otherwise all references to this drawable will be tinted
+        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_alien).mutate();
+        return tint(drawable, ColorStateList.valueOf(color));
+    }
 
-        if (escaped.indexOf("\\u") == -1)
+    public static Drawable tint(Drawable input, ColorStateList tint) {
+        if (input == null) {
+            return null;
+        }
+        Drawable wrappedDrawable = DrawableCompat.wrap(input);
+        DrawableCompat.setTintList(wrappedDrawable, tint);
+        DrawableCompat.setTintMode(wrappedDrawable, PorterDuff.Mode.MULTIPLY);
+        return wrappedDrawable;
+    }
+
+    private static String unescapeJava(String escaped) {
+
+        if (!escaped.contains("\\u"))
             return escaped;
 
-        String processed = "";
+        StringBuilder processed = new StringBuilder();
 
         int position = escaped.indexOf("\\u");
         while (position != -1) {
             if (position != 0)
-                processed += escaped.substring(0, position);
+                processed.append(escaped.substring(0, position));
             String token = escaped.substring(position + 2, position + 6);
             escaped = escaped.substring(position + 6);
-            processed += (char) Integer.parseInt(token, 16);
+            processed.append((char) Integer.parseInt(token, 16));
             position = escaped.indexOf("\\u");
         }
-        processed += escaped;
+        processed.append(escaped);
 
-        return processed;
+        return processed.toString();
     }
 
     /**
@@ -557,11 +518,9 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                         final String liked) {
         // Tag used to cancel the request
         String tag_string_req = "req_like";
-
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 "https://qweek.fun/genjitsu/chat/message_like.php", response -> {
             Timber.tag(TAG).d("Like Response: %s", response);
-
             try {
                 JSONObject jObj = new JSONObject(response);
                 boolean error = jObj.getBoolean("error");
@@ -577,13 +536,11 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 e.printStackTrace();
                 Toasty.error(context, "Mission Control, come in !", Toast.LENGTH_LONG).show();
             }
-
         }, error -> {
             Timber.tag(TAG).e("Like Error: %s", error.getMessage());
             Toasty.error(context,
                     "Apollo, we have a problem !", Toast.LENGTH_LONG).show();
         }) {
-
             @Override
             protected Map<String, String> getParams() {
                 // Posting params to register url
@@ -597,7 +554,6 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
             }
 
         };
-
         // disabling retry policy so that it won't make
         // multiple http calls
         int socketTimeout = 0;
@@ -606,19 +562,19 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
         strReq.setRetryPolicy(policy);
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
+    /**
+     * function to delete Chat Room message
+     */
     private void deleteMessage(final String message_id, String user_id) {
         // Tag used to cancel the request
         String tag_string_req = "req_delete";
-
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 "https://qweek.fun/genjitsu/chat/message_delete.php", response -> {
             Timber.tag(TAG).d("Delete Response: %s", response);
-
             try {
                 JSONObject jObj = new JSONObject(response);
                 boolean error = jObj.getBoolean("error");
@@ -633,13 +589,11 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 e.printStackTrace();
                 Toasty.error(context, "Mission Control, come in !", Toast.LENGTH_LONG).show();
             }
-
         }, error -> {
             Timber.tag(TAG).e("Delete Error: %s", error.getMessage());
             Toasty.error(context,
                     "Apollo, we have a problem !", Toast.LENGTH_LONG).show();
         }) {
-
             @Override
             protected Map<String, String> getParams() {
                 // Posting params to register url
@@ -651,7 +605,6 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
             }
 
         };
-
         // disabling retry policy so that it won't make
         // multiple http calls
         int socketTimeout = 0;
@@ -660,18 +613,16 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
         strReq.setRetryPolicy(policy);
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
     /**
-     * function to post drop text
+     * function to post Chat Room message comment
      * */
-    private void postComment(final String drop, final String username, final String drop_id, final  String parent_id) {
+    private void postComment(final String drop, final String username, final String drop_id) {
         // Tag used to cancel the request
         String tag_string_req = "req_post";
-
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 "https://qweek.fun/genjitsu/chat/reply.php", response -> {
             Timber.tag(TAG).d("Drop Response: %s", response);
@@ -713,7 +664,6 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                     "Apollo, we have a problem !", Toast.LENGTH_LONG).show();
             dropCommentBtn.setClickable(true);
         }) {
-
             @Override
             protected Map<String, String> getParams() {
                 // Posting parameters to drop url
@@ -721,13 +671,11 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 params.put("drop", drop);
                 params.put("username", username);
                 params.put("drop_id", drop_id);
-                params.put("parent_id", parent_id);
+                params.put("parent_id", null);
 
                 return params;
             }
-
         };
-
         // disabling retry policy so that it won't make
         // multiple http calls
         int socketTimeout = 0;
@@ -736,49 +684,39 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
         strReq.setRetryPolicy(policy);
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
 
-    /*
+    /**
      * Comments Load Function
+     * Load First Set of Comments for Chat Room Message
      */
-
     private void loadFirstCommentsPage() {
         Timber.tag(TAG).d("loadFirstCommentsPage: ");
-
         // To ensure list is visible when retry button in error view is clicked
         hideErrorView();
-
         callCommentsFeedApi().enqueue(new Callback<CommentsModel>() {
             @Override
             public void onResponse(@NotNull Call<CommentsModel> call, @NotNull Response<CommentsModel> response) {
                 hideErrorView();
-
                 Timber.tag(TAG).i("onResponse: %s", (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
                 // Got data. Send it to adapter
                 List<CommentItem> feedItem = fetchCommentsFeed(response);
 
                 if(feedItem.isEmpty()) {
                     showEmptyView();
                 } else {
-
                     progressBar.setVisibility(View.GONE);
                     adapter.addAll(feedItem);
 
                     // Cursor Links
                     List<Cursor> cursor = fetchCursorLinks(response);
                     Cursor cursorLink = cursor.get(0);
-                    next_link = cursorLink.getNextLink();
-                    prev_link = cursorLink.getPrevLink();
                     max_id = cursorLink.getMaxID();
-                    since_id = cursorLink.getSinceID();
-
+                    //since_id = cursorLink.getSinceID();
                     TOTAL_PAGES = cursorLink.getPagesNum();
-                    Log.d(TAG, String.valueOf(TOTAL_PAGES));
 
                     if(TOTAL_PAGES == 1) {
                         isLastPage = true;
@@ -793,34 +731,11 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
             }
 
             @Override
-            public void onFailure(Call<CommentsModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<CommentsModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 showErrorView();
             }
         });
-    }
-
-    /**
-     * Triggers the actual background refresh via the {@link SwipeRefreshLayout}
-     */
-    private void doRefresh() {
-        if(isNetworkConnected()) {
-            progressBar.setVisibility(View.VISIBLE);
-            if (callCommentsFeedApi().isExecuted())
-                callCommentsFeedApi().cancel();
-
-            // TODO: Check if data is stale.
-            //  Execute network request if cache is expired; otherwise do not update data.
-            adapter.getCommentsFeed().clear();
-            loadFirstCommentsPage();
-
-            Timber.tag(TAG).d("Loading First Feed Page");
-        } else {
-            Toasty.info(requireContext(), "No Jet Fuel, connect to the internet", Toast.LENGTH_LONG).show();
-            progressBar.setVisibility(View.GONE);
-
-            Timber.tag(TAG).d("No internet connection available");
-        }
     }
 
     /**
@@ -843,13 +758,9 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
 
     private void loadNextCommentsPage() {
         Timber.tag(TAG).d("loadNextCommentsPage: %s", currentPage);
-
         callNextCommentsFeedApi().enqueue(new Callback<CommentsModel>() {
             @Override
             public void onResponse(@NotNull Call<CommentsModel> call, @NotNull Response<CommentsModel> response) {
-//                Log.i(TAG, "onResponse: " + currentPage
-//                        + (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
                 adapter.removeLoadingFooter();
                 isLoading = false;
 
@@ -859,10 +770,8 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 // Cursor Links
                 List<Cursor> cursor = fetchCursorLinks(response);
                 Cursor cursorLink = cursor.get(0);
-                next_link = cursorLink.getNextLink();
-                prev_link = cursorLink.getPrevLink();
                 max_id = cursorLink.getMaxID();
-                since_id = cursorLink.getSinceID();
+                //since_id = cursorLink.getSinceID();
 
                 if (currentPage != TOTAL_PAGES) {
                     adapter.addLoadingFooter();
@@ -872,7 +781,7 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
             }
 
             @Override
-            public void onFailure(Call<CommentsModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<CommentsModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 adapter.showRetry(true, fetchErrorMessage(t));
             }
@@ -914,7 +823,7 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
      * Same API call for Pagination.
      * As {@link #currentPage} will be incremented automatically
      * by @{@link PaginationScrollListener} to load next page.
-     */
+
     private Call<CommentsModel> callPrevCommentsFeedApi() {
         return commentFeedService.getComments(
                 username,
@@ -923,6 +832,7 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 since_id
         );
     }
+     */
 
     public void retryPageLoad() {
         loadNextCommentsPage();
@@ -931,11 +841,9 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
     /**
      */
     private void showErrorView() {
-
         if (errorLayout.getVisibility() == View.GONE) {
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-
             txtError.setText(getResources().getString(R.string.error_msg_unknown));
         }
     }
@@ -962,20 +870,11 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
 
         return errorMsg;
     }
-
     // Helpers -------------------------------------------------------------------------------------
-
-
     private void hideErrorView() {
         if (errorLayout.getVisibility() == View.VISIBLE) {
             errorLayout.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideEmptyView() {
-        if (emptyLayout.getVisibility() == View.VISIBLE) {
-            emptyLayout.setVisibility(View.GONE);
         }
     }
 
@@ -992,7 +891,6 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
     @Override
     public void onStart() {
         super.onStart();
-
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 }

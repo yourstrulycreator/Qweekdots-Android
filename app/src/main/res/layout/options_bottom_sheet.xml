@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Options -->
             <TextView
                 android:id="@+id/optTitleSheetTxt"
                 android:layout_width="match_parent"
@@ -37,6 +38,7 @@
                 android:textStyle="bold"
                 android:layout_marginTop="10dp"/>
 
+            <!-- Profile Section -->
             <TextView
                 style="@style/viewParent.headerText.settingsMiniTitle"
                 android:text="@string/options_profile"
@@ -46,71 +48,29 @@
                 android:layout_marginBottom="5dp"
                 tools:targetApi="p" />
 
+
+            <!-- UserName Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/settingsCardColor"
                 app:cardCornerRadius="20dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginEnd="5dp"
-                app:contentPadding="20dp"
-                android:id="@+id/optFullnameCard">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="4">
-
-                    <TextView
-                        style="@style/viewParent.headerText.settingsTextNoIcon"
-                        android:text="@string/options_fullname"
-                        android:layout_weight="3"
-                        android:textColor="@color/contentTextColor"
-                        android:layout_margin="0dp"/>
-
-                    <TextView
-                        style="@style/viewParent.headerText.settingsTextIcon"
-                        android:layout_weight="1"
-                        android:layout_gravity="end"
-                        android:gravity="end"
-                        android:textAlignment="viewEnd"
-                        android:textColor="@color/SlateGray"
-                        android:layout_margin="0dp"
-                        android:id="@+id/optFullnameTxt"
-                        android:textSize="12sp"/>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/settingsCardColor"
-                app:cardCornerRadius="20dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 app:contentPadding="20dp"
                 android:id="@+id/optUsernameCard">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:weightSum="4">
-
                     <TextView
                         style="@style/viewParent.headerText.settingsTextNoIcon"
                         android:text="@string/options_username"
                         android:layout_weight="3"
                         android:textColor="@color/contentTextColor"
                         android:layout_margin="0dp"/>
-
                     <TextView
                         style="@style/viewParent.headerText.settingsTextIcon"
                         android:layout_weight="1"
@@ -121,36 +81,66 @@
                         android:layout_margin="0dp"
                         android:id="@+id/optUsernameTxt"
                         android:textSize="12sp"/>
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
+            <!-- FullName Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/settingsCardColor"
                 app:cardCornerRadius="20dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 app:contentPadding="20dp"
-                android:id="@+id/optBirthdayCard">
-
+                android:id="@+id/optFullnameCard">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:weightSum="4">
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextNoIcon"
+                        android:text="@string/options_fullname"
+                        android:layout_weight="3"
+                        android:textColor="@color/contentTextColor"
+                        android:layout_margin="0dp"/>
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextIcon"
+                        android:layout_weight="1"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/SlateGray"
+                        android:layout_margin="0dp"
+                        android:id="@+id/optFullnameTxt"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
+            <!-- Birthday Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optBirthdayCard">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
                     <TextView
                         style="@style/viewParent.headerText.settingsTextNoIcon"
                         android:text="@string/options_birthday"
                         android:layout_weight="3"
                         android:textColor="@color/contentTextColor"
                         android:layout_margin="0dp"/>
-
                     <TextView
                         style="@style/viewParent.headerText.settingsTextIcon"
                         android:layout_weight="1"
@@ -161,36 +151,31 @@
                         android:layout_margin="0dp"
                         android:id="@+id/optBirthdayTxt"
                         android:textSize="12sp"/>
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
+            <!-- Email Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/settingsCardColor"
                 app:cardCornerRadius="20dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 app:contentPadding="20dp"
                 android:id="@+id/optEmailCard">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:weightSum="4">
-
                     <TextView
                         style="@style/viewParent.headerText.settingsTextNoIcon"
                         android:text="@string/options_email"
                         android:layout_weight="3"
                         android:textColor="@color/contentTextColor"
                         android:layout_margin="0dp"/>
-
                     <TextView
                         style="@style/viewParent.headerText.settingsTextIcon"
                         android:layout_weight="1"
@@ -201,36 +186,31 @@
                         android:layout_margin="0dp"
                         android:id="@+id/optEmailTxt"
                         android:textSize="12sp"/>
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
+            <!-- Telephone Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/settingsCardColor"
                 app:cardCornerRadius="20dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 app:contentPadding="20dp"
                 android:id="@+id/optTelephoneCard">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:weightSum="4">
-
                     <TextView
                         style="@style/viewParent.headerText.settingsTextNoIcon"
                         android:text="@string/options_telephone"
                         android:layout_weight="3"
                         android:textColor="@color/contentTextColor"
                         android:layout_margin="0dp"/>
-
                     <TextView
                         style="@style/viewParent.headerText.settingsTextIcon"
                         android:layout_weight="1"
@@ -241,32 +221,30 @@
                         android:layout_margin="0dp"
                         android:id="@+id/optTelephoneTxt"
                         android:textSize="12sp"/>
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
+            <!-- Password Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/settingsCardColor"
                 app:cardCornerRadius="20dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 app:contentPadding="20dp"
                 android:id="@+id/optPasswordCard">
-
                     <TextView
                         style="@style/viewParent.headerText.settingsTextIcon"
                         android:text="@string/options_password"
                         android:layout_weight="1"
                         android:textColor="@color/contentTextColor"
                         android:layout_margin="0dp"/>
-
             </androidx.cardview.widget.CardView>
+            <!-- end of Profile Section -->
 
+            <!-- Theme Section -->
             <TextView
                 style="@style/viewParent.headerText.settingsMiniTitle"
                 android:text="@string/options_theme"
@@ -277,26 +255,27 @@
                 android:layout_marginBottom="5dp"
                 tools:targetApi="p" />
 
+            <!-- Theme-ing Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/settingsCardColor"
                 app:cardCornerRadius="20dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
-                app:contentPadding="10dp"
+                app:contentPadding="20dp"
                 android:id="@+id/optThemeCard">
-
                 <TextView
                     style="@style/viewParent.headerText.settingsTextIcon"
                     android:text="@string/theming"
+                    android:layout_weight="1"
                     android:textColor="@color/contentTextColor"
                     android:layout_margin="0dp"/>
-
             </androidx.cardview.widget.CardView>
+            <!-- end of Theme Section -->
 
+            <!-- Feedback Section -->
             <TextView
                 style="@style/viewParent.headerText.settingsMiniTitle"
                 android:text="@string/options_feedback"
@@ -306,6 +285,7 @@
                 android:layout_marginBottom="5dp"
                 tools:targetApi="p" />
 
+            <!-- Feedback Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -314,15 +294,15 @@
                 android:layout_marginTop="20dp"
                 app:contentPadding="20dp"
                 android:id="@+id/optFeedbackCard">
-
                 <TextView
                     style="@style/viewParent.headerText.settingsTextIcon"
                     android:text="@string/options_i_have_a_suggestion"
                     android:textColor="@color/contentTextColor"
                     android:layout_margin="0dp"/>
-
             </androidx.cardview.widget.CardView>
+            <!-- end of Feedback Section -->
 
+            <!-- Information Section -->
             <TextView
                 style="@style/viewParent.headerText.settingsMiniTitle"
                 android:text="@string/options_more_information"
@@ -332,6 +312,7 @@
                 android:layout_marginBottom="5dp"
                 tools:targetApi="p" />
 
+            <!-- Privacy Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -340,15 +321,14 @@
                 android:layout_marginTop="20dp"
                 app:contentPadding="20dp"
                 android:id="@+id/optPrivacyPolicyCard">
-
                 <TextView
                     style="@style/viewParent.headerText.settingsTextIcon"
                     android:text="@string/options_privacy_policy"
                     android:textColor="@color/contentTextColor"
                     android:layout_margin="0dp"/>
-
             </androidx.cardview.widget.CardView>
 
+            <!-- Terms Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -357,15 +337,14 @@
                 android:layout_marginTop="20dp"
                 app:contentPadding="20dp"
                 android:id="@+id/optTermsCard">
-
                 <TextView
                     style="@style/viewParent.headerText.settingsTextIcon"
                     android:text="@string/terms_of_service"
                     android:textColor="@color/contentTextColor"
                     android:layout_margin="0dp"/>
-
             </androidx.cardview.widget.CardView>
 
+            <!-- About Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -374,7 +353,6 @@
                 android:layout_marginTop="20dp"
                 app:contentPadding="20dp"
                 android:id="@+id/optAboutCard">
-
                 <TextView
                     style="@style/viewParent.headerText.settingsTextIcon"
                     android:text="@string/about"
@@ -382,7 +360,9 @@
                     android:layout_margin="0dp"/>
 
             </androidx.cardview.widget.CardView>
+            <!-- end of Information Section -->
 
+            <!-- Account Section -->
             <TextView
                 style="@style/viewParent.headerText.settingsMiniTitle"
                 android:text="@string/options_account"
@@ -392,6 +372,7 @@
                 android:layout_marginBottom="5dp"
                 tools:targetApi="p" />
 
+            <!-- Blocked Card
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -400,15 +381,14 @@
                 android:layout_marginTop="20dp"
                 app:contentPadding="20dp"
                 android:id="@+id/optBlockedCard">
-
                 <TextView
                     style="@style/viewParent.headerText.settingsTextIcon"
                     android:text="@string/options_blocked"
                     android:textColor="@color/contentTextColor"
                     android:layout_margin="0dp"/>
+            </androidx.cardview.widget.CardView> -->
 
-            </androidx.cardview.widget.CardView>
-
+            <!-- Logout Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -417,21 +397,18 @@
                 android:layout_marginTop="20dp"
                 app:contentPadding="10dp"
                 android:id="@+id/logoutBtn">
-
-            <TextView
-                style="@style/viewParent.headerText.settingsTextIcon"
-                android:drawableLeft="@drawable/ic_logout"
-                android:text="@string/logout"
-                android:textColor="@color/contentTextColor"
-                android:drawableStart="@drawable/ic_logout"
-                android:layout_margin="0dp" />
-
+                <TextView
+                    style="@style/viewParent.headerText.settingsTextIcon"
+                    android:text="@string/logout"
+                    android:textColor="@color/contentTextColor"
+                    android:drawableStart="@drawable/ic_logout"
+                    android:layout_margin="0dp" />
             </androidx.cardview.widget.CardView>
-
+            <!-- end of Account Section -->
 
             <TextView
                 style="@style/viewParent.headerText.settingsMiniTitle"
-                android:text="@string/qweekdots_v_alpha"
+                android:text="@string/with_love_from_the_qweek_company"
                 android:textSize="10sp"
                 android:textAlignment="center"
                 android:paddingBottom="70dp"

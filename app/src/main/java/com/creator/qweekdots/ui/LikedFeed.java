@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.adapter.PaginationAdapter;
 import com.creator.qweekdots.api.LikedFeedService;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.models.Cursor;
@@ -41,15 +41,13 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 public class LikedFeed extends Fragment implements PaginationAdapterCallback {
+    private final String TAG = LikedFeed.class.getSimpleName();
     private String profile;
     private String username;
-    private String avatar;
     private Context context;
 
     private PaginationAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
-
-    private final String TAG = LikedFeed.class.getSimpleName();
 
     private SpinKitView progressBar;
     private LinearLayout errorLayout;
@@ -63,10 +61,8 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
     private static final int PAGE_START = 1;
     private static int TOTAL_PAGES;
     private int currentPage = PAGE_START;
-    private String next_link;
-    private String prev_link;
     private String max_id;
-    private String since_id;
+    //private String since_id;
 
     private LikedFeedService feedService;
 
@@ -74,17 +70,15 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
     }
 
     @SuppressLint("ValidFragment")
-    public LikedFeed(Context context, String profile, String username, String avatar) {
+    public LikedFeed(Context context, String profile, String username) {
         this.context = context;
         this.profile = profile;
         this.username = username;
-        this.avatar = avatar;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.profile_feed, container, false);
-
         if(context!=null) {
             RecyclerView rv = rootView.findViewById(R.id.profile_recycler);
             progressBar = rootView.findViewById(R.id.spin_kit);
@@ -100,7 +94,7 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
             rv.setLayoutManager(linearLayoutManager);
             rv.setHasFixedSize(true);
 
-            adapter = new PaginationAdapter(getActivity(), getTargetFragment(), username, avatar);
+            adapter = new PaginationAdapter(getActivity(), getTargetFragment(), username);
 
             rv.setAdapter(adapter);
 
@@ -115,7 +109,6 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
                     } else {
                         Toasty.info(requireContext(), "No Jet Fuel, connect to the internet", Toast.LENGTH_LONG).show();
                         adapter.removeLoadingFooter();
-
                         Timber.tag(TAG).d("No internet connection available");
                     }
                 }
@@ -143,10 +136,8 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
             }
 
             btnRetry.setOnClickListener(view -> loadFirstPage());
-
             swipeRefreshLayout.setOnRefreshListener(this::doRefresh);
         }
-
         return rootView;
     }
 
@@ -166,19 +157,18 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
         swipeRefreshLayout.setRefreshing(false);
     }
 
+    /**
+     * Load First Page of Liked Feed
+     */
     private void loadFirstPage() {
-        Log.d(TAG, "loadFirstPage: ");
-
+        Timber.tag(TAG).d("loadFirstPage: ");
         // To ensure list is visible when retry button in error view is clicked
         hideErrorView();
-
         callNewsFeedApi().enqueue(new Callback<NewsFeed>() {
             @Override
             public void onResponse(@NotNull Call<NewsFeed> call, @NotNull Response<NewsFeed> response) {
                 hideErrorView();
-
-                Log.i(TAG, "onResponse: " + (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
+                Timber.tag(TAG).i("onResponse: %s", (response.raw().cacheResponse() != null ? "Cache" : "Network"));
                 List<FeedItem> feedItem = fetchNewsFeed(response);
                 if(feedItem.isEmpty()) {
                     showEmptyView();
@@ -190,11 +180,8 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
                     // Cursor Links
                     List<Cursor> cursor = fetchCursorLinks(response);
                     Cursor cursorLink = cursor.get(0);
-                    next_link = cursorLink.getNextLink();
-                    prev_link = cursorLink.getPrevLink();
                     max_id = cursorLink.getMaxID();
-                    since_id = cursorLink.getSinceID();
-
+                    //since_id = cursorLink.getSinceID();
                     TOTAL_PAGES = cursorLink.getPagesNum();
 
                     if(TOTAL_PAGES == 1) {
@@ -210,13 +197,12 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
             }
 
             @Override
-            public void onFailure(Call<NewsFeed> call, Throwable t) {
+            public void onFailure(@NotNull Call<NewsFeed> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 showErrorView();
             }
         });
     }
-
 
     /**
      * @param response extracts List<{@link FeedItem>} from response
@@ -237,14 +223,11 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
     }
 
     private void loadNextPage() {
-        Log.d(TAG, "loadNextPage: " + currentPage);
+        Timber.tag(TAG).d("loadNextPage: %s", currentPage);
 
         callNextNewsFeedApi().enqueue(new Callback<NewsFeed>() {
             @Override
             public void onResponse(@NotNull Call<NewsFeed> call, @NotNull Response<NewsFeed> response) {
-//                Log.i(TAG, "onResponse: " + currentPage
-//                        + (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
                 adapter.removeLoadingFooter();
                 isLoading = false;
 
@@ -254,10 +237,8 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
                 // Cursor Links
                 List<Cursor> cursor = fetchCursorLinks(response);
                 Cursor cursorLink = cursor.get(0);
-                next_link = cursorLink.getNextLink();
-                prev_link = cursorLink.getPrevLink();
                 max_id = cursorLink.getMaxID();
-                since_id = cursorLink.getSinceID();
+                //since_id = cursorLink.getSinceID();
 
                 if (currentPage != TOTAL_PAGES) {
                     adapter.addLoadingFooter();
@@ -309,7 +290,7 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
      * Same API call for Pagination.
      * As {@link #currentPage} will be incremented automatically
      * by @{@link PaginationScrollListener} to load next page.
-     */
+
     private Call<NewsFeed> callPrevNewsFeedApi() {
         return feedService.getNewsFeed(
                 username,
@@ -318,6 +299,7 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
                 since_id
         );
     }
+     */
 
     public void retryPageLoad() {
         loadNextPage();
@@ -326,11 +308,9 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
     /**
      */
     private void showErrorView() {
-
         if (errorLayout.getVisibility() == View.GONE) {
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-
             txtError.setText(getResources().getString(R.string.error_msg_unknown));
         }
     }
@@ -348,29 +328,19 @@ public class LikedFeed extends Fragment implements PaginationAdapterCallback {
      */
     private String fetchErrorMessage(Throwable throwable) {
         String errorMsg = getResources().getString(R.string.error_msg_unknown);
-
         if (!isNetworkConnected()) {
             errorMsg = getResources().getString(R.string.error_msg_no_internet);
         } else if (throwable instanceof TimeoutException) {
             errorMsg = getResources().getString(R.string.error_msg_timeout);
         }
-
         return errorMsg;
     }
 
     // Helpers -------------------------------------------------------------------------------------
-
-
     private void hideErrorView() {
         if (errorLayout.getVisibility() == View.VISIBLE) {
             errorLayout.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideEmptyView() {
-        if (emptyLayout.getVisibility() == View.VISIBLE) {
-            emptyLayout.setVisibility(View.GONE);
         }
     }
 

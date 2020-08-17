@@ -32,6 +32,7 @@
         tools:targetApi="q"
         android:fullBackupContent="true"
         android:requestLegacyExternalStorage="true"
+        android:hardwareAccelerated="true"
         tools:replace="android:icon,android:theme">
 
         <uses-library android:name="org.apache.http.legacy" android:required="false"
@@ -86,7 +87,7 @@
                 android:value="com.creator.qweekdots.activity.MainActivity" />
         </activity>
 
-        <activity android:name="com.creator.qweekdots.chat.ChatRoomActivity"
+        <activity android:name="com.creator.qweekdots.activity.RingSpaceActivity"
             android:label="@string/qweekchat"
             android:parentActivityName=".activity.ChatActivity"
             tools:targetApi="jelly_bean"
@@ -96,7 +97,7 @@
                 android:value="com.creator.qweekdots.activity.ChatActivity" />
         </activity>
 
-        <activity android:name="com.creator.qweekdots.chat.ChatUserActivity"
+        <activity android:name="com.creator.qweekdots.activity.ChatUserActivity"
             android:label="@string/qweekchat"
             android:parentActivityName=".activity.ChatActivity"
             tools:targetApi="jelly_bean"
@@ -108,6 +109,37 @@
 
         <activity android:name=".activity.ProfileActivity"
             android:label="@string/profile"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:parentActivityName=".activity.MainActivity"
+            tools:targetApi="jelly_bean">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.creator.qweekdots.activity.MainActivity" />
+
+        </activity>
+
+        <activity android:name=".activity.DropReactionsActivity"
+            android:label="Reactions"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:parentActivityName=".activity.MainActivity"
+            tools:targetApi="jelly_bean">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.creator.qweekdots.activity.MainActivity" />
+        </activity>
+
+        <activity android:name=".activity.ReactionsActivity"
+            android:label="Reactions"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:parentActivityName=".activity.MainActivity"
+            tools:targetApi="jelly_bean">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.creator.qweekdots.activity.MainActivity" />
+        </activity>
+
+        <activity android:name=".activity.SearchReactionsActivity"
+            android:label="Reactions"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:parentActivityName=".activity.MainActivity"
             tools:targetApi="jelly_bean">

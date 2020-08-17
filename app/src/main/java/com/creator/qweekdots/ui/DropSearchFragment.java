@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.adapter.PaginationAdapter;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.api.SearchDropService;
 import com.creator.qweekdots.helper.SQLiteHandler;
@@ -104,7 +105,7 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
         txtError = rootView.findViewById(R.id.search_error_txt_cause);
         swipeRefreshLayout = rootView.findViewById(R.id.search_swiperefresh);
 
-        adapter = new PaginationAdapter(context, this, logged, avatar);
+        adapter = new PaginationAdapter(context, this, logged);
 
         linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         rv.setLayoutManager(linearLayoutManager);

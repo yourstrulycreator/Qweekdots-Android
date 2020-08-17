@@ -31,6 +31,8 @@
     <color name="placeholder_grey_20">#33AAADC4</color>
     <color name="bg_black">#000000</color>
     <color name="bg_transparent_80">#80000000</color>
+    <color name="black_25p">#40000000</color>
+    <color name="black_45p">#73000000</color>
     <color name="link">#0a80d1</color>
     <color name="timestamp">#a0a3a7</color>
     <color name="name">#125688</color>

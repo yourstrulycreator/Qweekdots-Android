@@ -1,6 +1,5 @@
 package com.creator.qweekdots.activity;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -14,18 +13,12 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.bumptech.glide.Glide;
 import com.creator.qweekdots.R;
-import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.prefs.DarkModePrefManager;
 
-import java.util.HashMap;
 import java.util.Objects;
-
-import static maes.tech.intentanim.CustomIntent.customType;
 
 public class ActivityThemeOptions extends AppCompatActivity {
     View decorView;
-    private SQLiteHandler db;
-    private String username;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -45,15 +38,6 @@ public class ActivityThemeOptions extends AppCompatActivity {
             }
         }
 
-        // SqLite database handler
-        SQLiteHandler db = new SQLiteHandler(Objects.requireNonNull(getApplication()));
-        // session manager
-
-        // Fetching user details from SQLite
-        HashMap<String, String> userData = db.getUserDetails();
-
-        username = userData.get("username");
-
         //function for enabling dark mode
         Switch darkModeSwitch = findViewById(R.id.darkModeSwitch);
         darkModeSwitch.setChecked(new DarkModePrefManager(getApplicationContext()).isNightMode());
@@ -62,20 +46,11 @@ public class ActivityThemeOptions extends AppCompatActivity {
             darkModePrefManager.setDarkMode(!darkModePrefManager.isNightMode());
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-            //OptionsBottomSheet fragmentOpt = new OptionsBottomSheet(context);
-            //getParentFragmentManager().beginTransaction().replace(R.id.frameOpt, fragmentOpt).commit();
-            //Intent i = new Intent(getApplicationContext(), MainActivity.class);
-            //startActivity(i);
             this.recreate();
         });
     }
 
     public void onClick(View v) {
-        //Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-        //i.putExtra("profile", username);
-        //startActivity(i);
-
-        //super.onBackPressed();
         super.finish();
     }
 

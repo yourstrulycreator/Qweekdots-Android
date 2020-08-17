@@ -6,7 +6,6 @@ public class Message implements Serializable {
     private String id, message, liked, qweeksnap, mediaType, link, createdAt;
     private Integer hasMedia, hasLink;
     private User user;
-    private Replies replies;
 
     public Message() {
     }

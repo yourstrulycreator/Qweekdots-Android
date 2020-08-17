@@ -1,24 +1,34 @@
 package com.creator.qweekdots.activity;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.core.view.MenuItemCompat;
-import androidx.viewpager.widget.ViewPager;
-
 import android.annotation.SuppressLint;
-import android.graphics.Color;
+import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.MenuItemCompat;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.creator.qweekdots.R;
-import android.content.Intent;
-
 import com.creator.qweekdots.adapter.NoTextTabAdapter;
 import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.helper.SessionManager;
@@ -32,24 +42,17 @@ import com.creator.qweekdots.utils.CircleProgressBar;
 import com.google.android.material.tabs.TabLayout;
 import com.squareup.picasso.Picasso;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-
 import java.util.HashMap;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import timber.log.Timber;
 
+import static androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 import static maes.tech.intentanim.CustomIntent.customType;
 
-import static androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
-
 public class MainActivity extends AppCompatActivity {
-    private String TAG = MainActivity.class.getSimpleName();
+    //private String TAG = MainActivity.class.getSimpleName();
     private SQLiteHandler db;
     private SessionManager session;
 
@@ -60,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_dashboard,
             R.drawable.q_notification
     };
-    private TabLayout.Tab tab;
 
     String username, avatar;
 
@@ -75,28 +77,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Timber Debug Tree
+        // Window View
+        decorView = Objects.requireNonNull(this).getWindow().getDecorView();
+
+        // Initialize Timber Debug Tree for Activity
         Timber.plant(new Timber.DebugTree());
 
         //Toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.QweekColorAccent));
-        Drawable drawable = toolbar.getOverflowIcon();
-        if(drawable != null) {
-            drawable = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTint(drawable.mutate(), getResources().getColor(R.color.contentTextColor));
-            toolbar.setOverflowIcon(drawable);
-        }
+        setupToolbar();
 
         // init layout
         dropBtn = findViewById(R.id.dropBtn);
 
-        decorView = Objects.requireNonNull(this).getWindow().getDecorView();
-
+        // Make Changes according to theme selected
         if(new DarkModePrefManager(this).isNightMode()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            dropBtn.setColor(Color.WHITE);
             Window window = getWindow();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -106,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
                 window.setStatusBarColor(getResources().getColor(R.color.contentBodyColor));
             }
         } else {
-            dropBtn.setColor(Color.BLACK);
             Window window = getWindow();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -119,50 +113,52 @@ public class MainActivity extends AppCompatActivity {
 
         // session manager
         session = new SessionManager(getApplicationContext());
-
         if (!session.isLoggedIn()) {
             logoutUser();
         }
 
         // SqLite database handler
         SQLiteHandler db = new SQLiteHandler(Objects.requireNonNull(this).getApplicationContext());
-        // session manager
 
         // Fetching user details from SQLite
         HashMap<String, String> user = db.getUserDetails();
-
         username = user.get("username");
         avatar = user.get("avatar");
 
+        // Set ViewPager pages
         ViewPager viewPager = findViewById(R.id.id_viewpager);
         setupViewPager(viewPager);
         tabLayout = findViewById(R.id.id_tabs);
         tabLayout.setupWithViewPager(viewPager);
-        //setupTabIcons();
         setCustomTabs();
 
+        // Drop Factory Button
         dropBtn.setOnClickListener(v -> {
-            DropPostBottomSheet bottomSheet = new DropPostBottomSheet(getApplicationContext());
+            DropPostBottomSheet bottomSheet = new DropPostBottomSheet();
             bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
         });
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void setupTabIcons() {
-        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(tabIcons[0]);
-        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(tabIcons[1]);
-        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(tabIcons[2]);
-        Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(tabIcons[3]);
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.QweekColorAccent));
+        Drawable drawable = toolbar.getOverflowIcon();
+        if(drawable != null) {
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable.mutate(), getResources().getColor(R.color.contentTextColor));
+            toolbar.setOverflowIcon(drawable);
+        }
     }
 
     private void setCustomTabs() {
 
         for (int i = 0; i < tabIcons.length; i++) {
             @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.hometab,null);
-            tab = tabLayout.getTabAt(i);
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
             view.findViewById(R.id.icon).setBackgroundResource(tabIcons[i]);
-            if(tab!=null) tab.setCustomView(view);
+            if(tab !=null) tab.setCustomView(view);
         }
     }
 
@@ -176,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(3);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -207,13 +202,27 @@ public class MainActivity extends AppCompatActivity {
 
         CircleImageView avatar2 = view.findViewById(R.id.toolbar_avatar);
 
-        Picasso.get().load(avatar).resize(30, 30).placeholder(R.drawable.ic_alien).error(R.drawable.ic_alien).into(avatar2);
+        /*Picasso.get().load(avatar).resize(30, 30).placeholder(R.drawable.ic_alien).error(R.drawable.ic_alien).into(avatar2);*/
+
+        RequestOptions requestOptions = new RequestOptions() // because file name is always same
+                .format(DecodeFormat.PREFER_RGB_565);
+        Drawable placeholder = getTinted(getResources().getColor(R.color.contentTextColor));
+        Glide
+                .with(getApplicationContext())
+                .load(avatar)
+                .override(30, 30)
+                .placeholder(placeholder)
+                .error(placeholder)
+                .thumbnail(0.3f)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .apply(requestOptions)
+                .into(avatar2);
 
         avatar2.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, ProfileActivity.class);
             i.putExtra("profile", username);
             startActivity(i);
-            customType(MainActivity.this, "up-to-bottom");
+            customType(MainActivity.this, "fadein-to-fadeout");
         });
 
         for(int i = 0; i < menu.size(); i++){
@@ -242,7 +251,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.menu_two:
-                //Toasty.info(this, "Profile Clicked", Toasty.LENGTH_SHORT).show();
                 break;
 
         }
@@ -283,6 +291,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void setDb(SQLiteHandler db) {
         this.db = db;
+    }
+
+    private @Nullable
+    Drawable getTinted(@ColorInt int color) {
+        // need to mutate otherwise all references to this drawable will be tinted
+        Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_alien).mutate();
+        return tint(drawable, ColorStateList.valueOf(color));
+    }
+
+    public static Drawable tint(Drawable input, ColorStateList tint) {
+        if (input == null) {
+            return null;
+        }
+        Drawable wrappedDrawable = DrawableCompat.wrap(input);
+        DrawableCompat.setTintList(wrappedDrawable, tint);
+        DrawableCompat.setTintMode(wrappedDrawable, PorterDuff.Mode.MULTIPLY);
+        return wrappedDrawable;
     }
 
     @Override

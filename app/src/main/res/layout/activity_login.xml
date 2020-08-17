@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_centerInParent="true"
         android:paddingTop="10dp">
         <LinearLayout
@@ -29,18 +29,31 @@
                 android:weightSum="2">
                 <TextView
                     style="@style/viewParent.headerText.NoMode"
-                    android:text="Already \nhave an \nAccount?"
+                    android:text="Already \nhave an \naccount?"
                     android:layout_gravity="center_vertical"
                     android:gravity="start"
                     android:textSize="20sp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    tools:ignore="HardcodedText" />
 
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_register_hero"
                     android:layout_gravity="end"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Q."
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:textSize="105sp"
+                    android:fontFamily="@font/odin_rounded_bold"
+                    android:textColor="@color/QweekColorAccent"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout

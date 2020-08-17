@@ -5,34 +5,19 @@ import android.app.Dialog;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.text.Editable;
-import android.text.Selection;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 
-import com.android.volley.Request;
-import com.android.volley.toolbox.StringRequest;
 import com.creator.qweekdots.R;
-import com.creator.qweekdots.api.ProfileService;
-import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.api.passRequestInterface;
-import com.creator.qweekdots.app.AppConfig;
-import com.creator.qweekdots.app.AppController;
-import com.creator.qweekdots.app.EndPoints;
 import com.creator.qweekdots.app.passwordConstants;
-import com.creator.qweekdots.helper.SQLiteHandler;
-import com.creator.qweekdots.models.ProfileModel;
-import com.creator.qweekdots.models.UserItem;
 import com.creator.qweekdots.models.passServerRequest;
 import com.creator.qweekdots.models.passServerResponse;
 import com.creator.qweekdots.models.passUser;
@@ -42,35 +27,19 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
-import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
-import es.dmoral.toasty.Toasty;
-import io.michaelrocks.libphonenumber.android.PhoneNumberUtil;
-import io.michaelrocks.libphonenumber.android.Phonenumber;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 public class PasswordResetBottomSheet extends RoundedBottomSheetDialogFragment {
-    private final String TAG = EditMobileBottomSheet.class.getSimpleName();
+    //private final String TAG = EditMobileBottomSheet.class.getSimpleName();
 
     private BottomSheetBehavior bottomSheetBehavior;
-
-    private View extraSpace;
-
-    public static final String RESET_PASSWORD_INITIATE = "resPassReq";
-    public static final String RESET_PASSWORD_FINISH = "resPass";
-    private String code;
 
     private AppCompatButton btn_reset;
     private EditText et_email,et_code,et_password;
@@ -104,80 +73,53 @@ public class PasswordResetBottomSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         BottomSheetDialog bottomSheet = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-
         //inflating layout
         view = View.inflate(getContext(), R.layout.password_reset_bottom_sheet, null);
 
-        extraSpace = view.findViewById(R.id.extraSpace);
+        View extraSpace = view.findViewById(R.id.extraSpace);
 
         //setting layout with bottom sheet
         bottomSheet.setContentView(view);
-
         bottomSheetBehavior = BottomSheetBehavior.from((View) (view.getParent()));
-
-
         //setting Peek
         bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
-
-
         //setting min height of bottom sheet
         extraSpace.setMinimumHeight((Resources.getSystem().getDisplayMetrics().heightPixels) / 2);
-
 
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-                if (BottomSheetBehavior.STATE_EXPANDED == i) {
-
-                }
-                if (BottomSheetBehavior.STATE_COLLAPSED == i) {
-
-                }
-
                 if (BottomSheetBehavior.STATE_HIDDEN == i) {
                     dismiss();
                 }
-
             }
-
             @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
+            public void onSlide(@NonNull View view, float v) {}
         });
-
         return bottomSheet;
     }
 
     private void passReset() {
-                if(!isResetInitiated) {
-
-                    email = et_email.getText().toString();
-                    if (!email.isEmpty()) {
-                        progress.setVisibility(View.VISIBLE);
-                        initiateResetPasswordProcess(email);
-                    } else {
-
-                        Snackbar.make(requireView(), "Fields are empty !", Snackbar.LENGTH_LONG).show();
-                    }
-                } else {
-
-                    String code = et_code.getText().toString();
-                    String password = et_password.getText().toString();
-
-                    if(!code.isEmpty() && !password.isEmpty()){
-
-                        finishResetPasswordProcess(email,code,password);
-                    } else {
-
-                        Snackbar.make(requireView(), "Fields are empty !", Snackbar.LENGTH_LONG).show();
-                    }
-
-                }
+        if(!isResetInitiated) {
+            email = et_email.getText().toString();
+            if (!email.isEmpty()) {
+                progress.setVisibility(View.VISIBLE);
+                initiateResetPasswordProcess(email);
+            } else {
+                Snackbar.make(requireView(), "Fields are empty !", Snackbar.LENGTH_LONG).show();
+            }
+        } else {
+            String code = et_code.getText().toString();
+            String password = et_password.getText().toString();
+            if(!code.isEmpty() && !password.isEmpty()) {
+                finishResetPasswordProcess(email,code,password);
+            } else {
+                Snackbar.make(requireView(), "Fields are empty !", Snackbar.LENGTH_LONG).show();
+            }
+        }
     }
 
     private void initiateResetPasswordProcess(String email){
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(passwordConstants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -193,15 +135,14 @@ public class PasswordResetBottomSheet extends RoundedBottomSheetDialogFragment {
         Call<passServerResponse> response = requestInterface.operation(request);
 
         response.enqueue(new Callback<passServerResponse>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(@NotNull Call<passServerResponse> call, @NotNull retrofit2.Response<passServerResponse> response) {
-
                 passServerResponse resp = response.body();
                 assert resp != null;
                 Snackbar.make(requireView(), resp.getMessage(), Snackbar.LENGTH_LONG).show();
 
-                if(resp.getResult().equals(passwordConstants.SUCCESS)){
-
+                if(resp.getResult().equals(passwordConstants.SUCCESS)) {
                     Snackbar.make(requireView(), resp.getMessage(), Snackbar.LENGTH_LONG).show();
                     et_email.setVisibility(View.GONE);
                     et_code.setVisibility(View.VISIBLE);
@@ -210,28 +151,22 @@ public class PasswordResetBottomSheet extends RoundedBottomSheetDialogFragment {
                     btn_reset.setText("Change Password");
                     isResetInitiated = true;
                     startCountdownTimer();
-
                 } else {
-
                     Snackbar.make(getView(), resp.getMessage(), Snackbar.LENGTH_LONG).show();
-
                 }
                 progress.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onFailure(@NotNull Call<passServerResponse> call, @NotNull Throwable t) {
-
                 progress.setVisibility(View.INVISIBLE);
-                Log.d(passwordConstants.TAG,"failed");
+                Timber.tag(passwordConstants.TAG).d("failed");
                 Snackbar.make(requireView(), Objects.requireNonNull(t.getLocalizedMessage()), Snackbar.LENGTH_LONG).show();
-
             }
         });
     }
 
     private void finishResetPasswordProcess(String email,String code, String password){
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(passwordConstants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -251,31 +186,26 @@ public class PasswordResetBottomSheet extends RoundedBottomSheetDialogFragment {
         response.enqueue(new Callback<passServerResponse>() {
             @Override
             public void onResponse(@NotNull Call<passServerResponse> call, @NotNull retrofit2.Response<passServerResponse> response) {
-
                 passServerResponse resp = response.body();
                 assert resp != null;
                 Snackbar.make(requireView(), resp.getMessage(), Snackbar.LENGTH_LONG).show();
 
                 if(resp.getResult().equals(passwordConstants.SUCCESS)){
-
                     Snackbar.make(requireView(), resp.getMessage(), Snackbar.LENGTH_LONG).show();
                     countDownTimer.cancel();
                     isResetInitiated = false;
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
                 } else {
-
                     Snackbar.make(requireView(), resp.getMessage(), Snackbar.LENGTH_LONG).show();
-
                 }
                 progress.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onFailure(@NotNull Call<passServerResponse> call, @NotNull Throwable t) {
-
                 progress.setVisibility(View.INVISIBLE);
-                Log.d(passwordConstants.TAG,"failed");
+                Timber.tag(passwordConstants.TAG).d("failed");
                 Snackbar.make(requireView(), Objects.requireNonNull(t.getLocalizedMessage()), Snackbar.LENGTH_LONG).show();
 
             }
@@ -284,7 +214,7 @@ public class PasswordResetBottomSheet extends RoundedBottomSheetDialogFragment {
 
     private void startCountdownTimer(){
         countDownTimer = new CountDownTimer(300000, 1000) {
-
+            @SuppressLint("SetTextI18n")
             public void onTick(long millisUntilFinished) {
                 tv_timer.setText("Time remaining : " + millisUntilFinished / 1000);
             }
@@ -300,7 +230,6 @@ public class PasswordResetBottomSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 

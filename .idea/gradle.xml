@@ -8,12 +8,14 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/annotations" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/circleimageview" />
             <option value="$PROJECT_DIR$/loading-button-android" />
             <option value="$PROJECT_DIR$/picasso" />
             <option value="$PROJECT_DIR$/progressFAB" />
             <option value="$PROJECT_DIR$/spinkit" />
+            <option value="$PROJECT_DIR$/tenor-android-core" />
             <option value="$PROJECT_DIR$/toasty" />
           </set>
         </option>

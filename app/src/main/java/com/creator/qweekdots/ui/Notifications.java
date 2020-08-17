@@ -1,7 +1,15 @@
 package com.creator.qweekdots.ui;
+
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -10,16 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
-import android.view.View;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.adapter.NotificationAdapter;
 import com.creator.qweekdots.api.NotificationService;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.helper.SQLiteHandler;
@@ -62,10 +62,8 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
     private static final int PAGE_START = 1;
     private static int TOTAL_PAGES;
     private int currentPage = PAGE_START;
-    private String next_link;
-    private String prev_link;
     private String max_id;
-    private String since_id;
+    //private String since_id;
 
     private NotificationService notificationService;
 
@@ -81,10 +79,8 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
 
         // SqLite database handler
         SQLiteHandler db = new SQLiteHandler(requireActivity().getApplicationContext());
-
         // Fetching user details from SQLite
         HashMap<String, String> user = db.getUserDetails();
-
         username = user.get("username");
 
         RecyclerView rv = rootView.findViewById(R.id.main_recycler);
@@ -100,9 +96,7 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
         linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rv.setLayoutManager(linearLayoutManager);
         rv.setItemAnimator(new DefaultItemAnimator());
-
         rv.setAdapter(adapter);
-
         rv.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
             @Override
             protected void loadMoreItems() {
@@ -111,17 +105,14 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
 
                 loadNextPage();
             }
-
             @Override
             public int getTotalPageCount() {
                 return TOTAL_PAGES;
             }
-
             @Override
             public boolean isLastPage() {
                 return isLastPage;
             }
-
             @Override
             public boolean isLoading() {
                 return isLoading;
@@ -134,18 +125,15 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
         if(isAdded()) {
             if (isNetworkConnected()) {
                 loadFirstPage();
-
                 Timber.tag(TAG).d("Loading First Notifications Page");
             } else {
                 Toasty.info(requireContext(), "No Jet Fuel, connect to the internet", Toast.LENGTH_LONG).show();
                 progressBar.setVisibility(View.GONE);
-
                 Timber.tag(TAG).d("No internet connection available");
             }
         }
 
         btnRetry.setOnClickListener(view -> loadFirstPage());
-
         swipeRefreshLayout.setOnRefreshListener(this::doRefresh);
 
         return rootView;
@@ -167,24 +155,21 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
         swipeRefreshLayout.setRefreshing(false);
     }
 
+    /**
+     * Load First Page of Notifications
+     */
     private void loadFirstPage() {
-        Log.d(TAG, "loadFirstPage: ");
-
+        Timber.tag(TAG).d("loadFirstPage: ");
         // To ensure list is visible when retry button in error view is clicked
         hideErrorView();
-
         callNotificationsApi().enqueue(new Callback<NotificationsFeed>() {
             @Override
             public void onResponse(@NotNull Call<NotificationsFeed> call, @NotNull Response<NotificationsFeed> response) {
                 hideErrorView();
-
-                Timber.tag(TAG).i("onResponse: " + (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
-
+                Timber.tag(TAG).i("onResponse: %s", (response.raw().cacheResponse() != null ? "Cache" : "Network"));
                     // Got data. Send it to adapter
                     List<NotificationItem> notificationItem = fetchNotifications(response);
                     if(notificationItem.isEmpty()) {
-                        //showEmptyView();
                         progressBar.setVisibility(View.GONE);
                         emptyLayout.setVisibility(View.VISIBLE);
                     } else {
@@ -194,10 +179,8 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
                         // Cursor Links
                         List<Cursor> cursor = fetchCursorLinks(response);
                         Cursor cursorLink = cursor.get(0);
-                        next_link = cursorLink.getNextLink();
-                        prev_link = cursorLink.getPrevLink();
                         max_id = cursorLink.getMaxID();
-                        since_id = cursorLink.getSinceID();
+                        //since_id = cursorLink.getSinceID();
 
                         TOTAL_PAGES = cursorLink.getPagesNum();
 
@@ -209,7 +192,7 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
             }
 
             @Override
-            public void onFailure(Call<NotificationsFeed> call, Throwable t) {
+            public void onFailure(@NotNull Call<NotificationsFeed> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 showErrorView();
             }
@@ -235,14 +218,10 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
     }
 
     private void loadNextPage() {
-        Log.d(TAG, "loadNextPage: " + currentPage);
-
+        Timber.tag(TAG).d("loadNextPage: %s", currentPage);
         callNextNotificationsApi().enqueue(new Callback<NotificationsFeed>() {
             @Override
             public void onResponse(@NotNull Call<NotificationsFeed> call, @NotNull Response<NotificationsFeed> response) {
-//                Log.i(TAG, "onResponse: " + currentPage
-//                        + (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
                 adapter.removeLoadingFooter();
                 isLoading = false;
 
@@ -252,10 +231,8 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
                 // Cursor Links
                 List<Cursor> cursor = fetchCursorLinks(response);
                 Cursor cursorLink = cursor.get(0);
-                next_link = cursorLink.getNextLink();
-                prev_link = cursorLink.getPrevLink();
                 max_id = cursorLink.getMaxID();
-                since_id = cursorLink.getSinceID();
+                //since_id = cursorLink.getSinceID();
 
                 if (currentPage != TOTAL_PAGES) {
                     isLastPage = true;
@@ -304,7 +281,7 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
      * Same API call for Pagination.
      * As {@link #currentPage} will be incremented automatically
      * by @{@link PaginationScrollListener} to load next page.
-     */
+     *
     private Call<NotificationsFeed> callPrevNotificationsApi() {
         return notificationService.getNotificationsFeed(
                 username,
@@ -312,6 +289,7 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
                 since_id
         );
     }
+     */
 
     public void retryPageLoad() {
         loadNextPage();
@@ -320,19 +298,10 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
     /**
      */
     private void showErrorView() {
-
         if (errorLayout.getVisibility() == View.GONE) {
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-
             txtError.setText(getResources().getString(R.string.error_msg_unknown));
-        }
-    }
-
-    private void showEmptyView() {
-        if (emptyLayout.getVisibility() == View.GONE) {
-            emptyLayout.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -353,18 +322,10 @@ public class Notifications extends Fragment implements PaginationAdapterCallback
     }
 
     // Helpers -------------------------------------------------------------------------------------
-
-
     private void hideErrorView() {
         if (errorLayout.getVisibility() == View.VISIBLE) {
             errorLayout.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideEmptyView() {
-        if (emptyLayout.getVisibility() == View.VISIBLE) {
-            emptyLayout.setVisibility(View.GONE);
         }
     }
 

@@ -6,11 +6,11 @@
 
     <ImageView
         android:id="@+id/sticker_grid_item"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:minHeight="150dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:minHeight="30dp"
         android:scaleType="fitCenter"
-        android:layout_weight="1"
-        android:layout_gravity="center_vertical"/>
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/sticker" />
 
 </LinearLayout>

@@ -7,31 +7,23 @@
     android:layout_width="match_parent"
     android:background="@color/contentBodyColor">
 
+    <ImageView
+        android:id="@+id/goBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close_shadow_48dp"
+        android:tint="@color/contentTextColor"
+        android:padding="3dp"
+        tools:ignore="ContentDescription" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="top|center">
 
-        <com.vanniktech.emoji.EmojiEditText
-            android:id="@+id/drop_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:background="@color/contentBodyColor"
-            android:hint="What's this about?..."
-            android:lineHeight="28dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:textAlignment="textStart"
-            android:textColor="@color/contentTextColor"
-            android:textColorHint="@color/SlateGray"
-            android:textSize="18sp"
-            tools:targetApi="p" />
-
         <Chronometer
             android:id="@+id/record_timer"
-            app:layout_constraintTop_toBottomOf="@id/drop_title"
             android:layout_marginTop="30dp"
             android:textSize="44sp"
             android:textColor="@color/SkyBlue"
@@ -50,6 +42,7 @@
             app:chunkWidth="2dp"
             app:chunkMaxHeight="48dp"
             app:chunkMinHeight="2dp"
+            android:visibility="gone"
             android:layout_marginTop="30dp"/>
 
         <ImageButton
@@ -58,7 +51,33 @@
             android:src="@drawable/record_btn_stopped"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"/>
+            android:layout_marginTop="60dp"
+            tools:ignore="ContentDescription" />
+
+        <com.vanniktech.emoji.EmojiEditText
+            android:id="@+id/drop_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@color/contentBodyColor"
+            android:hint="What's this about?..."
+            android:lineHeight="28dp"
+            android:paddingStart="50dp"
+            android:paddingEnd="50dp"
+            android:textAlignment="textStart"
+            android:textColor="@color/contentTextColor"
+            android:textColorHint="@color/SlateGray"
+            android:textSize="16sp"
+            tools:targetApi="p"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:textSize="12sp"
+            android:text="Best Practice \n 1. Record in a quite space \n 2. Use a microphone enabled headphone or earpice"
+            tools:ignore="HardcodedText,SmallSp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -75,7 +94,6 @@
                 app:arcColor="@color/DeepSkyBlue"
                 app:arcWidth="5dp"
                 app:reusable="true">
-
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/postAudioButton"
                     android:layout_width="wrap_content"

@@ -40,7 +40,6 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
     private SearchUserFragment userSearchFragment;
     private DropSearchFragment dropSearchFragment;
 
-    private TextView titleTxtView;
     private BottomSheetBehavior bottomSheetBehavior;
 
     private View view;
@@ -73,7 +72,6 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
                     if (searchView != null && !searchView.isIconified()) {
                         searchView.onActionViewExpanded();
                         searchView.setIconified(false);
-
                     }
                 }
 
@@ -82,7 +80,6 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
                 public void onPageScrolled(int position, float positionOffset,
                                            int positionOffsetPixels) {
                     // Code goes here
-
                 }
 
                 // Called when the scroll state changes:
@@ -93,7 +90,7 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
                 }
             });
 
-            titleTxtView = view.findViewById(R.id.optTitleSheetTxt);
+            TextView titleTxtView = view.findViewById(R.id.optTitleSheetTxt);
             titleTxtView.setOnClickListener(v -> {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 dismiss();
@@ -116,7 +113,7 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
                 @Override
                 public boolean onQueryTextChange(String query) {
                     // this is your adapter that will be filtered
-                    ViewPagerAdapter pagerAdapter = (ViewPagerAdapter) viewPager
+                    /*ViewPagerAdapter pagerAdapter = (ViewPagerAdapter) viewPager
                             .getAdapter();
                     for (int i = 0; i < Objects.requireNonNull(pagerAdapter).getCount(); i++) {
 
@@ -135,10 +132,8 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
                                 Timber.tag(TAG).i("Query String for Drops: %s", query);
                             }
                         }
-                    }
-
+                    }*/
                     return true;
-
                 }
 
                 public boolean onQueryTextSubmit(String query) {
@@ -179,7 +174,6 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         BottomSheetDialog bottomSheet = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-
         //inflating layout
         view = View.inflate(context, R.layout.search_bottom_sheet, null);
 
@@ -187,16 +181,11 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
 
         //setting layout with bottom sheet
         bottomSheet.setContentView(view);
-
         bottomSheetBehavior = BottomSheetBehavior.from((View) (view.getParent()));
-
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         bottomSheetBehavior.setPeekHeight(0);
-
-
         //setting min height of bottom sheet
         extraSpace.setMinimumHeight((Resources.getSystem().getDisplayMetrics().heightPixels) / 2);
-
 
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -204,22 +193,13 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
                 if (BottomSheetBehavior.STATE_EXPANDED == i) {
                     bottomSheetBehavior.setDraggable(false);
                 }
-                if (BottomSheetBehavior.STATE_COLLAPSED == i) {
-
-                }
-
                 if (BottomSheetBehavior.STATE_HIDDEN == i) {
                     dismiss();
                 }
-
             }
-
             @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
+            public void onSlide(@NonNull View view, float v) {}
         });
-
         return bottomSheet;
     }
 

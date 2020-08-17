@@ -25,220 +25,191 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:titleEnabled="false">
 
-                <RelativeLayout
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:paddingBottom="15dp">
+
+                <com.vanniktech.emoji.EmojiTextView
+                    android:id="@+id/fullnameTextView"
+                    style="@style/viewParent.headerText"
+                    android:textSize="14sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/contentBodyColor"
+                    android:layout_width="match_parent"
+                    android:textAlignment="center"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"/>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:paddingBottom="15dp">
+                    android:orientation="vertical"
+                    android:layout_below="@id/fullnameTextView"
+                    android:layout_marginTop="20dp">
 
-                    <com.vanniktech.emoji.EmojiTextView
-                        android:id="@+id/fullnameTextView"
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:id="@+id/profileAvatar"
+                        app:civ_border_width="3dp"
+                        app:civ_border_color="@color/imageBorderColor"
+                        app:srcCompat="@drawable/q_alien_add"
+                        android:backgroundTint="@color/contentBodyColor"
+                        android:tint="@color/contentBodyColor"
+                        android:background="@drawable/ic_alien"
+                        tools:targetApi="lollipop"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:id="@+id/usernameTextView"
                         style="@style/viewParent.headerText"
-                        android:textSize="18sp"
-                        android:layout_marginTop="7dp"
-                        android:textColor="@color/contentTextColor"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/roboto_light"
+                        android:textColor="@color/contentBodyColor"
                         android:layout_width="match_parent"
                         android:textAlignment="center"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentStart="true"/>
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"/>
+
+                    <com.vanniktech.emoji.EmojiTextView
+                        android:id="@+id/bioText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/settingsCardColor2"
+                        android:layout_marginTop="10dp"
+                        android:paddingStart="30dp"
+                        android:paddingEnd="30dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:textAlignment="center"
+                        android:gravity="center"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:weightSum="10"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="70dp"
-                        android:baselineAligned="false">
+                        android:layout_marginTop="25dp"
+                        android:paddingBottom="10dp">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:id="@+id/dropBox"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginEnd="15dp">
 
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:layout_width="80dp"
-                                android:layout_height="80dp"
-                                android:id="@+id/profileAvatar"
-                                android:layout_marginStart="20dp"
-                                app:civ_border_width="3dp"
-                                app:civ_border_color="@color/imageBorderColor"
-                                app:srcCompat="@drawable/q_alien_add"
-                                android:backgroundTint="@color/contentTextColor"
-                                android:tint="@color/contentTextColor"
-                                android:background="@drawable/ic_alien"
-                                tools:targetApi="lollipop" />
+                            <TextView
+                                android:id="@+id/dropCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="18sp"
+                                android:textColor="@color/contentBodyColor"
+                                android:fontFamily="@font/roboto_light"
+                                android:layout_marginBottom="5dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:text="@string/profile_txt_drops"
+                                android:fontFamily="@font/roboto_light"
+                                android:textStyle="bold"
+                                android:textColor="@color/settingsCardColor2"/>
 
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="7"
+                            android:id="@+id/followingBox"
                             android:orientation="vertical"
-                            android:layout_marginStart="15dp">
+                            android:gravity="center"
+                            android:layout_marginEnd="15dp">
 
                             <TextView
-                                android:id="@+id/usernameTextView"
-                                style="@style/viewParent.headerText"
-                                android:textSize="13sp"
-                                android:fontFamily="@font/roboto_light"
-                                android:textColor="@color/QweekThemeColor"
-                                android:layout_width="match_parent"
-                                android:textAlignment="textStart"
-                                android:gravity="start"/>
-
-                            <LinearLayout
+                                android:id="@+id/followingCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="10dp">
+                                android:textSize="18sp"
+                                android:layout_marginBottom="5dp"
+                                android:textColor="@color/contentBodyColor"
+                                android:fontFamily="@font/roboto_light"/>
 
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/dropBox"
-                                    android:orientation="vertical"
-                                    android:gravity="start"
-                                    android:layout_marginEnd="10dp">
-
-                                    <TextView
-                                        android:id="@+id/dropCount"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:textSize="16sp"
-                                        android:textColor="@color/contentTextColor"
-                                        android:fontFamily="@font/roboto_light"
-                                        android:layout_marginBottom="5dp"/>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:textSize="12sp"
-                                        android:text="@string/profile_txt_drops"
-                                        android:fontFamily="@font/roboto_light"
-                                        android:textStyle="bold"
-                                        android:textColor="@color/colorPrimaryLight"/>
-
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/followingBox"
-                                    android:orientation="vertical"
-                                    android:gravity="start"
-                                    android:layout_marginEnd="10dp">
-
-                                    <TextView
-                                        android:id="@+id/followingCount"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:textSize="16sp"
-                                        android:layout_marginBottom="5dp"
-                                        android:textColor="@color/contentTextColor"
-                                        android:fontFamily="@font/roboto_light"/>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:textSize="12sp"
-                                        android:text="@string/profile_txt_following"
-                                        android:textStyle="bold"
-                                        android:fontFamily="@font/roboto_light"
-                                        android:textColor="@color/colorPrimaryLight"/>
-
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/followerBox"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:gravity="start"
-                                    android:layout_marginEnd="10dp" >
-
-                                    <TextView
-                                        android:id="@+id/followerCount"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:textSize="16sp"
-                                        android:layout_marginBottom="5dp"
-                                        android:fontFamily="@font/roboto_light"
-                                        android:textColor="@color/contentTextColor"/>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:textSize="12sp"
-                                        android:text="@string/profile_txt_followers"
-                                        android:textStyle="bold"
-                                        android:fontFamily="@font/roboto_light"
-                                        android:textColor="@color/colorPrimaryLight" />
-
-                                </LinearLayout>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_gravity="start"
-                                android:gravity="start"
-                                android:layout_marginTop="15dp">
-
-                                <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
-                                    android:id="@+id/followActionButton"
-                                    style="@style/followButton"
-                                    android:layout_width="125dp"
-                                    android:layout_height="35dp"
-                                    app:spinning_bar_width="4dp"
-                                    app:spinning_bar_color="@color/contentTextColor"
-                                    android:text="@string/following"
-                                    android:textSize="12sp"
-                                    android:layout_gravity="center_horizontal"
-                                    android:layout_marginEnd="20dp"
-                                    app:spinning_bar_padding="6dp"
-                                    app:initialCornerAngle="26dp"
-                                    android:visibility="gone"/>
-
-                                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                    android:id="@+id/chatActionButton"
-                                    android:layout_width="35dp"
-                                    android:layout_height="35dp"
-                                    android:clickable="true"
-                                    app:backgroundTint="@color/SkyBlue"
-                                    app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
-                                    android:focusable="true"
-                                    app:pressedTranslationZ="12dp"
-                                    android:scaleType="centerCrop"
-                                    android:visibility="gone"
-                                    app:fabSize="normal"
-                                    app:fabCustomSize="35dp"
-                                    app:elevation="0dp"
-                                    app:srcCompat="@drawable/q_chat3"
-                                    android:tint="@color/contentTextColor"/>
-
-                            </LinearLayout>
-
-                            <com.vanniktech.emoji.EmojiTextView
-                                android:id="@+id/bioText"
-                                android:layout_width="match_parent"
+                            <TextView
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textSize="12sp"
-                                android:textColor="@color/colorPrimaryLight"
-                                android:layout_marginTop="20dp"
-                                android:textAlignment="textStart"
-                                android:gravity="start"/>
+                                android:text="@string/profile_txt_following"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/roboto_light"
+                                android:textColor="@color/settingsCardColor2"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/followerBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_marginEnd="10dp" >
+
+                            <TextView
+                                android:id="@+id/followerCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="18sp"
+                                android:layout_marginBottom="5dp"
+                                android:fontFamily="@font/roboto_light"
+                                android:textColor="@color/contentBodyColor"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:text="@string/profile_txt_followers"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/roboto_light"
+                                android:textColor="@color/settingsCardColor2" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_gravity="bottom|end"
+                            android:gravity="end"
+                            android:layout_marginEnd="30dp"
+                            android:layout_marginTop="5dp">
+
+                            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                                android:id="@+id/followActionButton"
+                                style="@style/followButton"
+                                android:layout_width="125dp"
+                                android:layout_height="35dp"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/following"
+                                android:textSize="12sp"
+                                android:visibility="visible"
+                                app:initialCornerAngle="26dp"
+                                app:spinning_bar_color="@color/contentTextColor"
+                                app:spinning_bar_padding="6dp"
+                                app:spinning_bar_width="4dp" />
 
                         </LinearLayout>
 
                     </LinearLayout>
 
-                </RelativeLayout>
+                </LinearLayout>
+
+            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -275,7 +246,48 @@
         android:background="@color/contentBodyColor"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    <include layout="@layout/custom_close_btn"/>
-    <include layout="@layout/custom_options_btn"/>
+    <!-- Custom Close Button -->
+    <ImageButton android:id="@+id/customClose"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@drawable/custom_back_btn"
+        app:srcCompat="@drawable/q_back"
+        android:tint="@color/contentBodyColor"
+        android:layout_gravity="top|start"
+        android:scaleType="fitCenter"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="18dp"
+        android:onClick="onClick"
+        android:contentDescription="@string/custom_go_back" />
+
+    <!-- Custom Options Buttom -->
+    <ImageButton android:id="@+id/customOptions"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@drawable/custom_back_btn"
+        app:srcCompat="@drawable/ic_more_options"
+        android:tint="@color/contentBodyColor"
+        android:layout_gravity="top|end"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="18dp"
+        android:onClick="onClickOptions"
+        android:contentDescription="@string/options"
+        android:visibility="gone"/>
+
+    <!-- Custom Chat Button -->
+    <ImageButton android:id="@+id/customChat"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@drawable/custom_back_btn"
+        app:srcCompat="@drawable/q_chat3"
+        android:tint="@color/contentBodyColor"
+        android:layout_gravity="top|end"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="18dp"
+        android:onClick="onClickOptions"
+        android:contentDescription="@string/qweekchat"
+        android:visibility="gone"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.adapter.ListedUsersAdapter;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.api.SearchUserService;
 import com.creator.qweekdots.models.Cursor;
@@ -61,10 +62,8 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
     private static final int PAGE_START = 1;
     private static int TOTAL_PAGES;
     private int currentPage = PAGE_START;
-    private String next_link;
-    private String prev_link;
     private String max_id;
-    private String since_id;
+    //private String since_id;
 
     private Context context;
     private String logged;
@@ -163,17 +162,17 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
         loadFirstPage();
     }
 
+    /**
+     * Load First Page
+     */
     private void loadFirstPage() {
         Timber.tag(TAG).d("loadFirstPage: ");
-
         // To ensure list is visible when retry button in error view is clicked
         hideErrorView();
-
         callUserSearchFeedApi().enqueue(new Callback<SearchUserModel>() {
             @Override
             public void onResponse(@NotNull Call<SearchUserModel> call, @NotNull Response<SearchUserModel> response) {
                 hideErrorView();
-
                 Timber.tag(TAG).i("onResponse: %s", (response.raw().cacheResponse() != null ? "Cache" : "Network"));
 
                 // Got data. Send it to adapter
@@ -182,18 +181,14 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
                 if(feedItem.isEmpty()) {
                     showEmptyView();
                 } else {
-
                     progressBar.setVisibility(View.GONE);
                     adapter.addAll(feedItem);
 
                     // Cursor Links
                     List<Cursor> cursor = fetchCursorLinks(response);
                     Cursor cursorLink = cursor.get(0);
-                    next_link = cursorLink.getNextLink();
-                    prev_link = cursorLink.getPrevLink();
                     max_id = cursorLink.getMaxID();
-                    since_id = cursorLink.getSinceID();
-
+                    //since_id = cursorLink.getSinceID();
                     TOTAL_PAGES = cursorLink.getPagesNum();
 
                     if(TOTAL_PAGES == 1) {
@@ -209,7 +204,7 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
             }
 
             @Override
-            public void onFailure(Call<SearchUserModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<SearchUserModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 showErrorView();
             }
@@ -218,13 +213,9 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
 
     private void loadNextPage() {
         Timber.tag(TAG).d("loadNextPage: %s", currentPage);
-
         callNextUserSearchFeedApi().enqueue(new Callback<SearchUserModel>() {
             @Override
             public void onResponse(@NotNull Call<SearchUserModel> call, @NotNull Response<SearchUserModel> response) {
-//                Log.i(TAG, "onResponse: " + currentPage
-//                        + (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
                 adapter.removeLoadingFooter();
                 isLoading = false;
 
@@ -234,10 +225,8 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
                 // Cursor Links
                 List<Cursor> cursor = fetchCursorLinks(response);
                 Cursor cursorLink = cursor.get(0);
-                next_link = cursorLink.getNextLink();
-                prev_link = cursorLink.getPrevLink();
                 max_id = cursorLink.getMaxID();
-                since_id = cursorLink.getSinceID();
+                //since_id = cursorLink.getSinceID();
 
                 if (currentPage != TOTAL_PAGES) {
                     adapter.addLoadingFooter();
@@ -247,7 +236,7 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
             }
 
             @Override
-            public void onFailure(Call<SearchUserModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<SearchUserModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 adapter.showRetry(true, fetchErrorMessage(t));
             }
@@ -301,7 +290,7 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
     /**
      * Performs a Retrofit call to the next QweekFeed API.
      * Same API call for Pagination.
-     */
+     *
     private Call<SearchUserModel> callPrevUserSearchFeedApi() {
         return feedService.getSearchedUsers(
                 queryString,
@@ -310,6 +299,7 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
                 since_id
         );
     }
+     */
 
     @Override
     public void retryPageLoad() {
@@ -341,29 +331,19 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
      */
     private String fetchErrorMessage(Throwable throwable) {
         String errorMsg = getResources().getString(R.string.error_msg_unknown);
-
         if (!isNetworkConnected()) {
             errorMsg = getResources().getString(R.string.error_msg_no_internet);
         } else if (throwable instanceof TimeoutException) {
             errorMsg = getResources().getString(R.string.error_msg_timeout);
         }
-
         return errorMsg;
     }
 
     // Helpers -------------------------------------------------------------------------------------
-
-
     private void hideErrorView() {
         if (errorLayout.getVisibility() == View.VISIBLE) {
             errorLayout.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideEmptyView() {
-        if (emptyLayout.getVisibility() == View.VISIBLE) {
-            emptyLayout.setVisibility(View.GONE);
         }
     }
 

@@ -5,18 +5,16 @@ import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.audiofx.NoiseSuppressor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,9 +37,9 @@ import com.creator.qweekdots.volley.VolleyMultipartRequest;
 import com.github.jorgecastilloprz.FABProgressCircle;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.ios.IosEmojiProvider;
-import com.visualizer.amplitude.AudioRecordView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,8 +52,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import es.dmoral.toasty.Toasty;
 import timber.log.Timber;
@@ -66,8 +62,6 @@ public class DropAudio extends Fragment {
     private static final String TAG = DropAudio.class.getSimpleName();
     private String username;
 
-    private Uri fileUri;
-    private String mFileName = null;
     private String mFilePath = null;
 
     private RequestQueue rQueue;
@@ -78,7 +72,6 @@ public class DropAudio extends Fragment {
     private byte[] inputData;
     private boolean isAudioReady = false;
 
-    private TextView dropTitle;
     private ImageButton recordBtn;
     private boolean isRecording = false;
 
@@ -96,11 +89,6 @@ public class DropAudio extends Fragment {
     private SeekBar playerSeekbar;
     private Handler seekbarHandler;
     private Runnable updateSeekbar;
-
-    private long mStartingTimeMillis = 0;
-    private long mElapsedMillis = 0;
-
-    private TimerTask mIncrementTimerTask = null;
 
     private BottomSheetBehavior bottomSheetBehavior;
 
@@ -132,10 +120,10 @@ public class DropAudio extends Fragment {
 
         username = user.get("username");
 
-        dropTitle = rootView.findViewById(R.id.drop_title);
         recordBtn = rootView.findViewById(R.id.record_btn);
         timer = rootView.findViewById(R.id.record_timer);
         //audioRecordView = rootView.findViewById(R.id.audioRecordView);
+        EmojiEditText dropTxt = rootView.findViewById(R.id.drop_title);
 
         ConstraintLayout playerSheet = rootView.findViewById(R.id.drop_audio_playback);
         bottomSheetBehavior = BottomSheetBehavior.from(playerSheet);
@@ -194,17 +182,26 @@ public class DropAudio extends Fragment {
         dropProgress = rootView.findViewById(R.id.dropAudioProgress);
         dropBtn = rootView.findViewById(R.id.postAudioButton);
 
+        String drop = dropTxt.getText().toString().trim();
+
         dropBtn.setOnClickListener(v-> {
             if(isAudioReady) {
                 if(inputData!=null) {
-                    dropBtn.setEnabled(false);
-                    Toasty.info(requireContext(), "Dropping...", Toasty.LENGTH_SHORT).show();
-                    uploadAudio();
+                    if(!drop.isEmpty()) {
+                        dropBtn.setEnabled(false);
+                        Toasty.info(requireContext(), "Dropping...", Toasty.LENGTH_SHORT).show();
+                        uploadAudio(drop);
+                    } else {
+                        Toasty.info(requireContext(), "What's this about ?", Toasty.LENGTH_SHORT).show();
+                    }
                 }
             } else {
                 Toasty.info(requireContext(), "We're having a little problem with your audio, could you try recording again ?", Toasty.LENGTH_SHORT).show();
             }
         });
+
+        ImageView goBack = rootView.findViewById(R.id.goBack);
+        goBack.setOnClickListener(v-> goBack());
 
         return rootView;
     }
@@ -281,9 +278,6 @@ public class DropAudio extends Fragment {
 
         fileToPlay = new File(mFilePath);
         playAudio(fileToPlay);
-
-        fileUri = Uri.fromFile(fileToPlay);
-        Log.d("Audio", fileUri.toString());
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         try {
@@ -309,7 +303,7 @@ public class DropAudio extends Fragment {
         mediaRecorder.setOutputFile(mFilePath);
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
 
-        mediaRecorder.setMaxDuration(150000); // 2 minute, 30 seconds
+        mediaRecorder.setMaxDuration(150000); // 2 minutes, 30 seconds
         mediaRecorder.setAudioChannels(1);
         mediaRecorder.setAudioEncodingBitRate(16*44100);
         mediaRecorder.setAudioSamplingRate(44100);
@@ -332,29 +326,14 @@ public class DropAudio extends Fragment {
         mediaRecorder.start();
     }
 
-    private void startTimerForAmp() {
-        Timer mTimer = new Timer();
-
-        // Increment seconds.
-        mElapsedMillis = 0;
-        mIncrementTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-                mElapsedMillis += 100;
-                int currentMaxAmplitude = mediaRecorder.getMaxAmplitude();
-                //audioRecordView.update(currentMaxAmplitude);
-
-            }
-        };
-        mTimer.scheduleAtFixedRate(mIncrementTimerTask, 0, 100);
-    }
-
     private void setFileNameAndPath() {
-        mFileName = "qweekaudio_" + System.currentTimeMillis();
+        String mFileName = "qweekaudio_" + System.currentTimeMillis();
         mFilePath = StorageUtils.getDirectoryPath(requireContext()) + "/" + mFileName;
-        Log.d(TAG, "mFilePath =  " + mFilePath);
     }
 
+    /*
+     * Check Audio Permission is granted
+     */
     private boolean checkPermissions() {
         //Check permission
         String recordPermission = Manifest.permission.RECORD_AUDIO;
@@ -396,6 +375,12 @@ public class DropAudio extends Fragment {
         super.onDestroy();
     }
 
+    /**
+     * Returns a byteArray from a File
+     * @param fileToPlay
+     * @return
+     * @throws IOException
+     */
     private byte[] convert(File fileToPlay) throws IOException {
         FileInputStream fis = null;
         try {
@@ -413,7 +398,10 @@ public class DropAudio extends Fragment {
         return bos.toByteArray();
     }
 
-    private void uploadAudio(){
+    /**
+     * Upload Audio
+     */
+    private void uploadAudio(String drop) {
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, AppConfig.URL_DROP_AUDIO,
                 response -> {
                     Timber.tag(TAG).d("Drop Response: %s", new String(response.data));
@@ -464,6 +452,7 @@ public class DropAudio extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("user", username);
+                params.put("drop", drop);
                 return params;
             }
 
@@ -475,7 +464,7 @@ public class DropAudio extends Fragment {
                 Map<String, DataPart> params = new HashMap<>();
                 long audioname = System.currentTimeMillis();
 
-                params.put("audio", new DataPart("qweekaudio_" + audioname + ".m4a" ,inputData));
+                params.put("audio", new DataPart("qweekaudio_" + audioname + ".wav" ,inputData));
                 return params;
             }
         };
@@ -491,8 +480,13 @@ public class DropAudio extends Fragment {
 
     }
 
-    public void onClick(View v) {
+    public void onClick() {
         assert getFragmentManager() != null;
-        getFragmentManager().popBackStack(); // or super.finish();
+        getFragmentManager().popBackStack();
+    }
+
+    private void goBack() {
+        assert getFragmentManager() != null;
+        getFragmentManager().popBackStack();
     }
 }

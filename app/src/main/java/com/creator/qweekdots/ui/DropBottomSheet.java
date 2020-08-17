@@ -5,8 +5,11 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.audiofx.NoiseSuppressor;
 import android.net.ConnectivityManager;
@@ -15,7 +18,6 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,17 +25,19 @@ import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -42,15 +46,15 @@ import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.creator.qweekdots.R;
 import com.creator.qweekdots.activity.ProfileActivity;
+import com.creator.qweekdots.adapter.CommentsAdapter;
 import com.creator.qweekdots.api.CommentFeedService;
 import com.creator.qweekdots.api.DropService;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.app.AppConfig;
 import com.creator.qweekdots.app.AppController;
-import com.creator.qweekdots.helper.SQLiteHandler;
-import com.creator.qweekdots.helper.SessionManager;
 import com.creator.qweekdots.mediaplayer.RSVideoPlayer;
 import com.creator.qweekdots.mediaplayer.RSVideoPlayerStandard;
 import com.creator.qweekdots.models.CommentItem;
@@ -66,8 +70,6 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiTextView;
@@ -96,42 +98,33 @@ import timber.log.Timber;
 import static maes.tech.intentanim.CustomIntent.customType;
 
 public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements PaginationAdapterCallback {
-
     private final String TAG = DropBottomSheet.class.getSimpleName();
-
-    private SQLiteHandler db;
-    private SessionManager session;
 
     private String username;
     private String drop_id;
 
     private DropService dropService;
 
-    private RelativeLayout dropLayout;
-    private ImageView qweeksnap, upvoteBtn, downvoteBtn, shareBtn, likeBtn, deleteBtn;
+    private ImageView qweeksnap, upvoteBtn, downvoteBtn, likeBtn, deleteBtn;
     private RSVideoPlayerStandard video;
-    private LinearLayout droptextLayout, droptextTextLayout, dropActions, qClickLayout;
+    private LinearLayout droptextTextLayout, qClickLayout, audioLayout, audioTxtLayout;
     private CircleImageView profilePic;
-    private TextView usernameTxt, timeStamp, likeNum, upvoteNum, downvoteNum, commentNum;
-    private EmojiTextView dropText, fullnameTxt;
+    private TextView usernameTxt, likeNum, upvoteNum, downvoteNum, commentNum;
+    private EmojiTextView dropText, fullnameTxt, audioDropTxt;
     private RichLinkView url;
-    private CardView qweeksnapCard;
+    private CardView qweeksnapCard, reactionCard;
     private BlobVisualizer blastAudio;
-    private ImageView playAudio;
+    private ImageView playAudio, reactionImage;
 
     private boolean isPlaying = false;
     private MediaPlayer player;
 
-    private RecyclerView rv;
     private CommentsAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private SpinKitView progressBar;
     private LinearLayout errorLayout;
-    private Button btnRetry;
     private TextView txtError;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout emptyLayout;
-    private Target target;
 
     private EmojiEditText dropCommentTxt;
     private FloatingActionButton dropCommentBtn;
@@ -142,10 +135,8 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
     private static final int PAGE_START = 1;
     private static int TOTAL_PAGES;
     private int currentPage = PAGE_START;
-    private String next_link;
-    private String prev_link;
     private String max_id;
-    private String since_id;
+    //private String since_id;
 
     private CommentFeedService commentFeedService;
     private Context context;
@@ -153,7 +144,7 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
 
     private View view;
 
-    DropBottomSheet(Context context, String username, String drop_id) {
+    public DropBottomSheet(Context context, String username, String drop_id) {
         this.context = context;
         this.username = username;
         this.drop_id = drop_id;
@@ -165,9 +156,9 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
         view = inflater.inflate(R.layout.drop_bottom_sheet, container, false);
 
         if(context!=null) {
+            // Init Layout
             fullnameTxt = view.findViewById(R.id.fullnameTxt);
             usernameTxt = view.findViewById(R.id.usernameTxt);
-            timeStamp = view.findViewById(R.id.timestamp);
             dropText = view.findViewById(R.id.txtDrop);
             url = view.findViewById(R.id.txtUrl);
             profilePic = view.findViewById(R.id.profilePic);
@@ -175,7 +166,6 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
             video = view.findViewById(R.id.videoplayer);
             upvoteBtn = view.findViewById(R.id.upvote_btn);
             downvoteBtn = view.findViewById(R.id.downvote_btn);
-            shareBtn = view.findViewById(R.id.share_btn);
             likeBtn = view.findViewById(R.id.like_btn);
             likeNum = view.findViewById(R.id.likeNum);
             upvoteNum = view.findViewById(R.id.upvoteNum);
@@ -183,22 +173,23 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
             commentNum = view.findViewById(R.id.commentNum);
             deleteBtn = view.findViewById(R.id.delete_btn);
             qClickLayout = view.findViewById(R.id.qClickLayout);
-            dropLayout = view.findViewById(R.id.drop_relayout);
-            droptextLayout = view.findViewById(R.id.droptext_layout);
             droptextTextLayout = view.findViewById(R.id.droptext_text_layout);
-            dropActions = view.findViewById(R.id.drop_actions);
             qweeksnapCard = view.findViewById(R.id.drop_qweekSnapCard);
             blastAudio = view.findViewById(R.id.blast);
             playAudio = view.findViewById(R.id.playAudio);
+            audioLayout = view.findViewById(R.id.audioLayout);
+            audioTxtLayout = view.findViewById(R.id.audioTxtLayout);
+            audioDropTxt = view.findViewById(R.id.txtDrop2);
+            reactionCard = view.findViewById(R.id.reactionCard);
+            reactionImage = view.findViewById(R.id.reactionImage);
 
-            //COMMENTS
-            rv = view.findViewById(R.id.main_recycler);
+            // Setup Comments
+            RecyclerView rv = view.findViewById(R.id.main_recycler);
             progressBar = view.findViewById(R.id.spin_kit);
             errorLayout = view.findViewById(R.id.error_layout);
             emptyLayout = view.findViewById(R.id.empty_layout);
-            btnRetry = view.findViewById(R.id.error_btn_retry);
+            Button btnRetry = view.findViewById(R.id.error_btn_retry);
             txtError = view.findViewById(R.id.error_txt_cause);
-            swipeRefreshLayout = view.findViewById(R.id.main_swiperefresh);
 
             adapter = new CommentsAdapter(context, this, username);
 
@@ -279,52 +270,37 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
         view = View.inflate(getContext(), R.layout.drop_bottom_sheet, null);
 
         View extraSpace = view.findViewById(R.id.extraSpace);
-
         //setting layout with bottom sheet
         bottomSheet.setContentView(view);
-
         bottomSheetBehavior = BottomSheetBehavior.from((View) (view.getParent()));
-
-
         //setting Peek
         bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
-
-
         //setting min height of bottom sheet
         extraSpace.setMinimumHeight((Resources.getSystem().getDisplayMetrics().heightPixels) / 2);
-
 
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-                if (BottomSheetBehavior.STATE_EXPANDED == i) {
-
-                }
-                if (BottomSheetBehavior.STATE_COLLAPSED == i) {
-
-                }
-
                 if (BottomSheetBehavior.STATE_HIDDEN == i) {
                     dismiss();
                 }
-
             }
-
             @Override
             public void onSlide(@NonNull View view, float v) {
-
             }
         });
 
         return bottomSheet;
     }
 
+    /**
+     * Load Drop Content
+     */
     private void loadDrop() {
         callDropApi().enqueue(new Callback<DropModel>() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(@NotNull Call<DropModel> call, @NotNull Response<DropModel> response) {
-
                 Timber.tag(TAG).i("onResponse: %s", (response.raw().cacheResponse() != null ? "Cache" : "Network"));
 
                 // Got data. Send it to adapter
@@ -336,55 +312,24 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                 // Set username
                 usernameTxt.setText("q/" + drop.getUsername());
 
-                // Converting timestamp into x ago format
-
+                // Click to view profile
                 qClickLayout.setOnClickListener(v-> {
                     Intent i = new Intent(context, ProfileActivity.class);
                     i.putExtra("profile", drop.getUsername());
                     context.startActivity(i);
-                    customType(context, "up-to-bottom");
+                    customType(context, "fadein-to-fadeout");
                 });
 
                 //Build layout depending on type
                 if(drop.getHasMedia() == 1) {
-
-                    droptextTextLayout.setVisibility(View.GONE);
-
-                    qweeksnapCard.setVisibility(View.VISIBLE);
-
                     //Set up qweeksnap if drop hasMedia
                     switch (drop.getType()) {
                         case "qweekpic":
+                            droptextTextLayout.setVisibility(View.GONE);
+                            qweeksnapCard.setVisibility(View.VISIBLE);
+
                             qweeksnap.setVisibility(View.VISIBLE);
                             video.setVisibility(View.GONE);
-
-                            //qweeksnap
-                            /*
-                            target = new Target() {
-                                @Override
-                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                    //int width = bitmap.getWidth();
-                                    int height = bitmap.getHeight();
-                                    qweeksnap.setImageBitmap(bitmap);
-                                }
-
-                                @Override
-                                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                                    qweeksnap.requestLayout();
-                                    qweeksnap.getLayoutParams().height = 600;
-                                }
-
-                                @Override
-                                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                                }
-                            };
-
-                            qweeksnap.setTag(target);
-                            Picasso.get().load(drop.getQweekSnap()).into(target);
-                            dropLayout.getLayoutParams();
-                            *
-                             */
 
                             RequestOptions requestOptions = new RequestOptions()
                                     .diskCacheStrategy(DiskCacheStrategy.NONE) // because file name is always same
@@ -393,10 +338,14 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                                     .with(context)
                                     .load(drop.getQweekSnap())
                                     .override(com.bumptech.glide.request.target.Target.SIZE_ORIGINAL)
+                                    .thumbnail(0.3f)
                                     .apply(requestOptions)
                                     .into(qweeksnap);
                             break;
                         case "qweekvid":
+                            droptextTextLayout.setVisibility(View.GONE);
+                            qweeksnapCard.setVisibility(View.VISIBLE);
+
                             video.setVisibility(View.VISIBLE);
                             qweeksnap.setVisibility(View.GONE);
 
@@ -407,13 +356,34 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
 
                             break;
                         case "audio":
+                            droptextTextLayout.setVisibility(View.GONE);
+                            qweeksnapCard.setVisibility(View.VISIBLE);
+
                             playAudio.setVisibility(View.VISIBLE);
                             qweeksnap.setVisibility(View.GONE);
                             video.setVisibility(View.GONE);
                             blastAudio.setVisibility(View.VISIBLE);
 
+                            audioLayout.setVisibility(View.VISIBLE);
+                            playAudio.setVisibility(View.VISIBLE);
+                            audioTxtLayout.setVisibility(View.VISIBLE);
+
+                            qweeksnap.setVisibility(View.GONE);
+                            video.setVisibility(View.GONE);
+
+                            blastAudio.setVisibility(View.GONE);
+
+                            // Set The Drop for Audio
+                            SpannableString hashText = new SpannableString(drop.getDrop());
+                            Matcher matcher = Pattern.compile("#([A-Za-z0-9_-]+)").matcher(hashText);
+                            while (matcher.find()) {
+                                hashText.setSpan(new BackgroundColorSpan(Color.BLUE), matcher.start(), matcher.end(), 0);
+                            }
+                            audioDropTxt.setText(hashText);
+
                             playAudio.setOnClickListener(v-> {
                                 playAudio.setVisibility(View.GONE);
+                                blastAudio.setVisibility(View.VISIBLE);
 
                                 if(isPlaying) {
                                     player.stop();
@@ -459,11 +429,30 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                                     });
                                 }
                             });
+
+                            break;
+                        case "reaction":
+                            // Drop has media but Different Layout design
+                            droptextTextLayout.setVisibility(View.VISIBLE);
+                            // QweekSnap Card is not in use for Reactions
+                            qweeksnapCard.setVisibility(View.GONE);
+
+                            // Reaction Card is used instead
+                            reactionCard.setVisibility(View.VISIBLE);
+                            // Set Reaction GIF
+                            Glide
+                                    .with(context)
+                                    .asGif()
+                                    .load(drop.getQweekSnap())
+                                    .override(Target.SIZE_ORIGINAL)
+                                    .thumbnail(0.3f)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .into(reactionImage);
+
                             break;
                     }
                 } else {
                     droptextTextLayout.setVisibility(View.VISIBLE);
-
                     qweeksnapCard.setVisibility(View.GONE);
                     qweeksnap.setVisibility(View.GONE);
                     video.setVisibility(View.GONE);
@@ -471,11 +460,9 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
 
                 // Check for empty status message
                 if (!TextUtils.isEmpty(drop.getDrop())) {
-
                     SpannableString hashText = new SpannableString(drop.getDrop());
                     Matcher matcher = Pattern.compile("#([A-Za-z0-9_-]+)").matcher(hashText);
-                    while (matcher.find())
-                    {
+                    while (matcher.find()) {
                         hashText.setSpan(new BackgroundColorSpan(Color.BLUE), matcher.start(), matcher.end(), 0);
                     }
                     //if none set text and make it visible
@@ -506,18 +493,36 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                     url.setVisibility(View.GONE);
                 }
 
-                // load User ProfileModel Picture
-                Picasso.get()
+                // load Drop Profile Avatar
+                /*Picasso.get()
                         .load(drop.getProfilePic())
                         .resize(40, 40)
                         .placeholder(R.drawable.ic_alien)
                         .error(R.drawable.ic_alien)
                         .centerCrop()
+                        .into(profilePic);*/
+
+                RequestOptions requestOptions = new RequestOptions()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE) // because file name is always same
+                        .skipMemoryCache(true);
+                Drawable placeholder = getTinted(context.getResources().getColor(R.color.contentTextColor));
+                Glide
+                        .with(context)
+                        .load(drop.getProfilePic())
+                        .override(40, 40)
+                        .placeholder(placeholder)
+                        .error(placeholder)
+                        .thumbnail(0.3f)
+                        .apply(requestOptions)
                         .into(profilePic);
 
                 // Build Drop Actions
 
-                // Text Upvote Button
+                // Upvote Builder
+                /*
+                 * If drop is upvoted, set resource to upvoted along with resource color
+                 * else, resource is not upvoted yet
+                 */
                 if(drop.getUpvoted().equals("yes")) {
                     upvoteBtn.setImageResource(R.drawable.ic_upvoted);
                     upvoteBtn.setColorFilter(context.getResources().getColor(R.color.upvoteColor));
@@ -526,7 +531,11 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                     upvoteBtn.setColorFilter(context.getResources().getColor(R.color.Gray));
                 }
 
-                // Text Downvote Button
+                // Downvote Builder
+                /*
+                 * If drop is downvoted, set resource to downvoted along with resource color
+                 * else, resource is not downvoted yet
+                 */
                 if(drop.getDownvoted().equals("yes")) {
                     downvoteBtn.setImageResource(R.drawable.ic_downvoted);
                     downvoteBtn.setColorFilter(context.getResources().getColor(R.color.downvoteColor));
@@ -535,7 +544,11 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                     downvoteBtn.setColorFilter(context.getResources().getColor(R.color.Gray));
                 }
 
-                // Text Like Button
+                // Like Builder
+                /*
+                 * If drop is liked, set resource to liked long with resource color
+                 * else, resource is not liked yet
+                 */
                 if(drop.getLiked().equals("yes")) {
                     likeBtn.setImageResource(R.drawable.ic_liked);
                     likeBtn.setColorFilter(context.getResources().getColor(R.color.likeColor));
@@ -561,7 +574,7 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                     downvoteNum.setText(drop.getDownvoteNum());
                 }
 
-                // Text Delete Button
+                // Delete Button
                 if(drop.getUsername().equals(username)) {
                     deleteBtn.setVisibility(View.VISIBLE);
 
@@ -582,15 +595,13 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                             });
                     // Setting Negative "NO" Btn
                     alertDialog.setNegativeButton("NO",
-                            (dialog, which) -> {
-                                dialog.cancel();
-                            });
+                            (dialog, which) -> dialog.cancel());
 
                     deleteBtn.setOnClickListener(v->{
                         ObjectAnimator animY = ObjectAnimator.ofFloat(deleteBtn, "translationY", -100f, 0f);
                         animY.setDuration(1000);//1sec
                         animY.setInterpolator(new BounceInterpolator());
-                        animY.setRepeatCount(1);
+                        animY.setRepeatCount(0);
                         animY.start();
                         alertDialog.show();
                     });
@@ -609,11 +620,16 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                 // Set up Actions
 
                 //Like
+                /*
+                 * On click, first check if user liked already
+                 * If user liked already, unlike and set resource to pre-liked state
+                 * else, like along with resource change
+                 */
                 likeBtn.setOnClickListener(v -> {
                     ObjectAnimator animY = ObjectAnimator.ofFloat(likeBtn, "translationY", -100f, 0f);
                     animY.setDuration(1000);//1sec
                     animY.setInterpolator(new BounceInterpolator());
-                    animY.setRepeatCount(1);
+                    animY.setRepeatCount(0);
                     animY.start();
                     //check whether it is liked or unliked
                     if (drop.getLiked().equals("yes")) {
@@ -634,11 +650,16 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                 });
 
                 //Upvote
+                /*
+                 * On click, first check if user upvoted already
+                 * If user upvoted already, undo upvote and set resource to pre-upvote state
+                 * else, upvote along with resource change
+                 */
                 upvoteBtn.setOnClickListener(v -> {
                     ObjectAnimator animY = ObjectAnimator.ofFloat(upvoteBtn, "translationY", -100f, 0f);
                     animY.setDuration(1000);//1sec
                     animY.setInterpolator(new BounceInterpolator());
-                    animY.setRepeatCount(1);
+                    animY.setRepeatCount(0);
                     animY.start();
                     //check whether it is liked or unliked
                     if (drop.getUpvoted().equals("yes")) {
@@ -657,7 +678,7 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                             ObjectAnimator animD = ObjectAnimator.ofFloat(downvoteBtn, "translationY", 100f, 0f);
                             animD.setDuration(1000);//1sec
                             animD.setInterpolator(new BounceInterpolator());
-                            animD.setRepeatCount(1);
+                            animD.setRepeatCount(0);
                             animD.start();
                             downvoteBtn.setImageResource(R.drawable.ic_downvote);
                             downvoteBtn.setColorFilter(context.getResources().getColor(R.color.Gray));
@@ -671,11 +692,16 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                 });
 
                 //Downvote
+                /*
+                 * On click, first check if user downvoted already
+                 * If user downvoted already, undo downvote and set resource to pre-downvote state
+                 * else, downvote along with resource
+                 */
                 downvoteBtn.setOnClickListener(v -> {
                     ObjectAnimator animY = ObjectAnimator.ofFloat(downvoteBtn, "translationY", 100f, 0f);
                     animY.setDuration(1000);//1sec
                     animY.setInterpolator(new BounceInterpolator());
-                    animY.setRepeatCount(1);
+                    animY.setRepeatCount(0);
                     animY.start();
                     //check whether it is liked or unliked
                     if (drop.getDownvoted().equals("yes")) {
@@ -693,7 +719,7 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                             ObjectAnimator animD = ObjectAnimator.ofFloat(upvoteBtn, "translationY", -100f, 0f);
                             animD.setDuration(1000);//1sec
                             animD.setInterpolator(new BounceInterpolator());
-                            animD.setRepeatCount(1);
+                            animD.setRepeatCount(0);
                             animD.start();
                             upvoteBtn.setImageResource(R.drawable.ic_upvote);
                             upvoteBtn.setColorFilter(context.getResources().getColor(R.color.Gray));
@@ -705,15 +731,30 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                         doDownvote("downvote", drop.getDrop_Id(), username, drop.getUsername());
                     }
                 });
-
-
             }
 
             @Override
-            public void onFailure(Call<DropModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<DropModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
             }
         });
+    }
+
+    private @Nullable
+    Drawable getTinted(@ColorInt int color) {
+        // need to mutate otherwise all references to this drawable will be tinted
+        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_alien).mutate();
+        return tint(drawable, ColorStateList.valueOf(color));
+    }
+
+    public static Drawable tint(Drawable input, ColorStateList tint) {
+        if (input == null) {
+            return null;
+        }
+        Drawable wrappedDrawable = DrawableCompat.wrap(input);
+        DrawableCompat.setTintList(wrappedDrawable, tint);
+        DrawableCompat.setTintMode(wrappedDrawable, PorterDuff.Mode.MULTIPLY);
+        return wrappedDrawable;
     }
 
     /**
@@ -735,6 +776,9 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
         );
     }
 
+    /*
+     * Like Drop
+     */
     private void doLike(final String type, final String id, final String liker,
                         final String liked) {
         // Tag used to cancel the request
@@ -793,6 +837,9 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
+    /*
+     * Upvote Drop
+     */
     private void doUpvote(final String type, final String id, final String upvoter,
                           final String upvoted) {
         // Tag used to cancel the request
@@ -850,6 +897,9 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
+    /*
+     * Downvote Drop
+     */
     private void doDownvote(final String type, final String id, final String downvoter,
                             final String downvoted) {
         // Tag used to cancel the request
@@ -907,6 +957,9 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
+    /*
+     * Delete Drop
+     */
     private void deleteDrop(final String drop_id, String username) {
         // Tag used to cancel the request
         String tag_string_req = "req_delete";
@@ -963,7 +1016,7 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
     }
 
     /**
-     * function to post drop text
+     * Drop Comment
      * */
     private void postComment(final String drop, final String username, final String drop_id) {
         // Tag used to cancel the request
@@ -1018,7 +1071,7 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                 params.put("drop", drop);
                 params.put("username", username);
                 params.put("drop_id", drop_id);
-                params.put("parent_id", "");
+                params.put("parent_id", null);
 
                 return params;
             }
@@ -1038,11 +1091,9 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
-
-    /*
+    /**
      * Comments Load Function
      */
-
     private void loadFirstCommentsPage() {
         Timber.tag(TAG).d("loadFirstCommentsPage: ");
 
@@ -1069,13 +1120,10 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                     // Cursor Links
                     List<Cursor> cursor = fetchCursorLinks(response);
                     Cursor cursorLink = cursor.get(0);
-                    next_link = cursorLink.getNextLink();
-                    prev_link = cursorLink.getPrevLink();
                     max_id = cursorLink.getMaxID();
-                    since_id = cursorLink.getSinceID();
+                    //since_id = cursorLink.getSinceID();
 
                     TOTAL_PAGES = cursorLink.getPagesNum();
-                    Log.d(TAG, String.valueOf(TOTAL_PAGES));
 
                     if(TOTAL_PAGES == 1) {
                         isLastPage = true;
@@ -1090,34 +1138,11 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
             }
 
             @Override
-            public void onFailure(Call<CommentsModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<CommentsModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 showErrorView();
             }
         });
-    }
-
-    /**
-     * Triggers the actual background refresh via the {@link SwipeRefreshLayout}
-     */
-    private void doRefresh() {
-        if(isNetworkConnected()) {
-            progressBar.setVisibility(View.VISIBLE);
-            if (callCommentsFeedApi().isExecuted())
-                callCommentsFeedApi().cancel();
-
-            // TODO: Check if data is stale.
-            //  Execute network request if cache is expired; otherwise do not update data.
-            adapter.getCommentsFeed().clear();
-            loadFirstCommentsPage();
-
-            Timber.tag(TAG).d("Loading First Feed Page");
-        } else {
-            Toasty.info(requireContext(), "No Jet Fuel, connect to the internet", Toast.LENGTH_LONG).show();
-            progressBar.setVisibility(View.GONE);
-
-            Timber.tag(TAG).d("No internet connection available");
-        }
     }
 
     /**
@@ -1138,15 +1163,15 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
         return newsFeed.getCursorLinks();
     }
 
+    /*
+     * Load Next Set of Comments
+     */
     private void loadNextCommentsPage() {
         Timber.tag(TAG).d("loadNextCommentsPage: %s", currentPage);
 
         callNextCommentsFeedApi().enqueue(new Callback<CommentsModel>() {
             @Override
             public void onResponse(@NotNull Call<CommentsModel> call, @NotNull Response<CommentsModel> response) {
-//                Log.i(TAG, "onResponse: " + currentPage
-//                        + (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
                 adapter.removeLoadingFooter();
                 isLoading = false;
 
@@ -1156,10 +1181,8 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                 // Cursor Links
                 List<Cursor> cursor = fetchCursorLinks(response);
                 Cursor cursorLink = cursor.get(0);
-                next_link = cursorLink.getNextLink();
-                prev_link = cursorLink.getPrevLink();
                 max_id = cursorLink.getMaxID();
-                since_id = cursorLink.getSinceID();
+                //since_id = cursorLink.getSinceID();
 
                 if (currentPage != TOTAL_PAGES) {
                     adapter.addLoadingFooter();
@@ -1169,7 +1192,7 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
             }
 
             @Override
-            public void onFailure(Call<CommentsModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<CommentsModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 adapter.showRetry(true, fetchErrorMessage(t));
             }
@@ -1211,7 +1234,7 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
      * Same API call for Pagination.
      * As {@link #currentPage} will be incremented automatically
      * by @{@link PaginationScrollListener} to load next page.
-     */
+
     private Call<CommentsModel> callPrevCommentsFeedApi() {
         return commentFeedService.getComments(
                 username,
@@ -1220,15 +1243,15 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
                 since_id
         );
     }
+     */
 
     public void retryPageLoad() {
         loadNextCommentsPage();
     }
 
-    /**
+    /*
      */
     private void showErrorView() {
-
         if (errorLayout.getVisibility() == View.GONE) {
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
@@ -1250,29 +1273,19 @@ public class DropBottomSheet extends RoundedBottomSheetDialogFragment implements
      */
     private String fetchErrorMessage(Throwable throwable) {
         String errorMsg = getResources().getString(R.string.error_msg_unknown);
-
         if (!isNetworkConnected()) {
             errorMsg = getResources().getString(R.string.error_msg_no_internet);
         } else if (throwable instanceof TimeoutException) {
             errorMsg = getResources().getString(R.string.error_msg_timeout);
         }
-
         return errorMsg;
     }
 
     // Helpers -------------------------------------------------------------------------------------
-
-
     private void hideErrorView() {
         if (errorLayout.getVisibility() == View.VISIBLE) {
             errorLayout.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideEmptyView() {
-        if (emptyLayout.getVisibility() == View.VISIBLE) {
-            emptyLayout.setVisibility(View.GONE);
         }
     }
 

@@ -251,7 +251,7 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
             }
 
             @Override
-            public void onFailure(Call<ProfileModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<ProfileModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -328,7 +328,6 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
                 try {
                     // You can update this bitmap to your server
                     profilePicBitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), uri);
-                    boolean isProfileUploaded = true;
 
                     // loading profile image from local cache
                     loadProfile(Objects.requireNonNull(uri).toString());
@@ -410,7 +409,7 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
 
                             db.getWritableDatabase().update("user", values, "id='1'", null);
 
-                            ProfileActivity.loadProfileImage(profilePic);
+                            ProfileActivity.loadProfileImage(profilePic, requireContext());
                         } else {
                             // Error in drop. Get the error message
                             String errorMsg = jObj.getString("error_msg");

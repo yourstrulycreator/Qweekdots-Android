@@ -3,19 +3,21 @@ package com.creator.qweekdots.models;
 import java.io.Serializable;
 
 public class ChatRoom implements Serializable {
-    String id, name, type, private_to, private_from, lastMessage, timestamp, private_avatar;
-    int unreadCount;
+    private String id, name, type, private_to, private_from, lastMessage, lastMessageTo, lastMessageFrom, timestamp, private_avatar;
+    private int unreadCount;
 
     public ChatRoom() {
     }
 
-    public ChatRoom(String id, String name, String type, String private_from, String private_to, String lastMessage, String timestamp, int unreadCount, String private_avatar) {
+    public ChatRoom(String id, String name, String type, String private_from, String private_to, String lastMessage, String lastMessageTo, String lastMessageFrom, String timestamp, int unreadCount, String private_avatar) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.private_from = private_from;
         this.private_to = private_to;
         this.lastMessage = lastMessage;
+        this.lastMessageTo = lastMessageTo;
+        this.lastMessageFrom = lastMessageFrom;
         this.timestamp = timestamp;
         this.unreadCount = unreadCount;
         this.private_avatar = private_avatar;
@@ -67,6 +69,22 @@ public class ChatRoom implements Serializable {
 
     public void setLastMessage(String lastMessage) {
         this.lastMessage = lastMessage;
+    }
+
+    public String getLastMessageTo() {
+        return lastMessageTo;
+    }
+
+    public void setLastMessageTo(String lastMessageTo) {
+        this.lastMessageTo = lastMessageTo;
+    }
+
+    public String getLastMessageFrom() {
+        return lastMessageFrom;
+    }
+
+    public void setLastMessageFrom(String lastMessageFrom) {
+        this.lastMessageFrom = lastMessageFrom;
     }
 
     public int getUnreadCount() {

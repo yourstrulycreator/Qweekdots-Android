@@ -93,8 +93,8 @@ public class ImagePicker extends AppCompatActivity {
         builder.setTitle(context.getString(R.string.lbl_set_profile_photo));
 
         // add a list
-        String[] animals = {context.getString(R.string.lbl_take_camera_picture), context.getString(R.string.lbl_choose_from_gallery)};
-        builder.setItems(animals, (dialog, which) -> {
+        String[] options = {context.getString(R.string.lbl_take_camera_picture), context.getString(R.string.lbl_choose_from_gallery)};
+        builder.setItems(options, (dialog, which) -> {
             switch (which) {
                 case 0:
                     listener.onTakeCameraSelected();

@@ -23,7 +23,7 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:textColor="@color/contentTextColor"
-                android:text="Edit Profile Picture"
+                android:text="@string/edit_avatar"
                 android:fontFamily="@font/amatic_regular"
                 android:textSize="34sp"
                 android:textStyle="bold"
@@ -43,7 +43,6 @@
                     app:civ_border_width="4dp"
                     app:civ_border_color="@color/imageBorderColor"
                     android:layout_marginTop="15dp"
-                    android:layout_marginLeft="45dp"
                     android:layout_marginStart="45dp"
                     android:backgroundTint="@color/contentTextColor"
                     android:tint="@color/contentTextColor"
@@ -60,14 +59,12 @@
                     app:pressedTranslationZ="12dp"
                     android:scaleType="centerCrop"
                     android:visibility="visible"
-                    android:layout_toRightOf="@id/optProfilePic"
                     android:layout_alignBottom="@id/optProfilePic"
                     app:fabSize="normal"
                     app:fabCustomSize="45dp"
                     app:srcCompat="@drawable/q_edit"
                     android:tint="@color/contentTextColor"
                     android:layout_toEndOf="@id/optProfilePic"
-                    android:layout_marginLeft="-10dp"
                     android:layout_marginStart="-10dp" />
 
             </RelativeLayout>

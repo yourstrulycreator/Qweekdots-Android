@@ -22,11 +22,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.adapter.AddChatUsersAdapter;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.api.SearchUserService;
 import com.creator.qweekdots.models.Cursor;
 import com.creator.qweekdots.models.SearchUserModel;
 import com.creator.qweekdots.models.UserItem;
+import com.creator.qweekdots.utils.PaginationAdapterCallback;
 import com.creator.qweekdots.utils.PaginationScrollListener;
 import com.creator.qweekdots.utils.RoundedBottomSheetDialogFragment;
 import com.github.ybq.android.spinkit.SpinKitView;
@@ -46,7 +48,7 @@ import timber.log.Timber;
 
 import static android.content.Context.SEARCH_SERVICE;
 
-public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
+public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment implements PaginationAdapterCallback {
     private final String TAG = AddChatBottomSheet.class.getSimpleName();
     private BottomSheetBehavior bottomSheetBehavior;
     private View view;
@@ -64,7 +66,9 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
     private TextView txtError;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout emptyLayout;
-    private TextView titleTxtView;
+
+    private androidx.appcompat.widget.SearchView searchView;
+    private androidx.appcompat.widget.SearchView.OnQueryTextListener queryTextListener;
 
     private boolean isLoading = false;
     private boolean isLastPage = false;
@@ -72,10 +76,8 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
     private static final int PAGE_START = 1;
     private static int TOTAL_PAGES;
     private int currentPage = PAGE_START;
-    private String next_link;
-    private String prev_link;
     private String max_id;
-    private String since_id;
+    //private String since_id;
 
 
     public AddChatBottomSheet(Context context, String logged) {
@@ -89,26 +91,16 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
         view = inflater.inflate(R.layout.add_chat_bottom_sheet, container, false);
 
         if(context!=null) {
-            androidx.appcompat.widget.SearchView searchView = view.findViewById(R.id.searchbar);
-            searchView.isFocused();
-            searchView.onActionViewExpanded();
-            SearchManager searchManager = (SearchManager) requireActivity().getSystemService(SEARCH_SERVICE);
-            searchView.setSearchableInfo(Objects.requireNonNull(searchManager).getSearchableInfo(requireActivity().getComponentName()));
-            Objects.requireNonNull(searchView).setIconifiedByDefault(false);
+            // Initialise service
+            feedService = QweekdotsApi.getClient(getContext()).create(SearchUserService.class);
 
-            EditText searchEditText;
-            searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
-            searchEditText.setTextColor(getResources().getColor(R.color.contentTextColor));
-            searchEditText.setHintTextColor(getResources().getColor(R.color.SlateGray));
-            searchEditText.setHint("Search Qweekdots");
+            // Initialize Search
+            initSearchBar();
 
-            titleTxtView = view.findViewById(R.id.optTitleSheetTxt);
-            titleTxtView.setOnClickListener(v -> {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                dismiss();
-            });
+            // Init RecyclerView
+            initRecyclerView();
 
-            RecyclerView rv = view.findViewById(R.id.search_recycler);
+            // Init rest of layout
             progressBar = view.findViewById(R.id.mSearchProgressBar);
             errorLayout = view.findViewById(R.id.error_layout);
             emptyLayout = view.findViewById(R.id.empty_layout);
@@ -116,69 +108,21 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
             txtError = view.findViewById(R.id.error_txt_cause);
             swipeRefreshLayout = view.findViewById(R.id.search_swiperefresh);
 
-            androidx.appcompat.widget.SearchView.OnQueryTextListener queryTextListener = new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextChange(String query) {
-                    beginSearch(query);
+            // Set query listener
+            setQueryListener();
+            // Run Search
+            searchView.setOnQueryTextListener(queryTextListener);
 
-                    return true;
-
-                }
-
-                public boolean onQueryTextSubmit(String query) {
-                    // Here u can get the value "query" which is entered in the
-                    beginSearch(query);
-
-                    return true;
-
-                }
-            };
-
-            adapter = new AddChatUsersAdapter(context, logged);
-
-            linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-            rv.setLayoutManager(linearLayoutManager);
-
-            rv.setItemAnimator(new DefaultItemAnimator());
-
-            rv.setAdapter(adapter);
-
-            rv.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> bottomSheetBehavior.setDraggable(false));
-
-            rv.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
-                @Override
-                protected void loadMoreItems() {
-                    isLoading = true;
-                    currentPage += 1;
-
-                    loadNextPage();
-                }
-
-                @Override
-                public int getTotalPageCount() {
-                    return TOTAL_PAGES;
-                }
-
-                @Override
-                public boolean isLastPage() {
-                    return isLastPage;
-                }
-
-                @Override
-                public boolean isLoading() {
-                    return isLoading;
-                }
-            });
-
-            /*Create handle for the RetrofitInstance interface*/
-            feedService = QweekdotsApi.getClient(getContext()).create(SearchUserService.class);
-
+            // Refresh/ Retry
             btnRetry.setOnClickListener(v -> loadFirstPage());
-
             swipeRefreshLayout.setOnRefreshListener(this::doRefresh);
 
-
-            searchView.setOnQueryTextListener(queryTextListener);
+            // Click TextView to Dismiss Bottom Sheet (A workaround)
+            TextView titleTxtView = view.findViewById(R.id.optTitleSheetTxt);
+            titleTxtView.setOnClickListener(v -> {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                dismiss();
+            });
         }
 
         return view;
@@ -192,7 +136,6 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
         //inflating layout
         view = View.inflate(context, R.layout.add_chat_bottom_sheet, null);
 
-
         //setting layout with bottom sheet
         bottomSheet.setContentView(view);
 
@@ -204,16 +147,6 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-                if (BottomSheetBehavior.STATE_EXPANDED == i) {
-
-                }
-                if (BottomSheetBehavior.STATE_COLLAPSED == i) {
-
-                }
-
-                if(BottomSheetBehavior.PEEK_HEIGHT_AUTO == i) {
-
-                }
 
                 if (BottomSheetBehavior.STATE_HIDDEN == i) {
                     dismiss();
@@ -228,6 +161,90 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
         });
 
         return bottomSheet;
+    }
+
+    /*
+     * Initialise SearchBar
+     */
+    private void initSearchBar() {
+        searchView = view.findViewById(R.id.searchbar);
+        searchView.isFocused();
+        searchView.onActionViewExpanded();
+        SearchManager searchManager = (SearchManager) requireActivity().getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(Objects.requireNonNull(searchManager).getSearchableInfo(requireActivity().getComponentName()));
+        Objects.requireNonNull(searchView).setIconifiedByDefault(false);
+
+        EditText searchEditText;
+        searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+        searchEditText.setTextColor(getResources().getColor(R.color.contentTextColor));
+        searchEditText.setHintTextColor(getResources().getColor(R.color.SlateGray));
+        searchEditText.setHint("Find Someone");
+    }
+
+    /*
+     * Run Search Listener
+     */
+    private void setQueryListener() {
+        queryTextListener = new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String query) {
+                //beginSearch(query);
+                return true;
+
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                // Here u can get the value "query" which is entered in the
+                beginSearch(query);
+
+                return true;
+
+            }
+        };
+    }
+
+    /*
+     * Initialise RecyclerView
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void initRecyclerView() {
+        RecyclerView rv = view.findViewById(R.id.search_recycler);
+
+        adapter = new AddChatUsersAdapter(context, this);
+
+        linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        rv.setLayoutManager(linearLayoutManager);
+
+        rv.setItemAnimator(new DefaultItemAnimator());
+
+        rv.setAdapter(adapter);
+
+        rv.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> bottomSheetBehavior.setDraggable(false));
+
+        rv.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                currentPage += 1;
+
+                loadNextPage();
+            }
+
+            @Override
+            public int getTotalPageCount() {
+                return TOTAL_PAGES;
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return isLastPage;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        });
     }
 
     /**
@@ -279,10 +296,8 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
                     // Cursor Links
                     List<Cursor> cursor = fetchCursorLinks(response);
                     Cursor cursorLink = cursor.get(0);
-                    next_link = cursorLink.getNextLink();
-                    prev_link = cursorLink.getPrevLink();
                     max_id = cursorLink.getMaxID();
-                    since_id = cursorLink.getSinceID();
+                    //since_id = cursorLink.getSinceID();
 
                     TOTAL_PAGES = cursorLink.getPagesNum();
 
@@ -299,7 +314,7 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
             }
 
             @Override
-            public void onFailure(Call<SearchUserModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<SearchUserModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 showErrorView();
             }
@@ -324,10 +339,8 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
                 // Cursor Links
                 List<Cursor> cursor = fetchCursorLinks(response);
                 Cursor cursorLink = cursor.get(0);
-                next_link = cursorLink.getNextLink();
-                prev_link = cursorLink.getPrevLink();
                 max_id = cursorLink.getMaxID();
-                since_id = cursorLink.getSinceID();
+                //since_id = cursorLink.getSinceID();
 
                 if (currentPage != TOTAL_PAGES) {
                     adapter.addLoadingFooter();
@@ -391,7 +404,7 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
     /**
      * Performs a Retrofit call to the next QweekFeed API.
      * Same API call for Pagination.
-     */
+
     private Call<SearchUserModel> callPrevUserSearchFeedApi() {
         return feedService.getSearchedUsers(
                 queryString,
@@ -400,6 +413,7 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
                 since_id
         );
     }
+     */
 
     public void retryPageLoad() {
         loadFirstPage();
@@ -441,18 +455,10 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment {
     }
 
     // Helpers -------------------------------------------------------------------------------------
-
-
     private void hideErrorView() {
         if (errorLayout.getVisibility() == View.VISIBLE) {
             errorLayout.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideEmptyView() {
-        if (emptyLayout.getVisibility() == View.VISIBLE) {
-            emptyLayout.setVisibility(View.GONE);
         }
     }
 

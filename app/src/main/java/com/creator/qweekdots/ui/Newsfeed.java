@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.adapter.PaginationAdapter;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.models.Cursor;
@@ -30,6 +31,7 @@ import com.creator.qweekdots.prefs.DarkModePrefManager;
 import com.creator.qweekdots.utils.PaginationAdapterCallback;
 import com.creator.qweekdots.utils.PaginationScrollListener;
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -55,20 +57,19 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
     private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout emptyLayout;
 
+    private FloatingActionButton backToTop;
+
     private boolean isLoading = false;
     private boolean isLastPage = false;
 
     private static final int PAGE_START = 1;
     private static int TOTAL_PAGES;
     private int currentPage = PAGE_START;
-    private String next_link;
-    private String prev_link;
     private String max_id;
-    private String since_id;
 
     private NewsFeedService feedService;
 
-    private String username, avatar;
+    private String username;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -86,7 +87,6 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
         HashMap<String, String> user = db.getUserDetails();
 
         username = user.get("username");
-        avatar = user.get("avatar");
 
         RecyclerView rv = rootView.findViewById(R.id.main_recycler);
         progressBar = rootView.findViewById(R.id.spin_kit);
@@ -96,7 +96,9 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
         txtError = rootView.findViewById(R.id.error_txt_cause);
         swipeRefreshLayout = rootView.findViewById(R.id.main_swiperefresh);
 
-        adapter = new PaginationAdapter(getActivity(), this, username, avatar);
+        backToTop = rootView.findViewById(R.id.back_to_top);
+
+        adapter = new PaginationAdapter(getActivity(), this, username);
         adapter.setHasStableIds(true);
 
         linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -139,6 +141,20 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
                 return isLoading;
             }
         });
+
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NotNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
+                int visibility = (linearLayoutManager.findFirstCompletelyVisibleItemPosition() > 0) ? View.VISIBLE : View.GONE;
+                backToTop.setVisibility(visibility);
+            }
+        });
+        backToTop.setOnClickListener(v-> rv.smoothScrollToPosition(0));
 
         //init service and load data
         feedService = QweekdotsApi.getClient(getContext()).create(NewsFeedService.class);
@@ -215,10 +231,8 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
                         // Cursor Links
                         List<Cursor> cursor = fetchCursorLinks(response);
                         Cursor cursorLink = cursor.get(0);
-                        next_link = cursorLink.getNextLink();
-                        prev_link = cursorLink.getPrevLink();
                         max_id = cursorLink.getMaxID();
-                        since_id = cursorLink.getSinceID();
+                        //since_id = cursorLink.getSinceID();
 
                         TOTAL_PAGES = cursorLink.getPagesNum();
 
@@ -235,7 +249,7 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
             }
 
             @Override
-            public void onFailure(Call<NewsFeed> call, Throwable t) {
+            public void onFailure(@NotNull Call<NewsFeed> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 showErrorView();
             }
@@ -266,9 +280,6 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
         callNextNewsFeedApi().enqueue(new Callback<NewsFeed>() {
             @Override
             public void onResponse(@NotNull Call<NewsFeed> call, @NotNull Response<NewsFeed> response) {
-//                Log.i(TAG, "onResponse: " + currentPage
-//                        + (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
                 adapter.removeLoadingFooter();
                 isLoading = false;
 
@@ -278,10 +289,8 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
                 // Cursor Links
                 List<Cursor> cursor = fetchCursorLinks(response);
                 Cursor cursorLink = cursor.get(0);
-                next_link = cursorLink.getNextLink();
-                prev_link = cursorLink.getPrevLink();
                 max_id = cursorLink.getMaxID();
-                since_id = cursorLink.getSinceID();
+                //since_id = cursorLink.getSinceID();
 
                 if (currentPage != TOTAL_PAGES) {
                     adapter.addLoadingFooter();
@@ -291,7 +300,7 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
             }
 
             @Override
-            public void onFailure(Call<NewsFeed> call,Throwable t) {
+            public void onFailure(@NotNull Call<NewsFeed> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 adapter.showRetry(true, fetchErrorMessage(t));
             }
@@ -331,7 +340,7 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
      * Same API call for Pagination.
      * As {@link #currentPage} will be incremented automatically
      * by @{@link PaginationScrollListener} to load next page.
-     */
+
     private Call<NewsFeed> callPrevNewsFeedApi() {
         return feedService.getNewsFeed(
                 username,
@@ -339,6 +348,7 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
                 since_id
         );
     }
+     */
 
     public void retryPageLoad() {
         loadFirstPage();
@@ -380,18 +390,10 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
     }
 
     // Helpers -------------------------------------------------------------------------------------
-
-
     private void hideErrorView() {
         if (errorLayout.getVisibility() == View.VISIBLE) {
             errorLayout.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideEmptyView() {
-        if (emptyLayout.getVisibility() == View.VISIBLE) {
-            emptyLayout.setVisibility(View.GONE);
         }
     }
 

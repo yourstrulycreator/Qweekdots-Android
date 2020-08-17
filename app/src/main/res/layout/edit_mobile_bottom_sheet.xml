@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -22,11 +23,11 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:textColor="@color/contentTextColor"
-                android:text="Change Mobile Number"
+                android:text="@string/change_mobile_number"
                 android:fontFamily="@font/amatic_regular"
                 android:textSize="34sp"
                 android:textStyle="bold"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -58,7 +59,7 @@
                     android:textSize="16sp"
                     android:hint="@string/hint_telephone"
                     android:importantForAutofill="no"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:textColorHint="@color/SlateGray"
                     android:layout_marginTop="10dp"/>
             </LinearLayout>

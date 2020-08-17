@@ -1,28 +1,30 @@
 package com.creator.qweekdots.ui;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.View;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.adapter.MyRingsAdapter;
+import com.creator.qweekdots.adapter.RingsAdapter;
 import com.creator.qweekdots.app.AppController;
 import com.creator.qweekdots.app.EndPoints;
 import com.creator.qweekdots.helper.SQLiteHandler;
@@ -39,9 +41,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeoutException;
 
 import es.dmoral.toasty.Toasty;
 import timber.log.Timber;
@@ -51,11 +50,10 @@ public class Rings extends Fragment {
     private MyRingsAdapter myRingsAdapter;
     private SpinKitView ringsProgress, myRingsProgress;
     private LinearLayout myRingsErrorLayout, ringsErrorLayout;
-    private TextView myRingsTxtError, ringsTxtError;
     private LinearLayout myRingsEmptyLayout, ringsEmptyLayout;
     private StaggeredGridView mStaggeredView;
     private ArrayList<ChatRoom> chatRoomArrayList;
-    private String username, selfUserId;
+    private String username;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,29 +65,27 @@ public class Rings extends Fragment {
 
         // SqLite database handler
         SQLiteHandler db = new SQLiteHandler(requireActivity().getApplicationContext());
-
         // Fetching user details from SQLite
         HashMap<String, String> user = db.getUserDetails();
-
         // User Identifiers
         username = user.get("username");
-        selfUserId = AppController.getInstance().getPrefManager().getUser().getId();
 
+        // Init Views
         myRingsProgress = rootView.findViewById(R.id.myRingsProgress);
         RecyclerView myRingsV = rootView.findViewById(R.id.myRingsRecyclerView);
         ringsProgress = rootView.findViewById(R.id.ringsProgress);
-
         myRingsErrorLayout = rootView.findViewById(R.id.my_rings_error_layout);
         ringsErrorLayout = rootView.findViewById(R.id.rings_error_layout);
-
         myRingsEmptyLayout = rootView.findViewById(R.id.my_rings_empty_layout);
         ringsEmptyLayout = rootView.findViewById(R.id.rings_empty_layout);
-
         Button myRingsBtnRetry = rootView.findViewById(R.id.my_rings_error_btn_retry);
         Button ringsBtnRetry = rootView.findViewById(R.id.rings_error_btn_retry);
 
-        myRingsTxtError = rootView.findViewById(R.id.my_rings_error_txt_cause);
-        ringsTxtError = rootView.findViewById(R.id.rings_error_txt_cause);
+        ImageView searchRingsBtn = rootView.findViewById(R.id.searchRings);
+        searchRingsBtn.setOnClickListener(v->{
+            SearchRingsBottomSheet bottomSheet = new SearchRingsBottomSheet(getActivity(), username);
+            bottomSheet.show(requireFragmentManager(),bottomSheet.getTag());
+        });
 
         // My Rings
         chatRoomArrayList = new ArrayList<>();
@@ -103,10 +99,8 @@ public class Rings extends Fragment {
         StaggeredGridView.OnScrollListener scrollListener = new StaggeredGridView.OnScrollListener() {
             public void onTop() {
             }
-
             public void onScroll() {
             }
-
             public void onBottom() {
             }
         };
@@ -118,13 +112,11 @@ public class Rings extends Fragment {
             if(isNetworkConnected()) {
                 loadRings();
                 //loadMyRings();
-
                 Timber.tag(TAG).d("Loading First Rings Pages and My Rings");
             } else {
                 Toasty.info(requireContext(), "No Jet Fuel, connect to the internet", Toast.LENGTH_LONG).show();
                 ringsProgress.setVisibility(View.GONE);
                 //myRingsProgress.setVisibility(View.GONE);
-
                 Timber.tag(TAG).d("No internet connection available");
             }
         }
@@ -140,7 +132,6 @@ public class Rings extends Fragment {
                 Timber.tag(TAG).d("No internet connection available");
             }
         });
-
         ringsBtnRetry.setOnClickListener(view-> {
             if(isNetworkConnected()) {
                 loadRings();
@@ -155,25 +146,24 @@ public class Rings extends Fragment {
         return rootView;
     }
 
-    //Function to load my Rings
+    /**
+     * Load User MyRings
+     */
     private void loadMyRings() {
         myRingsAdapter.clear();
         Timber.tag(TAG).d("loadMyRings: ");
-
         // To ensure list is visible when retry button in error view is clicked
         hideMyRingsErrorView();
         hideMyRingsEmptyView();
 
         String endPoint = EndPoints.MY_CHAT_ROOMS.replace("_ID_", username);
-        Log.e(TAG, "endPoint: " + endPoint);
+        Timber.tag(TAG).e("endPoint: %s", endPoint);
 
         StringRequest strReq = new StringRequest(Request.Method.GET,
                 endPoint, response -> {
             Timber.tag(TAG).d("response: %s", response);
-
             try {
                 JSONObject obj = new JSONObject(response);
-
                 // check for error flag
                 if (!obj.getBoolean("error")) {
                     JSONArray chatRoomsArray = obj.getJSONArray("chat_rooms");
@@ -222,9 +212,11 @@ public class Rings extends Fragment {
         AppController.getInstance().addToRequestQueue(strReq);
     }
 
+    /**
+     * Load Rings
+     */
     private void loadRings() {
         Timber.tag(TAG).d("loadRings: ");
-
         // To ensure list is visible when retry button in error view is clicked
         hideRingsErrorView();
         hideRingsEmptyView();
@@ -235,7 +227,6 @@ public class Rings extends Fragment {
 
             try {
                 JSONObject obj = new JSONObject(response);
-
                 // check for error flag
                 if (!obj.getBoolean("error")) {
                     JSONArray chatRoomsArray = obj.getJSONArray("chat_rooms");
@@ -257,7 +248,7 @@ public class Rings extends Fragment {
 
                             StaggeredGridViewItem item;
 
-                            item = new RingsAdapter(getActivity(), cr, username, i);
+                            item = new RingsAdapter(getActivity(), cr, i);
                             mStaggeredView.addItem(item);
                         }
                     }
@@ -298,40 +289,10 @@ public class Rings extends Fragment {
     // Ex: topic_1, topic_2
     private void subscribeToAllTopics() {
         for (ChatRoom cr : chatRoomArrayList) {
-
             Intent intent = new Intent(getActivity(), FCMIntentService.class);
             intent.putExtra(FCMIntentService.KEY, FCMIntentService.SUBSCRIBE);
             intent.putExtra(FCMIntentService.TOPIC, "topic_" + cr.getId());
             requireActivity().startService(intent);
-        }
-    }
-
-    /**
-     */
-    private void showMyRingsErrorView() {
-
-        if (myRingsErrorLayout.getVisibility() == View.GONE) {
-            myRingsErrorLayout.setVisibility(View.VISIBLE);
-            myRingsProgress.setVisibility(View.GONE);
-
-            myRingsTxtError.setText(getResources().getString(R.string.error_msg_unknown));
-        }
-    }
-
-    private void showMyRingsEmptyView() {
-        if (myRingsEmptyLayout.getVisibility() == View.GONE) {
-            myRingsEmptyLayout.setVisibility(View.VISIBLE);
-            myRingsProgress.setVisibility(View.GONE);
-        }
-    }
-
-    private void showRingsErrorView() {
-
-        if (ringsErrorLayout.getVisibility() == View.GONE) {
-            ringsErrorLayout.setVisibility(View.VISIBLE);
-            ringsProgress.setVisibility(View.GONE);
-
-            ringsTxtError.setText(getResources().getString(R.string.error_msg_unknown));
         }
     }
 
@@ -342,25 +303,7 @@ public class Rings extends Fragment {
         }
     }
 
-    /**
-     * @param throwable to identify the type of error
-     * @return appropriate error message
-     */
-    private String fetchErrorMessage(Throwable throwable) {
-        String errorMsg = getResources().getString(R.string.error_msg_unknown);
-
-        if (!isNetworkConnected()) {
-            errorMsg = getResources().getString(R.string.error_msg_no_internet);
-        } else if (throwable instanceof TimeoutException) {
-            errorMsg = getResources().getString(R.string.error_msg_timeout);
-        }
-
-        return errorMsg;
-    }
-
     // Helpers -------------------------------------------------------------------------------------
-
-
     private void hideMyRingsErrorView() {
         if (myRingsErrorLayout.getVisibility() == View.VISIBLE) {
             myRingsErrorLayout.setVisibility(View.GONE);
@@ -396,7 +339,6 @@ public class Rings extends Fragment {
     /**
      * Remember to add android.permission.ACCESS_NETWORK_STATE permission.
      *
-     * @return
      */
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);

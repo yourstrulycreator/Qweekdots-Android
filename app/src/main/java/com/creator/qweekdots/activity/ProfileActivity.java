@@ -1,12 +1,11 @@
 package com.creator.qweekdots.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.ColorDrawable;
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -21,22 +20,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.palette.graphics.Palette;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.creator.qweekdots.R;
 import com.creator.qweekdots.adapter.TabsAdapter;
 import com.creator.qweekdots.api.ProfileService;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.app.AppConfig;
 import com.creator.qweekdots.app.AppController;
-import com.creator.qweekdots.chat.ChatUserActivity;
 import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.helper.SessionManager;
 import com.creator.qweekdots.models.ProfileModel;
@@ -52,10 +56,7 @@ import com.creator.qweekdots.ui.OptionsBottomSheet;
 import com.creator.qweekdots.ui.ProfileFeed;
 import com.creator.qweekdots.ui.QweeksnapFeed;
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
-import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiTextView;
@@ -78,34 +79,36 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static maes.tech.intentanim.CustomIntent.customType;
+
 public class ProfileActivity extends AppCompatActivity {
     private final String TAG = ProfileActivity.class.getSimpleName();
-
     private SQLiteHandler db;
+
     private SessionManager session;
 
-    private String username, profile, avatar;
+    private String username;
+    private String profile;
 
     private ProfileService profileService;
     private static CircleImageView profilePic;
-    private FloatingActionButton editBtn, chatBtn;
+    private ImageButton chatBtn;
     private CircularProgressButton followBtn;
     private TextView usernameTxt, dropCount, followingCount,  followersCount;
     private EmojiTextView fullnameTxt, bioTxt;
     private static Target profilePicTarget;
+    @SuppressLint("StaticFieldLeak")
     private static TextView staticBioTxt;
-    private Bitmap profilePicBitmap;
     private boolean collapsed;
-    private String follower, type, followe, followed, setFollowedNo, setFollowedYes;
+    private String followed;
     private String profileId, profileName;
-    private CollapsingToolbarLayout profileCollapsingToolbar;
 
     private List<UserItem> userItem;
     private UserItem user;
 
     View decorView;
 
-    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
+    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility", "CutPasteId"})
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,14 +124,11 @@ public class ProfileActivity extends AppCompatActivity {
         profile = Objects.requireNonNull(intent.getExtras()).getString("profile");
 
         // SqLite database handler
-        SQLiteHandler db = new SQLiteHandler(Objects.requireNonNull(getApplication()));
+        db = new SQLiteHandler(Objects.requireNonNull(getApplication()));
         // session manager
-
         // Fetching user details from SQLite
         HashMap<String, String> userData = db.getUserDetails();
-
         username = userData.get("username");
-        avatar = userData.get("avatar");
 
         if(new DarkModePrefManager(this).isNightMode()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -148,10 +148,13 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         ImageButton customOpt = findViewById(R.id.customOptions);
+        chatBtn = findViewById(R.id.customChat);
         if(profile.equals(username)) {
             customOpt.setVisibility(View.VISIBLE);
+            chatBtn.setVisibility(View.GONE);
         } else {
             customOpt.setVisibility(View.GONE);
+            chatBtn.setVisibility(View.VISIBLE);
         }
 
         //init service and load data
@@ -164,7 +167,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         profilePic = findViewById(R.id.profileAvatar);
         followBtn = findViewById(R.id.followActionButton);
-        chatBtn = findViewById(R.id.chatActionButton);
         fullnameTxt = findViewById(R.id.fullnameTextView);
         usernameTxt = findViewById(R.id.usernameTextView);
         bioTxt = findViewById(R.id.bioText);
@@ -172,10 +174,8 @@ public class ProfileActivity extends AppCompatActivity {
         dropCount = findViewById(R.id.dropCount);
         followingCount = findViewById(R.id.followingCount);
         followersCount = findViewById(R.id.followerCount);
-        LinearLayout dropBox = findViewById(R.id.dropBox);
         LinearLayout followingBox = findViewById(R.id.followingBox);
         LinearLayout followerBox = findViewById(R.id.followerBox);
-        profileCollapsingToolbar = findViewById(R.id.profile_collapse_toolbar);
 
         loadProfile();
 
@@ -211,6 +211,7 @@ public class ProfileActivity extends AppCompatActivity {
             i.putExtra("to", profileId);
             i.putExtra("to_name", profileName);
             startActivity(i);
+            customType(ProfileActivity.this, "fadein-to-fadeout");
         });
 
         followingBox.setOnClickListener(v -> {
@@ -330,10 +331,10 @@ public class ProfileActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
-    public static void loadProfileImage(String url) {
+    public static void loadProfileImage(String url, Context context) {
 
         //qweeksnap
-        profilePicTarget = new com.squareup.picasso.Target() {
+        /*profilePicTarget = new com.squareup.picasso.Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 profilePic.setImageBitmap(bitmap);
@@ -357,7 +358,20 @@ public class ProfileActivity extends AppCompatActivity {
                 .resize(80, 80)
                 .error(R.drawable.ic_alien)
                 .centerCrop()
-                .into(profilePicTarget);
+                .into(profilePicTarget);*/
+
+        RequestOptions requestOptions = new RequestOptions() // because file name is always same
+                .format(DecodeFormat.PREFER_RGB_565);
+        Glide
+                .with(context)
+                .load(url)
+                .override(100, 100)
+                .placeholder(R.drawable.alien)
+                .error(R.drawable.alien)
+                .thumbnail(0.3f)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .apply(requestOptions)
+                .into(profilePic);
     }
 
     public static void loadProfileBio(String bio) {
@@ -381,66 +395,10 @@ public class ProfileActivity extends AppCompatActivity {
                 profileName = user.getFullname();
 
                         //qweeksnap
-                profilePicTarget = new com.squareup.picasso.Target() {
+                /*profilePicTarget = new com.squareup.picasso.Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         profilePic.setImageBitmap(bitmap);
-
-                        profilePicBitmap = bitmap;
-
-                        Palette.from(bitmap)
-                                .generate(p -> {
-                                    Palette.Swatch textSwatch;
-                                    if((textSwatch = p.getVibrantSwatch()) != null){
-                                        Drawable background = profileCollapsingToolbar.getBackground();
-                                        if (background instanceof ShapeDrawable) {
-                                            ((ShapeDrawable) background).getPaint().setColor(textSwatch.getRgb());
-                                        } else if (background instanceof GradientDrawable) {
-                                            ((GradientDrawable) background).setColor(textSwatch.getRgb());
-                                        } else if (background instanceof ColorDrawable) {
-                                            ((ColorDrawable) background).setColor(textSwatch.getRgb());
-                                        }
-
-                                        fullnameTxt.setTextColor(textSwatch.getTitleTextColor());
-                                        usernameTxt.setTextColor(textSwatch.getBodyTextColor());
-                                        dropCount.setTextColor(textSwatch.getBodyTextColor());
-                                        followersCount.setTextColor(textSwatch.getBodyTextColor());
-                                        followingCount.setTextColor(textSwatch.getBodyTextColor());
-                                        bioTxt.setTextColor(textSwatch.getBodyTextColor());
-                                    }
-                                    if((textSwatch = p.getLightMutedSwatch()) != null){
-                                        Drawable background = profileCollapsingToolbar.getBackground();
-                                        if (background instanceof ShapeDrawable) {
-                                            ((ShapeDrawable) background).getPaint().setColor(textSwatch.getRgb());
-                                        } else if (background instanceof GradientDrawable) {
-                                            ((GradientDrawable) background).setColor(textSwatch.getRgb());
-                                        } else if (background instanceof ColorDrawable) {
-                                            ((ColorDrawable) background).setColor(textSwatch.getRgb());
-                                        }
-
-                                        fullnameTxt.setTextColor(textSwatch.getTitleTextColor());
-                                        usernameTxt.setTextColor(textSwatch.getBodyTextColor());
-                                        dropCount.setTextColor(textSwatch.getBodyTextColor());
-                                        followersCount.setTextColor(textSwatch.getBodyTextColor());
-                                        followingCount.setTextColor(textSwatch.getBodyTextColor());
-                                        bioTxt.setTextColor(textSwatch.getBodyTextColor());
-                                    }
-
-                                    Drawable background = profileCollapsingToolbar.getBackground();
-                                    if (background instanceof ShapeDrawable) {
-                                        ((ShapeDrawable)background).getPaint().setColor(getResources().getColor(R.color.contentBodyColor));
-                                    } else if (background instanceof GradientDrawable) {
-                                        ((GradientDrawable)background).setColor(getResources().getColor(R.color.contentBodyColor));
-                                    } else if (background instanceof ColorDrawable) {
-                                        ((ColorDrawable)background).setColor(getResources().getColor(R.color.contentBodyColor));
-                                    }
-                                    fullnameTxt.setTextColor(getResources().getColor(R.color.contentTextColor));
-                                    usernameTxt.setTextColor(getResources().getColor(R.color.QweekColorAccent));
-                                    dropCount.setTextColor(getResources().getColor(R.color.contentTextColor));
-                                    followersCount.setTextColor(getResources().getColor(R.color.contentTextColor));
-                                    followingCount.setTextColor(getResources().getColor(R.color.contentTextColor));
-                                    bioTxt.setTextColor(getResources().getColor(R.color.contentTextColor));
-                                });
                     }
 
                     @Override
@@ -458,10 +416,24 @@ public class ProfileActivity extends AppCompatActivity {
                 // load User ProfileModel Picture
                 Picasso.get().
                         load(user.getAvatar())
-                        .resize(80, 80)
+                        .resize(100, 100)
                         .error(R.drawable.ic_alien)
                         .centerCrop()
-                        .into(profilePicTarget);
+                        .into(profilePicTarget);*/
+
+                RequestOptions requestOptions = new RequestOptions() // because file name is always same
+                        .format(DecodeFormat.PREFER_RGB_565);
+                Drawable placeholder = getTinted(getResources().getColor(R.color.contentTextColor));
+                Glide
+                        .with(getApplicationContext())
+                        .load(user.getAvatar())
+                        .override(100, 100)
+                        .placeholder(placeholder)
+                        .error(placeholder)
+                        .thumbnail(0.3f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .apply(requestOptions)
+                        .into(profilePic);
 
                 fullnameTxt.setText(user.getFullname());
                 usernameTxt.setText("q/"+ user.getUsername());
@@ -474,11 +446,7 @@ public class ProfileActivity extends AppCompatActivity {
                         bioTxt.setText(user.getBio());
                     }
                 } else {
-                    if(user.getBio().isEmpty()) {
-                        bioTxt.setText("Hold down to set your new Bio... and other things");
-                    } else {
-                        bioTxt.setText(user.getBio());
-                    }
+                    bioTxt.setText(user.getBio());
                 }
 
 
@@ -512,6 +480,23 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    private @Nullable
+    Drawable getTinted(@ColorInt int color) {
+        // need to mutate otherwise all references to this drawable will be tinted
+        Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_alien).mutate();
+        return tint(drawable, ColorStateList.valueOf(color));
+    }
+
+    public static Drawable tint(Drawable input, ColorStateList tint) {
+        if (input == null) {
+            return null;
+        }
+        Drawable wrappedDrawable = DrawableCompat.wrap(input);
+        DrawableCompat.setTintList(wrappedDrawable, tint);
+        DrawableCompat.setTintMode(wrappedDrawable, PorterDuff.Mode.MULTIPLY);
+        return wrappedDrawable;
+    }
+
     /**
      * @param response extracts List<{@link ProfileModel >} from response
      *
@@ -536,9 +521,9 @@ public class ProfileActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         TabsAdapter adapter = new TabsAdapter(
                 getSupportFragmentManager());
-        adapter.addFragment(new ProfileFeed(getApplicationContext(), profile, username, avatar), "Drops");
+        adapter.addFragment(new ProfileFeed(getApplicationContext(), profile, username), "Drops");
         adapter.addFragment(new QweeksnapFeed(getApplicationContext(), profile, username), "QweekSnaps");
-        adapter.addFragment(new LikedFeed(getApplicationContext(), profile, username, avatar), "Liked");
+        adapter.addFragment(new LikedFeed(getApplicationContext(), profile, username), "Liked");
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(2);
     }

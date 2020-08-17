@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.adapter.PaginationAdapter;
 import com.creator.qweekdots.api.ProfileFeedService;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.models.Cursor;
@@ -31,7 +31,6 @@ import com.github.ybq.android.spinkit.SpinKitView;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -42,9 +41,8 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
-    String profile;
+    private String profile;
     String username;
-    private String avatar;
     private Context context;
 
     private PaginationAdapter adapter;
@@ -64,10 +62,8 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
     private static final int PAGE_START = 1;
     private static int TOTAL_PAGES;
     private int currentPage = PAGE_START;
-    private String next_link;
-    private String prev_link;
     private String max_id;
-    private String since_id;
+    //private String since_id;
 
     private ProfileFeedService feedService;
 
@@ -75,17 +71,15 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
     }
 
     @SuppressLint("ValidFragment")
-    public ProfileFeed(Context context, String profile, String username, String avatar) {
+    public ProfileFeed(Context context, String profile, String username) {
         this.context = context;
         this.profile = profile;
         this.username = username;
-        this.avatar = avatar;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.profile_feed, container, false);
-
         if(context!=null) {
             RecyclerView rv = rootView.findViewById(R.id.profile_recycler);
             progressBar = rootView.findViewById(R.id.spin_kit);
@@ -101,16 +95,14 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
             rv.setLayoutManager(linearLayoutManager);
             rv.setHasFixedSize(true);
 
-            adapter = new PaginationAdapter(getActivity(), getTargetFragment(), username, avatar);
+            adapter = new PaginationAdapter(getActivity(), getTargetFragment(), username);
 
             rv.setAdapter(adapter);
-
             rv.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
                 @Override
                 protected void loadMoreItems() {
                     isLoading = true;
                     currentPage += 1;
-
                     if(isNetworkConnected()) {
                         loadNextPage();
                     } else {
@@ -120,17 +112,14 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
                         Timber.tag(TAG).d("No internet connection available");
                     }
                 }
-
                 @Override
                 public int getTotalPageCount() {
                     return TOTAL_PAGES;
                 }
-
                 @Override
                 public boolean isLastPage() {
                     return isLastPage;
                 }
-
                 @Override
                 public boolean isLoading() {
                     return isLoading;
@@ -144,10 +133,8 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
             }
 
             btnRetry.setOnClickListener(view -> loadFirstPage());
-
             swipeRefreshLayout.setOnRefreshListener(this::doRefresh);
         }
-
         return rootView;
     }
 
@@ -167,20 +154,19 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
         swipeRefreshLayout.setRefreshing(false);
     }
 
+    /**
+     * Load First Page of Profile Feed
+     */
     private void loadFirstPage() {
-        Log.d(TAG, "loadFirstPage: ");
-
+        Timber.tag(TAG).d("loadFirstPage: ");
         // To ensure list is visible when retry button in error view is clicked
         hideErrorView();
         hideEmptyView();
-
         callNewsFeedApi().enqueue(new Callback<NewsFeed>() {
             @Override
             public void onResponse(@NotNull Call<NewsFeed> call, @NotNull Response<NewsFeed> response) {
                 hideErrorView();
-
-                Log.i(TAG, "onResponse: " + (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
+                Timber.tag(TAG).i("onResponse: %s", (response.raw().cacheResponse() != null ? "Cache" : "Network"));
                 // Got data. Send it to adapter
                 List<FeedItem> feedItem = fetchNewsFeed(response);
                 if(feedItem.isEmpty()) {
@@ -192,10 +178,8 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
                     // Cursor Links
                     List<Cursor> cursor = fetchCursorLinks(response);
                     Cursor cursorLink = cursor.get(0);
-                    next_link = cursorLink.getNextLink();
-                    prev_link = cursorLink.getPrevLink();
                     max_id = cursorLink.getMaxID();
-                    since_id = cursorLink.getSinceID();
+                    //since_id = cursorLink.getSinceID();
 
                     TOTAL_PAGES = cursorLink.getPagesNum();
 
@@ -212,13 +196,12 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
             }
 
             @Override
-            public void onFailure(Call<NewsFeed> call, Throwable t) {
+            public void onFailure(@NotNull Call<NewsFeed> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 showErrorView();
             }
         });
     }
-
 
     /**
      * @param response extracts List<{@link FeedItem>} from response
@@ -239,14 +222,10 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
     }
 
     private void loadNextPage() {
-        Log.d(TAG, "loadNextPage: " + currentPage);
-
+        Timber.tag(TAG).d("loadNextPage: %s", currentPage);
         callNextNewsFeedApi().enqueue(new Callback<NewsFeed>() {
             @Override
             public void onResponse(@NotNull Call<NewsFeed> call, @NotNull Response<NewsFeed> response) {
-//                Log.i(TAG, "onResponse: " + currentPage
-//                        + (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
                 adapter.removeLoadingFooter();
                 isLoading = false;
 
@@ -256,10 +235,8 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
                 // Cursor Links
                 List<Cursor> cursor = fetchCursorLinks(response);
                 Cursor cursorLink = cursor.get(0);
-                next_link = cursorLink.getNextLink();
-                prev_link = cursorLink.getPrevLink();
                 max_id = cursorLink.getMaxID();
-                since_id = cursorLink.getSinceID();
+                //since_id = cursorLink.getSinceID();
 
                 if (currentPage != TOTAL_PAGES) {
                     adapter.addLoadingFooter();
@@ -269,7 +246,7 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
             }
 
             @Override
-            public void onFailure(Call<NewsFeed> call, Throwable t) {
+            public void onFailure(@NotNull Call<NewsFeed> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 adapter.showRetry(true, fetchErrorMessage(t));
             }
@@ -311,7 +288,7 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
      * Same API call for Pagination.
      * As {@link #currentPage} will be incremented automatically
      * by @{@link PaginationScrollListener} to load next page.
-     */
+     *
     private Call<NewsFeed> callPrevNewsFeedApi() {
         return feedService.getNewsFeed(
                 username,
@@ -320,6 +297,7 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
                 since_id
         );
     }
+     */
 
     public void retryPageLoad() {
         loadNextPage();
@@ -328,11 +306,9 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
     /**
      */
     private void showErrorView() {
-
         if (errorLayout.getVisibility() == View.GONE) {
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-
             txtError.setText(getResources().getString(R.string.error_msg_unknown));
         }
     }
@@ -350,19 +326,15 @@ public class ProfileFeed extends Fragment implements PaginationAdapterCallback {
      */
     private String fetchErrorMessage(Throwable throwable) {
         String errorMsg = getResources().getString(R.string.error_msg_unknown);
-
         if (!isNetworkConnected()) {
             errorMsg = getResources().getString(R.string.error_msg_no_internet);
         } else if (throwable instanceof TimeoutException) {
             errorMsg = getResources().getString(R.string.error_msg_timeout);
         }
-
         return errorMsg;
     }
 
     // Helpers -------------------------------------------------------------------------------------
-
-
     private void hideErrorView() {
         if (errorLayout.getVisibility() == View.VISIBLE) {
             errorLayout.setVisibility(View.GONE);

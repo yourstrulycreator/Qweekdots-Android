@@ -26,9 +26,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -72,12 +70,10 @@ import com.creator.qweekdots.qweekcamera.ZoomIconEvent;
 import com.creator.qweekdots.utils.CircleProgressBar;
 import com.creator.qweekdots.utils.GifSizeFilter;
 import com.creator.qweekdots.utils.Glide4Engine;
-import com.creator.qweekdots.utils.ImagePicker;
 import com.creator.qweekdots.utils.ImageUtil;
 import com.creator.qweekdots.volley.VolleyMultipartRequest;
 import com.github.jorgecastilloprz.FABProgressCircle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.iceteck.silicompressorr.SiliCompressor;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.filter.Filter;
@@ -111,7 +107,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class DropQweekSnap extends Fragment {
     private static final String TAG = DropQweekSnap.class.getSimpleName();
-
+    //
     private SurfaceView preview = null;
     private SurfaceHolder previewHolder = null;
     private Camera camera = null;
@@ -129,10 +125,11 @@ public class DropQweekSnap extends Fragment {
     private ImageView flashButton;
     private ImageView capturedImage;
     private VideoView videoView;
+    private ImageView goBack;
     private int VideoSeconds = 1;
     //
     private static final int PICKER_REQUEST_CODE = 1;
-
+    //
     private StickerView stickerView;
     private EditText editText;
     private LinearLayout editTextLayout;
@@ -141,26 +138,69 @@ public class DropQweekSnap extends Fragment {
     private LinearLayout selectSticker;
     private StickerAdapter stickerAdapter;
     private GridView stickersGrid;
+    private ImageView addSticker;
     private String defaultVideo;
     private Integer[]  sticker_images = {
+            R.drawable.sticker_00, R.drawable.sticker_0,
             R.drawable.sticker_1, R.drawable.sticker_2, R.drawable.sticker_3, R.drawable.sticker_4,
             R.drawable.sticker_5, R.drawable.sticker_6, R.drawable.sticker_7, R.drawable.sticker_8,
             R.drawable.sticker_9, R.drawable.sticker_10, R.drawable.sticker_11, R.drawable.sticker_12,
-            R.drawable.sticker_13, R.drawable.sticker_14
+            R.drawable.sticker_13, R.drawable.sticker_14, R.drawable.sticker_15, R.drawable.sticker_16,
+            R.drawable.sticker_17, R.drawable.sticker_18, R.drawable.sticker_19, R.drawable.sticker_20,
+            R.drawable.sticker_21, R.drawable.sticker_22, R.drawable.sticker_23, R.drawable.sticker_24,
+            R.drawable.sticker_25, R.drawable.sticker_26, R.drawable.sticker_27, R.drawable.sticker_28,
+            R.drawable.sticker_29, R.drawable.sticker_30, R.drawable.sticker_31, R.drawable.sticker_32,
+            R.drawable.sticker_33, R.drawable.sticker_34, R.drawable.sticker_35, R.drawable.sticker_36,
+            R.drawable.sticker_37, R.drawable.sticker_38, R.drawable.sticker_39, R.drawable.sticker_40,
+            R.drawable.sticker_41, R.drawable.sticker_42, R.drawable.sticker_43, R.drawable.sticker_44,
+            R.drawable.sticker_45, R.drawable.sticker_46, R.drawable.sticker_47, R.drawable.sticker_48,
+            R.drawable.sticker_49, R.drawable.sticker_50, R.drawable.sticker_51, R.drawable.sticker_52,
+            R.drawable.sticker_53, R.drawable.sticker_54, R.drawable.sticker_55, R.drawable.sticker_56,
+            R.drawable.sticker_57, R.drawable.sticker_58, R.drawable.sticker_59, R.drawable.sticker_60,
+            R.drawable.sticker_61, R.drawable.sticker_62, R.drawable.sticker_63, R.drawable.sticker_64,
+            R.drawable.sticker_65, R.drawable.sticker_66, R.drawable.sticker_67, R.drawable.sticker_68,
+            R.drawable.sticker_69, R.drawable.sticker_70, R.drawable.sticker_71, R.drawable.sticker_72,
+            R.drawable.sticker_73, R.drawable.sticker_74, R.drawable.sticker_75, R.drawable.sticker_76,
+            R.drawable.sticker_77, R.drawable.sticker_77, R.drawable.sticker_78, R.drawable.sticker_79,
+            R.drawable.sticker_80, R.drawable.sticker_81, R.drawable.sticker_82, R.drawable.sticker_83,
+            R.drawable.sticker_84, R.drawable.sticker_85, R.drawable.sticker_86, R.drawable.sticker_87,
+            R.drawable.sticker_88, R.drawable.sticker_89, R.drawable.sticker_90, R.drawable.sticker_91,
+            R.drawable.sticker_92, R.drawable.sticker_93, R.drawable.sticker_94, R.drawable.sticker_95,
+            R.drawable.sticker_96, R.drawable.sticker_96, R.drawable.sticker_97, R.drawable.sticker_98,
+            R.drawable.sticker_99, R.drawable.sticker_100, R.drawable.sticker_101, R.drawable.sticker_102,
+            R.drawable.sticker_103, R.drawable.sticker_104, R.drawable.sticker_105, R.drawable.sticker_106,
+            R.drawable.sticker_107, R.drawable.sticker_108, R.drawable.sticker_109, R.drawable.sticker_110,
+            R.drawable.sticker_111, R.drawable.sticker_112, R.drawable.sticker_113, R.drawable.sticker_114,
+            R.drawable.sticker_115, R.drawable.sticker_116, R.drawable.sticker_117, R.drawable.sticker_118,
+            R.drawable.sticker_119, R.drawable.sticker_120, R.drawable.sticker_121, R.drawable.sticker_122,
+            R.drawable.sticker_123, R.drawable.sticker_124, R.drawable.sticker_125, R.drawable.sticker_126,
+            R.drawable.sticker_127, R.drawable.sticker_128, R.drawable.sticker_129, R.drawable.sticker_130,
+            R.drawable.sticker_131, R.drawable.sticker_132, R.drawable.sticker_133, R.drawable.sticker_134,
+            R.drawable.sticker_135, R.drawable.sticker_136, R.drawable.sticker_137, R.drawable.sticker_138,
+            R.drawable.sticker_139, R.drawable.sticker_140, R.drawable.sticker_141, R.drawable.sticker_142,
+            R.drawable.sticker_143, R.drawable.sticker_144, R.drawable.sticker_145, R.drawable.sticker_146,
+            R.drawable.sticker_147, R.drawable.sticker_148, R.drawable.sticker_149, R.drawable.sticker_150,
+            R.drawable.sticker_151, R.drawable.sticker_152, R.drawable.sticker_153, R.drawable.sticker_154,
+            R.drawable.sticker_155, R.drawable.sticker_156, R.drawable.sticker_157, R.drawable.sticker_158,
+            R.drawable.sticker_159, R.drawable.sticker_160, R.drawable.sticker_161, R.drawable.sticker_162,
+            R.drawable.sticker_163, R.drawable.sticker_164, R.drawable.sticker_165, R.drawable.sticker_166,
+            R.drawable.sticker_167, R.drawable.sticker_168, R.drawable.sticker_169, R.drawable.sticker_170,
+            R.drawable.sticker_171, R.drawable.sticker_172, R.drawable.sticker_173, R.drawable.sticker_174,
+            R.drawable.sticker_175, R.drawable.sticker_176, R.drawable.sticker_177, R.drawable.sticker_178,
+            R.drawable.sticker_179, R.drawable.sticker_180, R.drawable.sticker_181, R.drawable.sticker_182,
+            R.drawable.sticker_183, R.drawable.sticker_184,
     };
     //
-    private static final int REQUEST_IMAGE = 100;
     private static final int MEDIA_TYPE_IMAGE = 4;
     private static final int MEDIA_TYPE_VIDEO = 5;
     //
     private FABProgressCircle dropProgress;
     private FloatingActionButton dropBtn;
-
     //
     private Uri mMediaUri, finalVideo;
     private View rootView;
     private String username;
-
+    //
     private RequestQueue rQueue;
 
 
@@ -178,28 +218,28 @@ public class DropQweekSnap extends Fragment {
 
         // SqLite database handler
         SQLiteHandler db = new SQLiteHandler(Objects.requireNonNull(this).getContext());
-        // session manager
-
         // Fetching user details from SQLite
         HashMap<String, String> user = db.getUserDetails();
-
         username = user.get("username");
 
-        captureMedia = rootView.findViewById(R.id.camera_view);
-        editMedia = rootView.findViewById(R.id.edit_media);
-        customButton = rootView.findViewById(R.id.custom_progressBar);
-        ImageView switchCameraBtn = rootView.findViewById(R.id.img_switch_camera);
-        dropProgress = rootView.findViewById(R.id.dropSnapProgress);
-        dropBtn = rootView.findViewById(R.id.upload_media);
-        editTextLayout = rootView.findViewById(R.id.editTextLayout);
-        //selectSticker  = rootView.findViewById(R.id.select_sticker);
-        ImageView addText = rootView.findViewById(R.id.add_text);
-        ImageView addSticker = rootView.findViewById(R.id.add_stickers);
+        // Set Boolean values at start
         isRecording = false;
         isFlashOn = false;
 
-        ImageView uploadMediaBtn = rootView.findViewById(R.id.img_upload_media);
+        /*
+         * Init Layouts
+         */
+        captureMedia = rootView.findViewById(R.id.camera_view);
 
+        // Preview for Capture
+        preview = rootView.findViewById(R.id.preview);
+        previewHolder = preview.getHolder();
+        previewHolder.addCallback(surfaceCallback);
+        previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        preview.setOnClickListener(v -> FocusCamera());
+
+        // Upload Media From Gallery
+        ImageView uploadMediaBtn = rootView.findViewById(R.id.media_upload_media);
         uploadMediaBtn.setOnClickListener(v-> {
             String[] PERMISSIONS = {
                     android.Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -208,15 +248,20 @@ public class DropQweekSnap extends Fragment {
 
             if(hasPermissions(getActivity(), PERMISSIONS)) {
                 ShowPicker();
-            } else{
+            } else {
                 ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PICKER_REQUEST_CODE);
             }
         });
 
-        ImageView editCaptureSwitchBtn = rootView.findViewById(R.id.cancel_capture);
-        capturedImage = rootView.findViewById(R.id.captured_image);
-        videoView = rootView.findViewById(R.id.captured_video);
+        // Switch Camera From Front Facing to Back and vice versa
+        ImageView switchCameraBtn = rootView.findViewById(R.id.img_switch_camera);
+        switchCameraBtn.setOnClickListener(v -> switchCamera());
 
+        // Flash Toggle Button
+        flashButton = rootView.findViewById(R.id.img_flash_control);
+        flashButton.setOnClickListener(v1 -> FlashControl());
+
+        // Save Media to Storage/Gallery
         ImageView saveMediaBtn = rootView.findViewById(R.id.save_media);
         saveMediaBtn.setOnClickListener(v -> {
             try {
@@ -226,36 +271,13 @@ public class DropQweekSnap extends Fragment {
             }
         });
 
-        flashButton = rootView.findViewById(R.id.img_flash_control);
-        flashButton.setOnClickListener(this::FlashControl);
+        // Cancel Capture Button
+        ImageView editCaptureSwitchBtn = rootView.findViewById(R.id.cancel_capture);
+        editCaptureSwitchBtn.setOnClickListener(v -> EditCaptureSwitch());
 
-        preview = rootView.findViewById(R.id.preview);
-        previewHolder = preview.getHolder();
-        previewHolder.addCallback(surfaceCallback);
-        previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
-        // Drop Button
-        dropBtn.setOnClickListener(v -> {
-            dropBtn.setEnabled(false);
-            dropProgress.show();
-            Toasty.info(requireContext(), "Dropping...", Toasty.LENGTH_SHORT).show();
-
-            if(!videoView.isShown()) {
-                if(rotatedBitmap != null) {
-                    uploadBitmap(rotatedBitmap, username);
-                    Log.d(TAG, "Uploading Photo");
-                }
-            } else {
-                if(finalVideo != null) {
-                    uploadVideo(finalVideo);
-                    Log.d(TAG, "Uploading Video");
-                }
-            }
-
-        });
-
+        // Custom Button/Progress Button for Image or Video capture
+        customButton = rootView.findViewById(R.id.custom_progressBar);
         customButton.setOnTouchListener(new View.OnTouchListener() {
-
             private Timer timer = new Timer();
             private long LONG_PRESS_TIMEOUT = 1000;
             private boolean wasLong = false;
@@ -263,7 +285,6 @@ public class DropQweekSnap extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 Timber.tag(getClass().getName()).d("touch event: %s", event.toString());
-
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     // touch & hold started
                     timer.schedule(new TimerTask() {
@@ -317,37 +338,68 @@ public class DropQweekSnap extends Fragment {
             }
         });
 
-        preview.setOnClickListener(v -> FocusCamera());
+        // Captured Media Layouts
+        capturedImage = rootView.findViewById(R.id.captured_image);
+        videoView = rootView.findViewById(R.id.captured_video);
 
-        switchCameraBtn.setOnClickListener(v -> switchCamera());
+        // Drop Button
+        // Drop QweekSnap
+        dropProgress = rootView.findViewById(R.id.dropSnapProgress);
+        dropBtn = rootView.findViewById(R.id.upload_media);
+        dropBtn.setOnClickListener(v -> {
+            dropBtn.setEnabled(false);
+            dropProgress.show();
+            Toasty.info(requireContext(), "Dropping...", Toasty.LENGTH_SHORT).show();
+            if(!videoView.isShown()) {
+                if(rotatedBitmap != null) {
+                    uploadBitmap(rotatedBitmap, username);
+                    Timber.tag(TAG).d("Uploading Photo");
+                }
+            } else {
+                if(finalVideo != null) {
+                    uploadVideo(finalVideo);
+                    Timber.tag(TAG).d("Uploading Video");
+                }
+            }
+        });
 
-        editCaptureSwitchBtn.setOnClickListener(v -> EditCaptureSwitch());
-
-        editTextLayout.setOnClickListener(view -> showHideEditText());
-        addText.setOnClickListener(view -> showHideEditText());
-        addSticker.setOnClickListener(view -> stickerOptions());
+        //Edit Media Button
+        editMedia = rootView.findViewById(R.id.edit_media);
         editMedia.setOnClickListener(view -> {
             //StickerView.invalidate();
         });
 
+        // Stickers
         //////////////////////////////
-        editText = rootView.findViewById(R.id.editText);
+        stickerAdapter = new StickerAdapter(getActivity());
+
         keyboard = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        editText = rootView.findViewById(R.id.editText);
+        editTextLayout = rootView.findViewById(R.id.editTextLayout);
+        ImageView addText = rootView.findViewById(R.id.add_text);
+        addSticker = rootView.findViewById(R.id.add_stickers);
+        ImageView hideStickers = rootView.findViewById(R.id.hide_sticker_options);
+
+        editTextLayout.setOnClickListener(view -> showHideEditText());
+        addText.setOnClickListener(view -> showHideEditText());
+        addSticker.setOnClickListener(view -> stickerOptions());
+        hideStickers.setOnClickListener(view -> stickerOptions());
+
         editTextLayout = rootView.findViewById(R.id.editTextLayout);
         selectSticker  = rootView.findViewById(R.id.select_sticker);
         stickersGrid = rootView.findViewById(R.id.sticker_grid);
-        textColor = Color.WHITE;
-        stickerAdapter = new StickerAdapter(getActivity());
 
-        LinearGradient test = new LinearGradient(0.f, 0.f, 700.f, 0.0f,
+        textColor = Color.WHITE;
+
+        // Text Sticker Color Selector
+        LinearGradient testGradient = new LinearGradient(0.f, 0.f, 700.f, 0.0f,
                 new int[] {0xFF000000, 0xFF0000FF, 0xFF00FF00, 0xFF00FFFF,
                         0xFFFF0000, 0xFFFF00FF, 0xFFFFFF00, 0xFFFFFFFF}, null, Shader.TileMode.CLAMP);
         ShapeDrawable shapeDrawable = new ShapeDrawable(new RectShape());
-        shapeDrawable.getPaint().setShader(test);
+        shapeDrawable.getPaint().setShader(testGradient);
         SeekBar seekBar = rootView.findViewById(R.id.seekbar_font);
         final View colorSelected = rootView.findViewById(R.id.colorSelected);
         seekBar.setProgressDrawable(shapeDrawable);
-
         seekBar.setMax(256*7-1);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -386,14 +438,10 @@ public class DropQweekSnap extends Fragment {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
         stickersGrid.setOnItemClickListener((parent, view, position, id) -> {
@@ -407,12 +455,15 @@ public class DropQweekSnap extends Fragment {
         });
 
 
-        //setting dir and VideoFile value
+        /*
+         * Video Pre-Processing
+         */
+
+        // setting dir and VideoFile value for Video capture
         File dir = new File(String.valueOf(requireContext().getExternalFilesDir(null)));
         if (!dir.exists()) {
             dir.mkdirs();
         }
-
         defaultVideo =  dir + "/defaultVideo.mp4.nomedia";
         File createDefault = new File(defaultVideo);
         if (!createDefault.isFile()) {
@@ -426,9 +477,13 @@ public class DropQweekSnap extends Fragment {
             }
         }
 
+        goBack = rootView.findViewById(R.id.goBack);
+        goBack.setOnClickListener(v-> goBack());
+
         return rootView;
     }
 
+    // Show Picker for Media Upload from Gallery using Matisse
     private void ShowPicker() {
         Matisse.from(this)
                 .choose(MimeType.ofAll())
@@ -442,6 +497,7 @@ public class DropQweekSnap extends Fragment {
                 .forResult(PICKER_REQUEST_CODE);
     }
 
+    // Countdown timer for Video Capture
     private CountDownTimer VideoCountDown = new CountDownTimer(10000,1000) {
         @Override
         public void onTick(long millisUntilFinished) {
@@ -458,6 +514,7 @@ public class DropQweekSnap extends Fragment {
         }
     };
 
+    // Focus Camera for Capture
     private void FocusCamera(){
         if (camera.getParameters().getFocusMode().equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {} else {
             camera.autoFocus((success, camera) -> { });
@@ -477,14 +534,12 @@ public class DropQweekSnap extends Fragment {
         Camera.Size cs = sizes.get(closest(1080, list));
         Timber.tag("Width x Height").i(cs.width + "x" + cs.height);
         params.setPictureSize(cs.width, cs.height); //1920, 1080
-
         //params.setRotation(90);
         camera.setParameters(params);
         camera.takePicture(null, null, (data, camera) -> {
             Bitmap bitmap;
             Matrix matrix = new Matrix();
 
-            //if (bitmap.getWidth() > bitmap.getHeight()) {
             if (currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
                 matrix.postRotate(90);
             } else {
@@ -495,13 +550,9 @@ public class DropQweekSnap extends Fragment {
                 matrix.postRotate(90);
             }
             bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+
             rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            /*} else {
-                rotatedBitmap = bitmap;
-            }*/
-
             if (rotatedBitmap != null) {
-
                 mMediaUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
                 if (mMediaUri == null) {
                     // display an error
@@ -513,11 +564,11 @@ public class DropQweekSnap extends Fragment {
                     capturedImage.setImageBitmap(rotatedBitmap);
                     editMedia.setVisibility(View.VISIBLE);
                     captureMedia.setVisibility(View.GONE);
+                    goBack.setVisibility(View.GONE);
 
                     params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
                     camera.setParameters(params);
                 }
-
                 Timber.tag("Image bitmap").i("%s-", rotatedBitmap.toString());
             } else {
                 Toasty.error(requireActivity(), "Oops, something went wrong, kindly Try Again",
@@ -557,6 +608,7 @@ public class DropQweekSnap extends Fragment {
         } else {
             mediaRecorder.setOrientationHint(setCameraDisplayOrientation(requireActivity(), currentCameraId));
         }
+        mediaRecorder.setMaxDuration(150000); // 2 minutes, 30 seconds
         mediaRecorder.setVideoEncodingBitRate(3000000);
         mediaRecorder.setVideoFrameRate(30);
 
@@ -610,14 +662,13 @@ public class DropQweekSnap extends Fragment {
         videoView.setVisibility(View.VISIBLE);
         editMedia.setVisibility(View.VISIBLE);
         captureMedia.setVisibility(View.GONE);
-
         mMediaUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);
+
         if (mMediaUri == null) {
             // display an error
             Toasty.error(requireActivity(), R.string.error_external_storage,
                     Toast.LENGTH_LONG).show();
         } else {
-
             Uri video = Uri.parse(defaultVideo);
             finalVideo = Uri.parse(defaultVideo);
             videoView.setVideoURI(video);
@@ -625,9 +676,15 @@ public class DropQweekSnap extends Fragment {
             videoView.start();
             preview.setVisibility(View.INVISIBLE);
             setStickerView(1);
+            addSticker.setVisibility(View.GONE);
+            goBack.setVisibility(View.GONE);
         }
     }
 
+    /**
+     * Function to save Media Captured to Gallery/Storage
+     * @throws IOException
+     */
     private void saveMedia() throws IOException {
         if (!videoView.isShown()) {
             Toasty.info(requireActivity(), "Saving...",Toast.LENGTH_SHORT).show();
@@ -671,7 +728,6 @@ public class DropQweekSnap extends Fragment {
                     resolver.delete(uri, null, null);
                 }
                 Toasty.error(requireActivity(), "Error saving!",Toast.LENGTH_LONG).show();
-
                 throw e;
             } finally {
                 if(stream != null) {
@@ -748,14 +804,7 @@ public class DropQweekSnap extends Fragment {
         }
     }
 
-    private void refreshGallery(File file) {
-        Intent mediaScanIntent = new Intent(
-                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        mediaScanIntent.setData(Uri.fromFile(file));
-        requireActivity().sendBroadcast(mediaScanIntent);
-    }
-
-    private void FlashControl(View v) {
+    private void FlashControl() {
         Timber.tag("Flash").i("Flash button clicked!");
         boolean hasFlash = requireActivity().getApplicationContext().getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
@@ -806,24 +855,10 @@ public class DropQweekSnap extends Fragment {
     private void EditCaptureSwitch() {
         preview.setVisibility(View.VISIBLE);
         captureMedia.setVisibility(View.VISIBLE);
-        //capturedImage.setImageResource(android.R.color.transparent);
-        startPreview(); //onResume();
+        startPreview();
         capturedImage.setVisibility(View.GONE);
         editMedia.setVisibility(View.GONE);
         videoView.setVisibility(View.GONE);
-    }
-
-    private void onBackPressed() {
-        if (selectSticker.getVisibility() == View.VISIBLE) {
-            stickerOptions();
-        } else if(editTextLayout.getVisibility() == View.VISIBLE) {
-            showHideEditText();
-        } else if (editMedia.getVisibility() == View.VISIBLE) {
-            EditCaptureSwitch();
-            removeAllStickers();
-        } else {
-            requireActivity().finish();
-        }
     }
 
     @SuppressLint("NewApi")
@@ -906,6 +941,7 @@ public class DropQweekSnap extends Fragment {
         }
     }
 
+    /*
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
         final double ASPECT_TOLERANCE = 0.1;
         double targetRatio = (double) h / w;
@@ -914,34 +950,35 @@ public class DropQweekSnap extends Fragment {
         }
         Camera.Size optimalSize = null;
         double minDiff = Double.MAX_VALUE;
-        int targetHeight = h;
         for (Camera.Size size : sizes) {
             double ratio = (double) size.height / size.width;
             if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) {
                 continue;
             }
-            if (Math.abs(size.height - targetHeight) < minDiff) {
+            if (Math.abs(size.height - h) < minDiff) {
                 optimalSize = size;
-                minDiff = Math.abs(size.height - targetHeight);
+                minDiff = Math.abs(size.height - h);
             }
         }
         if (optimalSize == null) {
             minDiff = Double.MAX_VALUE;
             for (Camera.Size size : sizes) {
-                if (Math.abs(size.height - targetHeight) < minDiff) {
+                if (Math.abs(size.height - h) < minDiff) {
                     optimalSize = size;
-                    minDiff = Math.abs(size.height - targetHeight);
+                    minDiff = Math.abs(size.height - h);
                 }
             }
         }
         return optimalSize;
     }
+     */
 
     private void startPreview() {
         if (cameraConfigured && camera!=null) {
             camera.setDisplayOrientation(setCameraDisplayOrientation(requireActivity(), currentCameraId));
             camera.startPreview();
             inPreview=true;
+            goBack.setVisibility(View.VISIBLE);
         }
     }
 
@@ -983,6 +1020,12 @@ public class DropQweekSnap extends Fragment {
         }
     };
 
+    /**
+     * Sticker Functions
+     * @param stickerV
+     */
+
+    // Set Sticker View after Media Capture
     private void setStickerView(int stickerV) {
         Timber.tag("setStickerView").i("Called");
         if (stickerV == 0) {
@@ -1012,8 +1055,6 @@ public class DropQweekSnap extends Fragment {
         stickerView.setLocked(false);
         stickerView.setConstrained(true);
 
-        TextSticker sticker = new TextSticker(requireActivity());
-
         stickerView.setOnStickerOperationListener(new StickerView.OnStickerOperationListener() {
             @Override
             public void onStickerAdded(@NonNull Sticker sticker) {
@@ -1022,11 +1063,7 @@ public class DropQweekSnap extends Fragment {
 
             @Override
             public void onStickerClicked(@NonNull Sticker sticker) {
-                //stickerView.removeAllSticker();
                 if (sticker instanceof TextSticker) {
-                    //((TextSticker) sticker).setTextColor(Color.RED);
-                    //stickerView.replace(sticker);
-                    //stickerView.invalidate();
                     String stext = ((TextSticker) sticker).getText();
                     editText.setText(stext);
                     stickerView.removeCurrentSticker();
@@ -1064,6 +1101,7 @@ public class DropQweekSnap extends Fragment {
         });
     }
 
+    // Toggle Visibility of Sticker EditText
     private void showHideEditText() {
         int getEditTextVisibility = editTextLayout.getVisibility();
         if (getEditTextVisibility == View.VISIBLE) {
@@ -1081,6 +1119,7 @@ public class DropQweekSnap extends Fragment {
         }
     }
 
+    // Show Keyboard
     private void showKeyboard(boolean show) {
         if (show) {
             keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, 1);
@@ -1102,11 +1141,11 @@ public class DropQweekSnap extends Fragment {
         }
     }
 
+    // Toggle Sticker Grid
     private void stickerOptions() {
         if (selectSticker.getVisibility() == View.VISIBLE) {
             selectSticker.setVisibility(View.GONE);
         } else {
-            boolean loadSticker = true;
             stickersGrid.setAdapter(stickerAdapter);
             selectSticker.setVisibility(View.VISIBLE);
         }
@@ -1157,21 +1196,12 @@ public class DropQweekSnap extends Fragment {
         stickerView.removeAllStickers();
     }
 
+    ///////////
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    private void launchGalleryIntent() {
-        Intent intent = new Intent(getActivity(), ImagePicker.class);
-        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_GALLERY_IMAGE);
-
-        // setting aspect ratio
-        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true);
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, 1); // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, 1);
-        startActivityForResult(intent, REQUEST_IMAGE);
     }
 
     @Override
@@ -1180,7 +1210,7 @@ public class DropQweekSnap extends Fragment {
             // List that will contain the selected files/videos
             List<Uri> mSelected = Matisse.obtainResult(data);
 
-            Log.e(TAG, mSelected.get(0).toString());
+            Timber.tag(TAG).e(mSelected.get(0).toString());
 
             if (mSelected.get(0).toString().contains("image")) {
                 //handle image
@@ -1209,8 +1239,7 @@ public class DropQweekSnap extends Fragment {
                 }
             } else  if (mSelected.get(0).toString().contains("video")) {
                 //handle video
-                try
-                {
+                try {
                     Uri path = mSelected.get(0);
                     if(path != null) {
                         finalVideo = path;
@@ -1226,53 +1255,23 @@ public class DropQweekSnap extends Fragment {
                         setStickerView(1);
                     }
                 }
-                catch(Exception ex)
-                {
+                catch(Exception ex) {
                     ex.printStackTrace();
                 }
             } else {
                 Toasty.info(requireContext(), "Neither Image nor Video was selected", Toasty.LENGTH_SHORT).show();
             }
 
-            Log.d("Matisse", "mSelected: " + mSelected);
+            Timber.tag("Matisse").d("mSelected: %s", mSelected);
         }
-    }
-
-    /**
-     * Showing Alert Dialog with Settings option
-     * Navigates user to app settings
-     * NOTE: Keep proper title and message depending on your app
-     */
-    private void showSettingsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getString(R.string.dialog_permission_title));
-        builder.setMessage(getString(R.string.dialog_permission_message));
-        builder.setPositiveButton(getString(R.string.go_to_settings), (dialog, which) -> {
-            dialog.cancel();
-            openSettings();
-        });
-        builder.setNegativeButton(getString(android.R.string.cancel), (dialog, which) -> dialog.cancel());
-        builder.show();
-
-    }
-
-    // navigating user to app settings
-    private void openSettings() {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", requireActivity().getPackageName(), null);
-        intent.setData(uri);
-        startActivityForResult(intent, 101);
     }
 
     private Uri getOutputMediaFileUri(int mediaType) {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
         if (isExternalStorageAvailable()) {
-
             // get the URI
-
             File mediaStorageDir = new File(String.valueOf(requireContext().getExternalFilesDir(null)));
-
             // 1. Create our subdirectory
             if (! mediaStorageDir.exists()) {
                 if (! mediaStorageDir.mkdirs()) {
@@ -1280,7 +1279,6 @@ public class DropQweekSnap extends Fragment {
                     return null;
                 }
             }
-
             // 2. Create a file name
             // 3. Create the file
             File mediaFile;
@@ -1302,8 +1300,7 @@ public class DropQweekSnap extends Fragment {
 
             // 4. Return the file's URI
             return Uri.fromFile(mediaFile);
-        }
-        else {
+        } else {
             Timber.tag(TAG).d("No storage detected");
             return null;
         }
@@ -1320,9 +1317,7 @@ public class DropQweekSnap extends Fragment {
     * Upload Functions
     *
      */
-
     private void uploadBitmap(final Bitmap bitmap, final String username) {
-
         //our custom volley request
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, AppConfig.URL_DROP_QWEEKPIC,
                 response -> {
@@ -1337,6 +1332,8 @@ public class DropQweekSnap extends Fragment {
                     // Stop animation
                     dropProgress.hide();
                     dropBtn.setEnabled(true);
+
+                    getFragmentManager().popBackStack();
 
                     // success
                     String sent = jObj.getString("sent");
@@ -1409,8 +1406,7 @@ public class DropQweekSnap extends Fragment {
     }
 
     private void uploadVideo(Uri videoFile){
-
-        InputStream iStream = null;
+        InputStream iStream;
         try {
 
             iStream = requireActivity().getContentResolver().openInputStream(videoFile);
@@ -1430,6 +1426,8 @@ public class DropQweekSnap extends Fragment {
                                 // Stop animation
                                 dropProgress.hide();
                                 dropBtn.setEnabled(true);
+
+                                getFragmentManager().popBackStack();
 
                                 // success
                                 String sent = jObj.getString("sent");
@@ -1521,15 +1519,38 @@ public class DropQweekSnap extends Fragment {
         int bufferSize = 1024;
         byte[] buffer = new byte[bufferSize];
 
-        int len = 0;
+        int len;
         while ((len = inputStream.read(buffer)) != -1) {
             byteBuffer.write(buffer, 0, len);
         }
         return byteBuffer.toByteArray();
     }
 
-    public void onClick(View v) {
+    public void onClick() {
         assert getFragmentManager() != null;
-        getFragmentManager().popBackStack(); // or super.finish();
+        if (selectSticker.getVisibility() == View.VISIBLE) {
+            stickerOptions();
+        } else if(editTextLayout.getVisibility() == View.VISIBLE) {
+            showHideEditText();
+        } else if (editMedia.getVisibility() == View.VISIBLE) {
+            EditCaptureSwitch();
+            removeAllStickers();
+        } else {
+            getFragmentManager().popBackStack();
+        }
+    }
+
+    private void goBack() {
+        assert getFragmentManager() != null;
+        if (selectSticker.getVisibility() == View.VISIBLE) {
+            stickerOptions();
+        } else if(editTextLayout.getVisibility() == View.VISIBLE) {
+            showHideEditText();
+        } else if (editMedia.getVisibility() == View.VISIBLE) {
+            EditCaptureSwitch();
+            removeAllStickers();
+        } else {
+            getFragmentManager().popBackStack();
+        }
     }
 }

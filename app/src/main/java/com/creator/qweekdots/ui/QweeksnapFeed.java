@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.adapter.ExplorePhotosAdapter;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.api.QweeksnapFeedService;
 import com.creator.qweekdots.models.Pager;
@@ -28,7 +29,6 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
@@ -73,7 +73,6 @@ public class QweeksnapFeed extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.qweeksnap_feed, container, false);
-
         if(context!=null) {
             progressBar = rootView.findViewById(R.id.profile_qweeksnapProgress);
             errorLayout = rootView.findViewById(R.id.error_layout);
@@ -117,10 +116,8 @@ public class QweeksnapFeed extends Fragment {
             }
 
             btnRetry.setOnClickListener(view -> loadFirstPage());
-
             swipeRefreshLayout.setOnRefreshListener(this::doRefresh);
         }
-
         return rootView;
     }
 
@@ -132,42 +129,35 @@ public class QweeksnapFeed extends Fragment {
             progressBar.setVisibility(View.VISIBLE);
             if (callQweekSnapsApi().isExecuted())
                 callQweekSnapsApi().cancel();
-
             // TODO: Check if data is stale.
             //  Execute network request if cache is expired; otherwise do not update data.
             mStaggeredView.clear();
             loadFirstPage();
             swipeRefreshLayout.setRefreshing(false);
-
             Timber.tag(TAG).d("Loading First Feed Page");
         } else {
             Toasty.info(requireContext(), "No Jet Fuel, connect to the internet", Toast.LENGTH_LONG).show();
             progressBar.setVisibility(View.GONE);
-
             Timber.tag(TAG).d("No internet connection available");
         }
     }
 
-    // Function to load Explore feed
+    /**
+     * Load First Page of QweekSnaps on Profile Feed
+     */
     private void loadFirstPage() {
-
         Timber.tag(TAG).d("loadExplore: ");
-
         // To ensure list is visible when retry button in error view is clicked
         hideErrorView();
         hideEmptyView();
         currentPage = PAGE_START;
-
         callQweekSnapsApi().enqueue(new Callback<ProfileQweekSnaps>() {
             @Override
             public void onResponse(@NotNull Call<ProfileQweekSnaps> call, @NotNull Response<ProfileQweekSnaps> response) {
                 hideErrorView();
-
                 Timber.tag(TAG).i("onResponse: %s", (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
                 // Got data. Send it to adapter
                 progressBar.setVisibility(View.GONE);
-
 
                 List<PhotoItem> photoItem = fetchExplore(response);
                 if(photoItem.isEmpty()) {
@@ -197,7 +187,7 @@ public class QweeksnapFeed extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ProfileQweekSnaps> call, Throwable t) {
+            public void onFailure(@NotNull Call<ProfileQweekSnaps> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 showErrorView();
             }
@@ -206,13 +196,9 @@ public class QweeksnapFeed extends Fragment {
 
     private void loadMoreQweekSnaps() {
         Timber.tag(TAG).d("loadNextPage: %s", currentPage);
-
         callQweekSnapsApi().enqueue(new Callback<ProfileQweekSnaps>() {
             @Override
             public void onResponse(@NotNull Call<ProfileQweekSnaps> call, @NotNull Response<ProfileQweekSnaps> response) {
-//                Log.i(TAG, "onResponse: " + currentPage
-//                        + (response.raw().cacheResponse() != null ? "Cache" : "Network"));
-
                 isLoading = false;
 
                 // Got data. Send it to adapter
@@ -239,9 +225,8 @@ public class QweeksnapFeed extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ProfileQweekSnaps> call, Throwable t) {
+            public void onFailure(@NotNull Call<ProfileQweekSnaps> call, @NotNull Throwable t) {
                 t.printStackTrace();
-
             }
         });
     }
@@ -278,41 +263,14 @@ public class QweeksnapFeed extends Fragment {
     /**
      */
     private void showErrorView() {
-
         if (errorLayout.getVisibility() == View.GONE) {
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-
             txtError.setText(getResources().getString(R.string.error_msg_unknown));
         }
     }
 
-    private void showEmptyView() {
-        if (emptyLayout.getVisibility() == View.GONE) {
-            emptyLayout.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * @param throwable to identify the type of error
-     * @return appropriate error message
-     */
-    private String fetchErrorMessage(Throwable throwable) {
-        String errorMsg = getResources().getString(R.string.error_msg_unknown);
-
-        if (!isNetworkConnected()) {
-            errorMsg = getResources().getString(R.string.error_msg_no_internet);
-        } else if (throwable instanceof TimeoutException) {
-            errorMsg = getResources().getString(R.string.error_msg_timeout);
-        }
-
-        return errorMsg;
-    }
-
     // Helpers -------------------------------------------------------------------------------------
-
-
     private void hideErrorView() {
         if (errorLayout.getVisibility() == View.VISIBLE) {
             errorLayout.setVisibility(View.GONE);

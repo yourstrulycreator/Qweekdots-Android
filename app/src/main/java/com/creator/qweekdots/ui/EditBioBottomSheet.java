@@ -7,9 +7,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,7 +39,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 import es.dmoral.toasty.Toasty;
@@ -52,18 +49,12 @@ import timber.log.Timber;
 
 public class EditBioBottomSheet extends RoundedBottomSheetDialogFragment {
     private final String TAG = EditBioBottomSheet.class.getSimpleName();
-
     private String username;
-    private String bio;
     private SQLiteHandler db;
-
     private BottomSheetBehavior bottomSheetBehavior;
     private ProfileService profileService;
-
-    private View extraSpace;
     private CircularProgressButton saveBtn;
     private EmojiEditText optBioTxt;
-
     private List<UserItem> userItem;
     private UserItem user;
 
@@ -80,15 +71,13 @@ public class EditBioBottomSheet extends RoundedBottomSheetDialogFragment {
         if(getContext()!=null) {
             // SqLite database handler
             db = new SQLiteHandler(requireActivity());
-            // session manager
 
             // Fetching user details from SQLite
             HashMap<String, String> userData = db.getUserDetails();
-
             username = userData.get("username");
-            bio = userData.get("bio");
 
-            extraSpace = view.findViewById(R.id.extraSpace);
+            // Init Layout
+            View extraSpace = view.findViewById(R.id.extraSpace);
             optBioTxt = view.findViewById(R.id.optBioSheetTxt);
             saveBtn = view.findViewById(R.id.optProfileSheetSaveButton);
             saveBtn.setClickable(false);
@@ -117,43 +106,26 @@ public class EditBioBottomSheet extends RoundedBottomSheetDialogFragment {
 
             //setting layout with bottom sheet
             bottomSheet.setContentView(view);
-
             bottomSheetBehavior = BottomSheetBehavior.from((View) (view.getParent()));
-
-
             //setting Peek
             bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
-
-
             //setting min height of bottom sheet
             extraSpace.setMinimumHeight((Resources.getSystem().getDisplayMetrics().heightPixels) / 2);
-
 
             bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
                 public void onStateChanged(@NonNull View view, int i) {
-                    if (BottomSheetBehavior.STATE_EXPANDED == i) {
-
-                    }
-                    if (BottomSheetBehavior.STATE_COLLAPSED == i) {
-
-                    }
-
                     if (BottomSheetBehavior.STATE_HIDDEN == i) {
                         dismiss();
                     }
-
                 }
-
                 @Override
                 public void onSlide(@NonNull View view, float v) {
-
                 }
             });
 
             //init service and load data
             profileService = QweekdotsApi.getClient(getContext()).create(ProfileService.class);
-
             loadOptBio();
         }
 
@@ -176,7 +148,7 @@ public class EditBioBottomSheet extends RoundedBottomSheetDialogFragment {
             }
 
             @Override
-            public void onFailure(Call<ProfileModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<ProfileModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
             }
         });
