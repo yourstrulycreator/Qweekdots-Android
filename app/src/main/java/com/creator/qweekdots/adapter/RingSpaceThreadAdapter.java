@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -46,7 +45,6 @@ import com.creator.qweekdots.mediaplayer.RSVideoPlayer;
 import com.creator.qweekdots.mediaplayer.RSVideoPlayerStandard;
 import com.creator.qweekdots.models.Message;
 import com.creator.qweekdots.ui.MessageBottomSheet;
-import com.squareup.picasso.Picasso;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiTextView;
 import com.vanniktech.emoji.ios.IosEmojiProvider;
@@ -180,7 +178,7 @@ public class RingSpaceThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         RequestOptions requestOptions2 = new RequestOptions() // because file name is always same
                 .format(DecodeFormat.PREFER_RGB_565);
-        Drawable placeholder = getTinted(R.drawable.ic_alien, mContext.getResources().getColor(R.color.contentTextColor));
+        Drawable placeholder = getTinted(mContext.getResources().getColor(R.color.contentTextColor));
         Glide
                 .with(mContext)
                 .load(message.getUser().getAvatar())
@@ -294,9 +292,9 @@ public class RingSpaceThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private @Nullable
-    Drawable getTinted(@DrawableRes int res, @ColorInt int color) {
+    Drawable getTinted(@ColorInt int color) {
         // need to mutate otherwise all references to this drawable will be tinted
-        Drawable drawable = ContextCompat.getDrawable(mContext, res).mutate();
+        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_alien).mutate();
         return tint(drawable, ColorStateList.valueOf(color));
     }
 

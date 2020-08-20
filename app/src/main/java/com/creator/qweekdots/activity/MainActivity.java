@@ -40,7 +40,6 @@ import com.creator.qweekdots.ui.Rings;
 import com.creator.qweekdots.ui.Spotlight;
 import com.creator.qweekdots.utils.CircleProgressBar;
 import com.google.android.material.tabs.TabLayout;
-import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -67,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
     String username, avatar;
 
     View decorView;
+
+    final String tutorialKey = "001";
 
     private CircleProgressBar dropBtn;
 

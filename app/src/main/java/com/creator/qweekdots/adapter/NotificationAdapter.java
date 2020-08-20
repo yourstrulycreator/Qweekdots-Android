@@ -135,7 +135,14 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         customType(context, "fadein-to-fadeout");
                     });
 
-                    if(notificationItem.getNotificationType().equals("like")&&notificationItem.getNotificationType().equals("comment")) {
+                    if(notificationItem.getNotificationType().equals("like")) {
+                        notificationVH.noteLayout.setClickable(true);
+                        notificationVH.noteLayout.setOnClickListener(v->{
+                            DropBottomSheet bottomSheet = new DropBottomSheet(context, username, notificationItem.getDropID());
+                            FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
+                            bottomSheet.show(Objects.requireNonNull(manager),bottomSheet.getTag());
+                        });
+                    } else if(notificationItem.getNotificationType().equals("comment"))  {
                         notificationVH.noteLayout.setClickable(true);
                         notificationVH.noteLayout.setOnClickListener(v->{
                             DropBottomSheet bottomSheet = new DropBottomSheet(context, username, notificationItem.getDropID());

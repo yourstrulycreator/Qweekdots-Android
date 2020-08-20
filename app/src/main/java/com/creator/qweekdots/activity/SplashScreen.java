@@ -31,7 +31,7 @@ public class SplashScreen extends AppCompatActivity {
             public void run() {
                 launchApp();
             }
-        }, 3000);
+        }, 2100);
 
     }
 
@@ -44,7 +44,7 @@ public class SplashScreen extends AppCompatActivity {
             public void run() {
                 launchApp();
             }
-        }, 3000);
+        }, 2100);
     }
 
     private void launchApp() {

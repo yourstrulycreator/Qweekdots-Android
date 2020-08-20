@@ -51,13 +51,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:id="@+id/messageTxtCard"
-            app:cardCornerRadius="22dp"
+            app:cardCornerRadius="0dp"
             android:clickable="true"
             android:focusable="true"
-            app:cardElevation="2dp"
+            app:cardElevation="0dp"
             app:cardBackgroundColor="@color/contentBodyColor"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
             android:layout_marginTop="10dp">
 
             <LinearLayout
@@ -74,8 +74,8 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="5dp"
                 android:textColor="@color/contentTextColor"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
                 android:paddingTop="5dp"
                 android:textSize="14sp"
                 android:fontFamily="@font/vera_mono"/>
@@ -90,8 +90,8 @@
             app:cardCornerRadius="@dimen/bottom_sheet_corner_radius"
             app:cardElevation="0dp"
             android:layout_marginTop="3dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
             android:visibility="gone"
             android:layout_gravity="center"
             app:cardBackgroundColor="@color/contentBodyColor">
@@ -130,7 +130,7 @@
                 android:layout_height="30dp"
                 app:srcCompat="@drawable/ic_like"
                 android:padding="5dp"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="40dp"
                 android:layout_marginEnd="20dp"
                 android:tint="@color/Gray"
                 android:clickable="true"
@@ -160,7 +160,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:id="@+id/expand_btn"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:contentDescription="@string/expand_txt" />
 
         </LinearLayout>

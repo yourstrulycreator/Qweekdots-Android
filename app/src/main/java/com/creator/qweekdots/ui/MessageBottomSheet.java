@@ -671,7 +671,7 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 params.put("drop", drop);
                 params.put("username", username);
                 params.put("drop_id", drop_id);
-                params.put("parent_id", null);
+                params.put("parent_id", "");
 
                 return params;
             }

@@ -545,6 +545,12 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         bottomSheet.show(Objects.requireNonNull(manager),bottomSheet.getTag());
                     });
 
+                    ((FeedVH) holder).dropLayout.setOnClickListener(v -> {
+                        DropBottomSheet bottomSheet = new DropBottomSheet(context, username, feedItem.getDrop_Id());
+                        FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
+                        bottomSheet.show(Objects.requireNonNull(manager),bottomSheet.getTag());
+                    });
+
                     break;
 
                 case LOADING:
@@ -904,7 +910,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private TextView usernameTxt;
         private EmojiTextView dropText, fullnameTxt, audioDropTxt;
         private RichLinkView url;
-        private CardView qweeksnapCard, reactionCard;
+        private CardView qweeksnapCard, reactionCard, dropLayout;
         private BlobVisualizer blastAudio;
 
         FeedVH(View itemView) {
@@ -930,6 +936,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             audioDropTxt = itemView.findViewById(R.id.txtDrop2);
             reactionCard = itemView.findViewById(R.id.reactionCard);
             reactionImage = itemView.findViewById(R.id.reactionImage);
+            dropLayout = itemView.findViewById(R.id.drop_layout);
         }
     }
 
