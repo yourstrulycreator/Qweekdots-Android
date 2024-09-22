@@ -51,12 +51,12 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.adapter.SpaceThreadAdapter;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.api.SpaceService;
 import com.creator.qweekdots.app.AppConfig;
 import com.creator.qweekdots.app.AppController;
 import com.creator.qweekdots.app.EndPoints;
-import com.creator.qweekdots.adapter.RingSpaceThreadAdapter;
 import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.models.Message;
 import com.creator.qweekdots.models.SpaceItem;
@@ -68,7 +68,6 @@ import com.creator.qweekdots.utils.Glide4Engine;
 import com.creator.qweekdots.utils.ImageUtil;
 import com.creator.qweekdots.volley.VolleyMultipartRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso.Target;
 import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.ios.IosEmojiProvider;
@@ -108,7 +107,7 @@ public class RingSpaceActivity extends AppCompatActivity {
 
     private String chatRoomId;
     private RecyclerView recyclerView;
-    private RingSpaceThreadAdapter mAdapter;
+    private SpaceThreadAdapter mAdapter;
     private ArrayList<Message> messageArrayList;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private EmojiEditText inputMessage;
@@ -119,7 +118,6 @@ public class RingSpaceActivity extends AppCompatActivity {
     private ImageView mediaImage;
     private VideoView videoView;
     private CircularProgressButton pinBtn;
-    private static Target spacePicTarget;
     private SpaceService spaceService;
     private boolean isPhoto = false;
     private boolean isVideo = false;
@@ -251,7 +249,7 @@ public class RingSpaceActivity extends AppCompatActivity {
         //init service and load data
         spaceService = QweekdotsApi.getClient(getApplicationContext()).create(SpaceService.class);
 
-        mAdapter = new RingSpaceThreadAdapter(this, messageArrayList, selfUserId, username);
+        mAdapter = new SpaceThreadAdapter(this, messageArrayList, selfUserId, username);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         layoutManager.setReverseLayout(true);
@@ -569,8 +567,8 @@ public class RingSpaceActivity extends AppCompatActivity {
                         pinBtn.saveInitialState();
                     }
 
-                    String sent = "Pinned to MySpaces";
-                    Toasty.success(getApplicationContext(), sent, Toast.LENGTH_LONG).show();
+                    //String sent = "Pinned to MySpaces";
+                    //Toasty.success(getApplicationContext(), sent, Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 // JSON error
@@ -609,6 +607,8 @@ public class RingSpaceActivity extends AppCompatActivity {
      * */
     private void postDrop(final String id) {
         final String message = this.inputMessage.getText().toString();
+
+        emptyLayout.setVisibility(View.GONE);
 
         // Tag used to cancel the request
         String tag_string_req = "req_post";
@@ -722,6 +722,8 @@ public class RingSpaceActivity extends AppCompatActivity {
      * */
     private void postPhotoDrop(final Bitmap bitmap, final String id) {
         final String message = this.inputMessage.getText().toString();
+
+        emptyLayout.setVisibility(View.GONE);
 
         this.inputMessage.setText("");
 
@@ -847,6 +849,8 @@ public class RingSpaceActivity extends AppCompatActivity {
      * */
     private void postVideoDrop(Uri videoFile, final String id) {
         final String message = this.inputMessage.getText().toString();
+
+        emptyLayout.setVisibility(View.GONE);
 
         this.inputMessage.setText("");
 

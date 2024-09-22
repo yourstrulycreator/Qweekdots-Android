@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.creator.qweekdots.R;
-import com.creator.qweekdots.activity.RingSpaceActivity;
+import com.creator.qweekdots.activity.SpaceActivity;
 import com.creator.qweekdots.app.AppController;
 import com.creator.qweekdots.models.SpaceItem;
 import com.creator.qweekdots.utils.PaginationAdapterCallback;
@@ -187,12 +187,12 @@ public class ListedRingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                     // Click to view profile
                     ((ListedRingsAdapter.RingVH) holder).rClickLayout.setOnClickListener(v -> {
-                        Intent i = new Intent(context, RingSpaceActivity.class);
-                        i.putExtra("chat_room_id", spaceItem.getId());
+                        Intent i = new Intent(context, SpaceActivity.class);
+                        i.putExtra("chat_room_id", spaceItem.getId().toString());
                         i.putExtra("name", spaceItem.getSpacename());
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(i);
-                        customType(context, "fadein-to-fadeout");
+                        customType(context, "bottom-to-up");
                     });
 
                     /*

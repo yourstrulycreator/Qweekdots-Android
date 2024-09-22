@@ -5,7 +5,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         style="@style/parent.contentLayout"
-        android:id="@+id/spotlight_main_frame">
+        android:id="@+id/spotlight_main_frame"
+        android:padding="10dp">
 
         <LinearLayout
             android:id="@+id/spotlight"
@@ -21,28 +22,35 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:ignore="UselessParent">
-                    <TextView
-                        android:text="@string/spotlight"
-                        style="@style/viewParent.headerText.PageTitle"
-                        android:layout_gravity="bottom"
-                        android:layout_marginStart="5dp"
-                        android:layout_alignParentStart="true"/>
-
                     <LinearLayout
-                        android:layout_width="50dp"
-                        android:layout_height="35dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="40dp"
-                        android:layout_marginTop="30dp">
+                        android:layout_alignParentStart="true">
 
                         <ImageView
                             android:id="@+id/searchQweekdots"
                             android:layout_width="35dp"
                             android:layout_height="35dp"
+                            android:layout_marginTop="2dp"
                             android:src="@drawable/ic_search_white_24dp"
-                            android:tint="@color/contentTextColor"
-                            tools:ignore="contentDescription"/>
+                            tools:ignore="contentDescription"
+                            app:tint="@color/contentTextColor" />
+
+                        <EditText
+                            android:id="@+id/searchQweekdotsBar"
+                            android:layout_width="200dp"
+                            android:layout_height="35dp"
+                            android:layout_marginStart="5dp"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:hint="@string/search_qweekdots"
+                            android:focusable="false"
+                            android:clickable="false"
+                            android:background="@drawable/rounded_onboard_edittext"
+                            android:textColorHint="@color/SlateGray"
+                            android:backgroundTint="@color/settingsCardColor"
+                            android:importantForAutofill="no" />
 
                     </LinearLayout>
                 </RelativeLayout>
@@ -52,7 +60,8 @@
                 android:id="@+id/trendsText"
                 style="@style/viewParent.headerText.spotlightTitle"
                 android:drawableEnd="@drawable/trending"
-                android:text="@string/trending" />
+                android:text="Trends"
+                android:layout_marginTop="35dp"/>
 
             <com.github.ybq.android.spinkit.SpinKitView
                 android:id="@+id/trendsProgress"
@@ -69,38 +78,14 @@
                 android:scrollbars="none" />
 
             <include layout="@layout/error_trends" />
-
             <include layout="@layout/empty_trends" />
-
-            <TextView
-                android:id="@+id/spacesText"
-                style="@style/viewParent.headerText.spotlightTitle"
-                android:drawableEnd="@drawable/popular"
-                android:text="@string/hot_spaces" />
-
-            <com.github.ybq.android.spinkit.SpinKitView
-                android:id="@+id/spacesProgress"
-                style="@style/SpinKitView.Small.ChasingDots"
-                android:layout_width="@dimen/progress_width"
-                android:layout_height="@dimen/progress_height"
-                android:layout_gravity="center"
-                app:SpinKit_Color="@color/QweekColorAccent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/spacesRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none" />
-
-            <include layout="@layout/error_spaces" />
-
-            <include layout="@layout/empty_spaces" />
 
             <TextView
                 android:id="@+id/suggestionsText"
                 style="@style/viewParent.headerText.spotlightTitle"
                 android:drawableEnd="@drawable/astronaut2"
-                android:text="@string/suggestions" />
+                android:text="@string/suggestions"
+                android:layout_marginBottom="3dp"/>
 
             <com.github.ybq.android.spinkit.SpinKitView
                 android:id="@+id/suggestionsProgress"
@@ -118,26 +103,52 @@
                 android:scrollbars="none" />
 
             <include layout="@layout/error_suggestions" />
-
             <include layout="@layout/empty_suggestions" />
+
+
+
+
+
+            <!--<TextView
+                android:id="@+id/spacesText"
+                style="@style/viewParent.headerText.spotlightTitle"
+                android:drawableEnd="@drawable/popular"
+                android:text="@string/hot_spaces"
+                android:layout_marginTop="35dp"/>
+
+            <com.github.ybq.android.spinkit.SpinKitView
+                android:id="@+id/spacesProgress"
+                style="@style/SpinKitView.Small.ChasingDots"
+                android:layout_width="@dimen/progress_width"
+                android:layout_height="@dimen/progress_height"
+                android:layout_gravity="center"
+                app:SpinKit_Color="@color/QweekColorAccent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/spacesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none" />
+
+            <include layout="@layout/error_spaces" />
+
+            <include layout="@layout/empty_spaces" />-->
 
             <TextView
                 android:id="@+id/exploreText"
                 style="@style/viewParent.headerText.spotlightTitle"
                 android:drawableEnd="@drawable/adventure"
-                android:text="@string/discover" />
+                android:text="Explore"
+                android:layout_marginTop="35dp"/>
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:background="@android:color/transparent"
-                android:orientation="vertical"
-                android:paddingBottom="25dp">
-
-                <com.creator.qweekdots.view.StaggeredGridView
-                    android:id="@+id/staggeredview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/explore_grid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:paddingTop="@dimen/activity_margin_content"
+                android:layout_marginBottom="100dp"
+                android:paddingBottom="100dp"/>
 
                 <com.github.ybq.android.spinkit.SpinKitView
                     android:id="@+id/exploreProgress"
@@ -147,11 +158,14 @@
                     android:layout_gravity="center"
                     app:SpinKit_Color="@color/QweekColorAccent" />
 
+            <!--<androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/exploreRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none" />-->
+
                 <include layout="@layout/error_explore" />
-
                 <include layout="@layout/empty_explore" />
-
-            </LinearLayout>
 
         </LinearLayout>
 

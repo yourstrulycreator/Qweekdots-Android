@@ -49,6 +49,9 @@
     <color name="contentStatusBar">#f8cbb3</color>
     <color name="settingsCardColor">#F8F8FF</color>
     <color name="settingsCardColor2">#F5EEE6</color>
+    <color name="tabColor">#66FFFFFF</color>
+    <color name="filter_label_normal">#8A8889</color>
+    <color name="filter_label_selected">#221F20</color>
 
     <!--gradient colors-->
     <color name="gradientOrange">#FF416C</color>
@@ -131,7 +134,6 @@
     <color name="bg_bubble_self">#E1E1E1</color>
 
     <!--colors-->
-
     <color name="White">#FFFFFF</color>
     <color name="Ivory">#FFFFF0</color>
     <color name="LightYellow">#FFFFE0</color>
@@ -274,7 +276,7 @@
     <color name="darkTransparentGrey">#a0737373 </color>
     <color name="Black">#000000</color>
 
-    <!-- Rings Colors -->
+    <!-- Spaces Colors -->
     <color name="Aero">#7CB9E8</color>
     <color name="ArgentinanBlue">#6CB4EE</color>
     <color name="BayernBlue">#0066b2</color>

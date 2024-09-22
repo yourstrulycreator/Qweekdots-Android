@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -88,8 +90,9 @@ public class SearchRingsBottomSheet extends RoundedBottomSheetDialogFragment imp
         view = inflater.inflate(R.layout.search_rings_bottom_sheet, container, false);
 
         if(context!=null) {
-            TextView titleTxtView = view.findViewById(R.id.optTitleSheetTxt);
-            titleTxtView.setOnClickListener(v -> {
+
+            ImageView closeSheet = view.findViewById(R.id.closeSheet);
+            closeSheet.setOnClickListener(v -> {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 dismiss();
             });
@@ -111,7 +114,7 @@ public class SearchRingsBottomSheet extends RoundedBottomSheetDialogFragment imp
                 @Override
                 public boolean onQueryTextChange(String query) {
                     // this is your adapter that will be filtered
-                    //beginSearch(query);
+                    beginSearch(query);
                     return true;
                 }
 
@@ -236,8 +239,6 @@ public class SearchRingsBottomSheet extends RoundedBottomSheetDialogFragment imp
 
         // TODO: Check if data is stale.
         //  Execute network request if cache is expired; otherwise do not update data.
-        adapter.getUsers().clear();
-        adapter.notifyDataSetChanged();
         loadFirstPage();
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -246,6 +247,8 @@ public class SearchRingsBottomSheet extends RoundedBottomSheetDialogFragment imp
      * Load First Page
      */
     private void loadFirstPage() {
+        adapter.getUsers().clear();
+        adapter.notifyDataSetChanged();
         Timber.tag(TAG).d("loadFirstPage: ");
         // To ensure list is visible when retry button in error view is clicked
         hideErrorView();
@@ -380,7 +383,7 @@ public class SearchRingsBottomSheet extends RoundedBottomSheetDialogFragment imp
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
 
-            txtError.setText(getResources().getString(R.string.error_msg_unknown));
+            txtError.setText(context.getResources().getString(R.string.error_msg_unknown));
         }
     }
 
@@ -396,11 +399,11 @@ public class SearchRingsBottomSheet extends RoundedBottomSheetDialogFragment imp
      * @return appropriate error message
      */
     private String fetchErrorMessage(Throwable throwable) {
-        String errorMsg = getResources().getString(R.string.error_msg_unknown);
+        String errorMsg = context.getResources().getString(R.string.error_msg_unknown);
         if (!isNetworkConnected()) {
-            errorMsg = getResources().getString(R.string.error_msg_no_internet);
+            errorMsg = context.getResources().getString(R.string.error_msg_no_internet);
         } else if (throwable instanceof TimeoutException) {
-            errorMsg = getResources().getString(R.string.error_msg_timeout);
+            errorMsg = context.getResources().getString(R.string.error_msg_timeout);
         }
         return errorMsg;
     }
@@ -421,5 +424,14 @@ public class SearchRingsBottomSheet extends RoundedBottomSheetDialogFragment imp
         ConnectivityManager cm = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         assert cm != null;
         return cm.getActiveNetworkInfo() != null;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
     }
 }

@@ -8,6 +8,7 @@ import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -231,6 +232,15 @@ public class PasswordResetBottomSheet extends RoundedBottomSheetDialogFragment {
     public void onStart() {
         super.onStart();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
     }
 
 }

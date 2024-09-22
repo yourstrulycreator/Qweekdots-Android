@@ -2,6 +2,8 @@
     <string name="app_name">Qweekdots</string>
     <string name="app_version">v. alpha</string>
 
+    <string name="with_love_from_the_qweek_company">With 💙 From Qweekdots Technologies</string>
+
     <string name="back">Back</string>
     <string name="hint_username">Username</string>
     <string name="hint_fullname">Fullname</string>
@@ -85,6 +87,7 @@
     <string name="cancel_txt">Cancel</string>
     <string name="downvote_txt">downvote</string>
     <string name="share_txt">share</string>
+    <string name="share_qweekdots">Share Qweekdots</string>
     <string name="like_txt">like</string>
     <string name="expand_txt">expand</string>
     <string name="upvote_txt">upvote</string>
@@ -99,7 +102,7 @@
     <string name="find_a_space">Find a Space…</string>
     <string name="trending">Trending</string>
     <string name="trends">Trends</string>
-    <string name="search_rings">Search Rings…</string>
+    <string name="search_rings">Search Rings</string>
     <string name="rings">Rings</string>
     <string name="image_desc_share_button">share button</string>
     <string name="image_desc_save_button">save button</string>
@@ -139,6 +142,12 @@
     <string name="options_feedback">Feedback / Bug Report</string>
     <string name="options_bug_report">Bug Report</string>
     <string name="options_i_have_a_suggestion">I Have a Suggestion / Bug Report</string>
+    <string name="rate_app">Rate App</string>
+    <string name="rate_app_title">Rate App</string>
+    <string name="rate_app_message">If you are enjoying our app, please take a moment to rate it on PlayStore. Thanks for your support!</string>
+    <string name="rate_btn_pos">Rate Now</string>
+    <string name="rate_btn_neg">Remind me later</string>
+    <string name="rate_btn_nut">No, Thanks</string>
     <string name="options_more_information">More Information</string>
     <string name="options_privacy_policy">Privacy Policy</string>
     <string name="terms_of_service">Terms of Service</string>
@@ -222,6 +231,7 @@
     <string name="profile_txt_followers">Followers</string>
     <string name="profile_txt_following">Following</string>
     <string name="profile_txt_drops">Drops</string>
+    <string name="profile_txt_xP">qXpoints</string>
     <string name="play_audio">Play Audio</string>
     <string name="q">Q.</string>
     <string name="q_chat">Q. Chat</string>
@@ -262,7 +272,6 @@
     <string name="forgot_password_txt">Forgot Password</string>
     <string name="code">Code</string>
 
-    <string name="with_love_from_the_qweek_company">With Love From The Qweek Company</string>
     <string name="reply_this_drop">Reply this drop</string>
     <string name="sticker">Sticker</string>
     <string name="hot_spaces">Hot Spaces</string>
@@ -270,4 +279,43 @@
     <string name="search_error">Enter at least 2 characters to begin the search.</string>
     <string name="no_gifs_found">No GIFs were found</string>
     <string name="the_drops_factory">The Drops Factory</string>
+    <string name="start_chat">Start A Chat</string>
+    <string name="options_bio">Bio</string>
+    <string name="change_birthday">Change Birthday</string>
+    <string name="change_email">Change Email</string>
+    <string name="change_fullname">Change Fullname</string>
+
+    <string name="filter_normal">Original</string>
+    <string name="activity_title_main">Filters</string>
+    <string name="filters">FILTERS</string>
+    <string name="edit">EDIT</string>
+    <string name="lbl_brightness">BRIGHTNESS</string>
+    <string name="lbl_contrast">CONTRAST</string>
+    <string name="lbl_saturation">SATURATION</string>
+    <string name="tab_filters">FILTERS</string>
+    <string name="tab_edit">EDIT</string>
+    <string name="Next">Next</string>
+
+    <string name="camera_permission_title">Camera Permission</string>
+    <string name="camera_permission_message">This permission is needed to Take Photos</string>
+    <string name="camera_permission_positive">allow</string>
+    <string name="camera_permission_negative">deny</string>
+    <string name="camera_permission_deny">Enable Permission in Settings</string>
+
+    <string name="storage_permission_title">External Storage Permission</string>
+    <string name="storage_permission_message">This permission is needed to read photos in your phone</string>
+    <string name="storage_permission_positive">allow</string>
+    <string name="storage_permission_negative">deny</string>
+    <string name="storage_permission_deny">Enable Permission in Settings</string>
+
+    <string name="snapspicker_gallery">Gallery</string>
+    <string name="snapspicker_gallery_title">Select a Snap</string>
+
+    <string name="snapspicker_camera">Camera</string>
+    <string name="snapspicker_camera_title">Take a Snap</string>
+
+    <string name="snapspicker_multi_select_title">Edit Images</string>
+    <string name="snapspicker_filter_title">Filters</string>
+    <string name="similar">Similar</string>
+    <string name="open_source_libraries">Open Source Libraries</string>
 </resources>

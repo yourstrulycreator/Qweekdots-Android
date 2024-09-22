@@ -53,12 +53,18 @@
             android:orientation="vertical"
             android:layout_marginStart="10dp">
 
+            <TextView
+                android:id="@+id/usernameTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/QweekColorAccent" />
+
             <com.vanniktech.emoji.EmojiTextView
                 android:id="@+id/txtDrop"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="5dp"
-                android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:paddingLeft="@dimen/feed_item_status_pad_left_right"
                 android:paddingRight="@dimen/feed_item_status_pad_left_right"
@@ -122,7 +128,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginTop="10dp"
-                    app:srcCompat="@drawable/ic_share"
+                    app:srcCompat="@drawable/ic_sharing"
                     android:padding="5dp"
                     android:tint="@color/Gray"
                     android:id="@+id/share_btn"
@@ -134,7 +140,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginTop="10dp"
-                    app:srcCompat="@drawable/ic_delete"
+                    app:srcCompat="@drawable/ic_recycling_bin"
                     android:padding="5dp"
                     android:id="@+id/delete_btn"
                     android:tint="@color/Gray"

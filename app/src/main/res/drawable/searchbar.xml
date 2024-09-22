@@ -6,14 +6,15 @@
         </shape>
     </item>
 
-    <item android:top="-2dp" android:right="-2dp" android:left="-2dp">
+    <item android:top=".5dp" android:right=".5dp" android:left=".5dp" android:bottom=".5dp">
         <shape>
-            <solid android:color="@android:color/transparent"/>
+            <solid android:color="@android:color/transparent" />
             <stroke
                 android:dashGap="0px"
                 android:dashWidth="0px"
-                android:width="1dp"
-                android:color="@color/contentTextColor"/>
+                android:width=".3dp"
+                android:color="@color/contentTextColor" />
+            <corners android:radius="5dp"/>
         </shape>
     </item>
 </layer-list>

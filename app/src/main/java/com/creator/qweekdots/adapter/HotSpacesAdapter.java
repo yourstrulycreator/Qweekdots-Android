@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,8 +20,12 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.Target;
 import com.creator.qweekdots.R;
-import com.creator.qweekdots.activity.RingSpaceActivity;
+import com.creator.qweekdots.activity.NewSpaceActivity;
+import com.creator.qweekdots.activity.SpaceActivity;
 import com.creator.qweekdots.grid.util.DynamicHeightTextView;
 import com.creator.qweekdots.models.ChatRoom;
 import com.creator.qweekdots.utils.PaginationAdapterCallback;
@@ -37,7 +42,7 @@ public class HotSpacesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int RINGS = 0;
     private static final int LOADING = 1;
 
-    private static final String TAG = MyRingsAdapter.class.getSimpleName();
+    private static final String TAG = HotSpacesAdapter.class.getSimpleName();
 
     private ArrayList<ChatRoom> ringItems;
     private Context context;
@@ -126,14 +131,18 @@ public class HotSpacesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         ringsVH.ringsCard.setCardBackgroundColor(context.getColor(randomColor));
                     }
 
-                    ringsVH.ringsCard.setOnClickListener(v -> {
-                        Intent intent = new Intent(context, RingSpaceActivity.class);
-                        intent.putExtra("chat_room_id", ringItem.getId());
-                        intent.putExtra("name", ringItem.getName());
-                        context.startActivity(intent);
-                    });
-
+                    ringsVH.txtLineOne.setHeightRatio(0.6);
                     ringsVH.txtLineOne.setText(ringItem.getName());
+
+                    // Set Art GIF
+                    Glide
+                            .with(context)
+                            .asGif()
+                            .load(ringItem.getSpace_art())
+                            .override(Target.SIZE_ORIGINAL)
+                            .thumbnail(0.3f)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(ringsVH.art);
 
                     // View Click Listener
                     ringsVH.ringsCard.setOnClickListener(v -> {
@@ -142,11 +151,11 @@ public class HotSpacesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         animY.setInterpolator(new BounceInterpolator());
                         animY.setRepeatCount(1);
                         animY.start();
-                        Intent i = new Intent(context, RingSpaceActivity.class);
+                        Intent i = new Intent(context, SpaceActivity.class);
                         i.putExtra("chat_room_id", ringItem.getId());
                         i.putExtra("name", ringItem.getName());
                         context.startActivity(i);
-                        customType(context, "fadein-to-fadeout");
+                        customType(context, "bottom-to-up");
                     });
 
                     break;
@@ -265,12 +274,14 @@ public class HotSpacesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     protected class RingsVH extends RecyclerView.ViewHolder {
         private CardView ringsCard;
         private DynamicHeightTextView txtLineOne;
+        private ImageView art;
 
         RingsVH(View itemView) {
             super(itemView);
 
             ringsCard = itemView.findViewById(R.id.ring_content);
             txtLineOne = itemView.findViewById(R.id.ringnameText);
+            art = itemView.findViewById(R.id.art);
         }
     }
 

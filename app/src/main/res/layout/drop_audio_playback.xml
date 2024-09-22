@@ -8,7 +8,8 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
     app:behavior_hideable="true"
     app:behavior_peekHeight="10dp"
-    android:id="@+id/drop_audio_playback">
+    android:id="@+id/drop_audio_playback"
+    android:visibility="gone">
 
     <ImageButton
         android:id="@+id/player_play_btn"

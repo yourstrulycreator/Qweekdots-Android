@@ -13,87 +13,171 @@
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:background="@color/contentBodyColor"
-        android:theme="@style/ThemeOverlay.AppCompat">
+        android:theme="@style/Theme.AppCompat">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/profile_collapse_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            android:background="@drawable/profile_collapse_bar"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="false">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:gravity="center"
-                android:layout_gravity="center"
-                android:paddingBottom="15dp">
+                android:layout_gravity="center">
 
-                <com.vanniktech.emoji.EmojiTextView
-                    android:id="@+id/fullnameTextView"
-                    style="@style/viewParent.headerText"
-                    android:textSize="14sp"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@color/contentBodyColor"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:textAlignment="center"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentStart="true"/>
+                    android:layout_height="wrap_content">
 
-                <LinearLayout
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="400dp"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="@color/QweekColorAccent"
+                            android:layout_marginTop="-10dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/scrim">
+                                <ImageView
+                                    android:id="@+id/profileCover"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="400dp"
+                                    android:scaleType="centerCrop"
+                                    app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+                                    app:layout_collapseMode="parallax"
+                                    android:contentDescription="Cover"
+                                    android:adjustViewBounds="true"
+                                    tools:ignore="HardcodedText" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                    <com.vanniktech.emoji.EmojiTextView
+                        android:id="@+id/fullnameTextView"
+                        style="@style/viewParent.headerText"
+                        android:textSize="13dp"
+                        android:layout_marginTop="0dp"
+                        android:background="@drawable/scrim"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="20dp"
+                        android:textColor="@color/white"
+                        android:layout_width="match_parent"
+                        android:textAlignment="center"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true"
+                        tools:ignore="SpUsage" />
+
+                </RelativeLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_below="@id/fullnameTextView"
-                    android:layout_marginTop="20dp">
+                    android:padding="20dp">
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:id="@+id/profileAvatar"
                         app:civ_border_width="3dp"
                         app:civ_border_color="@color/imageBorderColor"
                         app:srcCompat="@drawable/q_alien_add"
-                        android:backgroundTint="@color/contentBodyColor"
-                        android:tint="@color/contentBodyColor"
+                        android:backgroundTint="@color/contentTextColor"
+                        android:tint="@color/contentTextColor"
                         android:background="@drawable/ic_alien"
                         tools:targetApi="lollipop"
-                        android:layout_gravity="center"/>
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                        android:id="@+id/followActionButton"
+                        style="@style/followButton"
+                        android:layout_width="105dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:text="@string/following"
+                        android:textSize="12dp"
+                        android:visibility="visible"
+                        app:initialCornerAngle="8dp"
+                        app:spinning_bar_color="@color/contentBodyColor"
+                        app:spinning_bar_padding="12dp"
+                        app:spinning_bar_width="32dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:ignore="SpUsage"
+                        android:elevation="0dp"
+                        android:layout_marginTop="0dp"/>
 
                     <TextView
                         android:id="@+id/usernameTextView"
                         style="@style/viewParent.headerText"
-                        android:textSize="13sp"
+                        android:textSize="14dp"
                         android:fontFamily="@font/roboto_light"
-                        android:textColor="@color/contentBodyColor"
-                        android:layout_width="match_parent"
+                        android:textColor="@color/QweekColorAccent"
+                        android:layout_width="wrap_content"
                         android:textAlignment="center"
-                        android:gravity="center"
-                        android:layout_marginTop="10dp"/>
+                        android:layout_marginTop="10dp"
+                        app:layout_constraintTop_toBottomOf="@id/profileAvatar"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:ignore="SpUsage" />
 
                     <com.vanniktech.emoji.EmojiTextView
                         android:id="@+id/bioText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:textColor="@color/settingsCardColor2"
-                        android:layout_marginTop="10dp"
-                        android:paddingStart="30dp"
-                        android:paddingEnd="30dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:textAlignment="center"
-                        android:gravity="center"/>
+                        android:textSize="14sp"
+                        android:textColor="@color/contentTextColor"
+                        android:layout_marginTop="15dp"
+                        app:layout_constraintTop_toBottomOf="@id/usernameTextView"
+                        app:layout_constraintStart_toStartOf="parent"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginTop="25dp"
-                        android:paddingBottom="10dp">
+                        android:layout_marginTop="15dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/bioText"
+                        android:weightSum="3"
+                        android:baselineAligned="false">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/xPBox"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12dp"
+                                android:text="@string/profile_txt_xP"
+                                android:fontFamily="@font/roboto_light"
+                                android:textStyle="bold"
+                                android:textColor="@color/SlateGray"
+                                tools:ignore="SpUsage" />
+
+                            <TextView
+                                android:id="@+id/xPCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="28dp"
+                                android:textStyle="bold"
+                                android:textColor="@color/contentTextColor"
+                                android:fontFamily="@font/avenir_next_cyr_regular"
+                                android:layout_marginTop="5dp"
+                                tools:ignore="SpUsage" />
+
+                        </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -101,26 +185,28 @@
                             android:id="@+id/dropBox"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:layout_marginStart="30dp"
-                            android:layout_marginEnd="15dp">
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12dp"
+                                android:text="@string/profile_txt_drops"
+                                android:fontFamily="@font/roboto_light"
+                                android:textStyle="bold"
+                                android:textColor="@color/SlateGray"
+                                tools:ignore="SpUsage" />
 
                             <TextView
                                 android:id="@+id/dropCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="18sp"
-                                android:textColor="@color/contentBodyColor"
-                                android:fontFamily="@font/roboto_light"
-                                android:layout_marginBottom="5dp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="12sp"
-                                android:text="@string/profile_txt_drops"
-                                android:fontFamily="@font/roboto_light"
+                                android:textSize="28dp"
                                 android:textStyle="bold"
-                                android:textColor="@color/settingsCardColor2"/>
+                                android:textColor="@color/contentTextColor"
+                                android:fontFamily="@font/avenir_next_cyr_regular"
+                                android:layout_marginTop="5dp"
+                                tools:ignore="SpUsage" />
 
                         </LinearLayout>
 
@@ -130,25 +216,27 @@
                             android:id="@+id/followingBox"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:layout_marginEnd="15dp">
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12dp"
+                                android:text="@string/profile_txt_following"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/roboto_light"
+                                android:textColor="@color/SlateGray"
+                                tools:ignore="SpUsage" />
 
                             <TextView
                                 android:id="@+id/followingCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="18sp"
-                                android:layout_marginBottom="5dp"
-                                android:textColor="@color/contentBodyColor"
-                                android:fontFamily="@font/roboto_light"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="12sp"
-                                android:text="@string/profile_txt_following"
-                                android:textStyle="bold"
-                                android:fontFamily="@font/roboto_light"
-                                android:textColor="@color/settingsCardColor2"/>
+                                android:textSize="28dp"
+                                android:layout_marginTop="5dp"
+                                android:textColor="@color/contentTextColor"
+                                android:fontFamily="@font/avenir_next_cyr_regular"
+                                tools:ignore="SpUsage" />
 
                         </LinearLayout>
 
@@ -158,58 +246,35 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:layout_marginEnd="10dp" >
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12dp"
+                                android:text="@string/profile_txt_followers"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/roboto_light"
+                                android:textColor="@color/SlateGray"
+                                tools:ignore="SpUsage" />
 
                             <TextView
                                 android:id="@+id/followerCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="18sp"
-                                android:layout_marginBottom="5dp"
-                                android:fontFamily="@font/roboto_light"
-                                android:textColor="@color/contentBodyColor"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="12sp"
-                                android:text="@string/profile_txt_followers"
-                                android:textStyle="bold"
-                                android:fontFamily="@font/roboto_light"
-                                android:textColor="@color/settingsCardColor2" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_gravity="bottom|end"
-                            android:gravity="end"
-                            android:layout_marginEnd="30dp"
-                            android:layout_marginTop="5dp">
-
-                            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
-                                android:id="@+id/followActionButton"
-                                style="@style/followButton"
-                                android:layout_width="125dp"
-                                android:layout_height="35dp"
-                                android:layout_gravity="center_horizontal"
-                                android:text="@string/following"
-                                android:textSize="12sp"
-                                android:visibility="visible"
-                                app:initialCornerAngle="26dp"
-                                app:spinning_bar_color="@color/contentTextColor"
-                                app:spinning_bar_padding="6dp"
-                                app:spinning_bar_width="4dp" />
+                                android:textSize="28dp"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="@font/avenir_next_cyr_regular"
+                                android:textColor="@color/contentTextColor"
+                                tools:ignore="SpUsage" />
 
                         </LinearLayout>
 
                     </LinearLayout>
 
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -231,7 +296,7 @@
             app:tabIndicatorGravity="bottom"
             app:tabIndicatorHeight="3dp"
             app:tabIndicatorFullWidth="false"
-            app:tabRippleColor="?attr/colorAccent"
+            app:tabRippleColor="@null"
             app:tabUnboundedRipple="true"
             app:tabMode="fixed"
             app:tabTextColor="@color/contentTextColor"
@@ -252,7 +317,7 @@
         android:layout_height="26dp"
         android:background="@drawable/custom_back_btn"
         app:srcCompat="@drawable/q_back"
-        android:tint="@color/contentBodyColor"
+        android:tint="@color/white"
         android:layout_gravity="top|start"
         android:scaleType="fitCenter"
         android:layout_marginStart="20dp"
@@ -260,13 +325,28 @@
         android:onClick="onClick"
         android:contentDescription="@string/custom_go_back" />
 
+    <!-- Custom Edit Buttom -->
+    <ImageButton android:id="@+id/customEdit"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@drawable/custom_back_btn"
+        app:srcCompat="@drawable/q_edit"
+        android:tint="@color/white"
+        android:layout_gravity="top|end"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="60dp"
+        android:layout_marginTop="18dp"
+        android:onClick="onClickOptions"
+        android:contentDescription="@string/options"
+        android:visibility="gone"/>
+
     <!-- Custom Options Buttom -->
     <ImageButton android:id="@+id/customOptions"
         android:layout_width="26dp"
         android:layout_height="26dp"
         android:background="@drawable/custom_back_btn"
-        app:srcCompat="@drawable/ic_more_options"
-        android:tint="@color/contentBodyColor"
+        app:srcCompat="@drawable/q_options"
+        android:tint="@color/white"
         android:layout_gravity="top|end"
         android:scaleType="fitCenter"
         android:layout_marginEnd="20dp"
@@ -280,8 +360,8 @@
         android:layout_width="26dp"
         android:layout_height="26dp"
         android:background="@drawable/custom_back_btn"
-        app:srcCompat="@drawable/q_chat3"
-        android:tint="@color/contentBodyColor"
+        app:srcCompat="@drawable/ic_chat_oval"
+        android:tint="@color/white"
         android:layout_gravity="top|end"
         android:scaleType="fitCenter"
         android:layout_marginEnd="20dp"

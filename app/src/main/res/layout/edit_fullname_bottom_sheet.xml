@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -22,11 +23,12 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:textColor="@color/contentTextColor"
-                android:text="Change Fullname"
-                android:fontFamily="@font/amatic_regular"
-                android:textSize="34sp"
+                android:text="@string/change_fullname"
+                android:fontFamily="@font/avenir_next_cyr_regular"
+                android:textSize="24dp"
                 android:textStyle="bold"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                tools:ignore="SpUsage" />
 
             <com.vanniktech.emoji.EmojiEditText
                 android:id="@+id/optFullnameSheetTxt"

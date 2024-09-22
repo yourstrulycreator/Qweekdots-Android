@@ -73,6 +73,9 @@ public class FeedItem {
     @SerializedName("downvoteNum")
     @Expose
     private String downvoteNum;
+    @SerializedName("space")
+    @Expose
+    private String space;
     /**
      *
      * @return
@@ -449,6 +452,23 @@ public class FeedItem {
      */
     public void setDownvoteNum(String downvoteNum) {
         this.downvoteNum = downvoteNum;
+    }
+
+    /**
+     *
+     * @return
+     * The Space
+     */
+    public String getSpace() {
+        return space;
+    }
+
+    /**
+     *
+     * The Space
+     */
+    public void setSpace(String space) {
+        this.space = space;
     }
 
 

@@ -9,14 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,11 +26,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.creator.qweekdots.R;
 import com.creator.qweekdots.activity.ProfileActivity;
 import com.creator.qweekdots.models.UserItem;
-import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import timber.log.Timber;
 
 import static maes.tech.intentanim.CustomIntent.customType;
 
@@ -103,9 +101,19 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             .error(R.drawable.ic_alien)
                             .into(userVH.profilePic);*/
 
+
+
                     RequestOptions requestOptions = new RequestOptions() // because file name is always same
                             .format(DecodeFormat.PREFER_RGB_565);
-                    Drawable placeholder = getTinted(R.drawable.ic_alien, context.getResources().getColor(R.color.contentTextColor));
+                    Drawable placeholder = getTinted(context.getResources().getColor(R.color.contentTextColor));
+                    Glide
+                            .with(context)
+                            .load(userItem.getProfileCover())
+                            .thumbnail(0.3f)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .apply(requestOptions)
+                            .into(userVH.cover);
+
                     Glide
                             .with(context)
                             .load(userItem.getAvatar())
@@ -115,9 +123,9 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             .thumbnail(0.3f)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .apply(requestOptions)
-                            .into(userVH.profilePic);
+                            .into(userVH.avatar);
 
-                    userVH.profilePic.setOnClickListener(v -> {
+                    userVH.suggestion.setOnClickListener(v -> {
                         Intent i = new Intent(context, ProfileActivity.class);
                         i.putExtra("profile", userItem.getUsername());
                         context.startActivity(i);
@@ -125,8 +133,7 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     });
 
                     String uName = "q/"+userItem.getUsername();
-                    userVH.sugName.setText(uName);
-                    Timber.tag("Suggested Username:").d(uName);
+                    userVH.usernameTxt.setText(uName);
 
                     break;
 
@@ -165,9 +172,9 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    private @Nullable Drawable getTinted(@DrawableRes int res, @ColorInt int color) {
+    private @Nullable Drawable getTinted(@ColorInt int color) {
         // need to mutate otherwise all references to this drawable will be tinted
-        Drawable drawable = ContextCompat.getDrawable(context, res).mutate();
+        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_alien).mutate();
         return tint(drawable, ColorStateList.valueOf(color));
     }
 
@@ -256,14 +263,18 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * Feed content ViewHolder
      */
     protected class UserVH extends RecyclerView.ViewHolder {
-        private CircleImageView profilePic;
-        private TextView sugName;
+        private CircleImageView avatar;
+        private TextView usernameTxt;
+        private ImageView cover;
+        private CardView suggestion;
 
         UserVH(View itemView) {
             super(itemView);
 
-            profilePic = itemView.findViewById(R.id.profilePic);
-            sugName = itemView.findViewById(R.id.sugName);
+            avatar = itemView.findViewById(R.id.avatar);
+            usernameTxt = itemView.findViewById(R.id.usernameTxt);
+            cover = itemView.findViewById(R.id.cover);
+            suggestion = itemView.findViewById(R.id.suggestion);
         }
     }
 

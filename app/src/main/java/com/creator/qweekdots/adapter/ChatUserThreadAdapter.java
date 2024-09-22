@@ -1,10 +1,16 @@
 package com.creator.qweekdots.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.os.FileUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -46,12 +53,31 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -69,14 +95,14 @@ public class ChatUserThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private ArrayList<Message> messageArrayList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView metaMessage, messageTime;
+        TextView metaMessage, messageTime, messageFilename;
         EmojiTextView message;
         CircleImageView avatar;
-        CardView messageMediaCard, messageActions;
+        CardView messageMediaCard, messageActions, messageFileCard;
         ImageView messagePhoto;
         RSVideoPlayerStandard messageVideo;
         ConstraintLayout messageLayout;
-        LinearLayout messageDelete, cancelFocus;
+        LinearLayout messageDelete, cancelFocus, messageTimeLay;
 
         public ViewHolder(View view) {
             super(view);
@@ -89,10 +115,14 @@ public class ChatUserThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             messageVideo = itemView.findViewById(R.id.message_videoplayer);
             messageActions = itemView.findViewById(R.id.message_actions);
             messageLayout = itemView.findViewById(R.id.message_layout);
+            messageFileCard = itemView.findViewById(R.id.message_fileCard);
+            messageFilename = itemView.findViewById(R.id.message_filename);
 
             // Message Actions
+
             messageDelete = itemView.findViewById(R.id.delete_message);
             cancelFocus = itemView.findViewById(R.id.cancel_focus);
+            messageTimeLay = itemView.findViewById(R.id.time_message);
         }
     }
 
@@ -183,28 +213,65 @@ public class ChatUserThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if(message.getHasMedia() == 1) {
             ((ViewHolder) holder).messageMediaCard.setVisibility(View.VISIBLE);
 
-            if(message.getMediaType().equals("photo")) {
-                ((ViewHolder) holder).messagePhoto.setVisibility(View.VISIBLE);
-                ((ViewHolder) holder).messageVideo.setVisibility(View.GONE);
+            switch (message.getMediaType()) {
+                case "photo":
+                    ((ViewHolder) holder).messagePhoto.setVisibility(View.VISIBLE);
+                    ((ViewHolder) holder).messageVideo.setVisibility(View.GONE);
+                    ((ViewHolder) holder).messageFileCard.setVisibility(View.GONE);
 
-                RequestOptions requestOptions = new RequestOptions()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE) // because file name is always same
-                        .format(DecodeFormat.PREFER_RGB_565)
-                        .skipMemoryCache(true);
-                Glide
-                        .with(mContext)
-                        .load(message.getQweeksnap())
-                        .override(Target.SIZE_ORIGINAL)
-                        .apply(requestOptions)
-                        .into(((ViewHolder) holder).messagePhoto);
-            } else if (message.getMediaType().equals("video")) {
-                ((ViewHolder) holder).messageVideo.setVisibility(View.VISIBLE);
-                ((ViewHolder) holder).messagePhoto.setVisibility(View.GONE);
+                    RequestOptions requestOptions = new RequestOptions()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE) // because file name is always same
+                            .format(DecodeFormat.PREFER_RGB_565)
+                            .skipMemoryCache(true);
+                    Glide
+                            .with(mContext)
+                            .load(message.getQweeksnap())
+                            .override(Target.SIZE_ORIGINAL)
+                            .apply(requestOptions)
+                            .into(((ViewHolder) holder).messagePhoto);
 
-                // qweekvid
-                ((ViewHolder) holder).messageVideo.setUp(message.getQweeksnap(),
-                        RSVideoPlayer.SCREEN_LAYOUT_LIST);
-                ((ViewHolder) holder).messageVideo.setThumbImageView(message.getQweeksnap());
+                    /*
+                    List<String> images = Collections.singletonList(message.getQweeksnap());
+                    ((ViewHolder) holder).messagePhoto.setOnClickListener(v-> new StfalconImageViewer.Builder<>(mContext, images, (imageView, imageUrl) -> Glide.with(mContext).load(imageUrl).into(imageView))
+                            .withTransitionFrom(((ViewHolder) holder).messagePhoto)
+                            .withBackgroundColor(mContext.getResources().getColor(R.color.black))
+                            .show());
+
+                     */
+                    break;
+                case "video":
+                    ((ViewHolder) holder).messageVideo.setVisibility(View.VISIBLE);
+                    ((ViewHolder) holder).messagePhoto.setVisibility(View.GONE);
+                    ((ViewHolder) holder).messageFileCard.setVisibility(View.GONE);
+
+                    // qweekvid
+                    ((ViewHolder) holder).messageVideo.setUp(message.getQweeksnap(),
+                            RSVideoPlayer.SCREEN_LAYOUT_LIST);
+                    ((ViewHolder) holder).messageVideo.setThumbImageView(message.getQweeksnap());
+                    break;
+                case "file":
+                    ((ViewHolder) holder).messageFileCard.setVisibility(View.VISIBLE);
+                    ((ViewHolder) holder).messageVideo.setVisibility(View.GONE);
+                    ((ViewHolder) holder).messagePhoto.setVisibility(View.GONE);
+
+                    // file
+                    ((ViewHolder) holder).messageFilename.setText(message.getFilename());
+
+                    ((ViewHolder) holder).messageFileCard.setOnClickListener(v -> {
+                        Toasty.info(mContext, "Downloading... Check your notifications", Toasty.LENGTH_LONG).show();
+                        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(message.getFile()));
+                        request.setDescription("Downloading file from Qwekdots servers");
+                        request.setTitle("File Download");
+
+                        request.allowScanningByMediaScanner();
+                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, message.getFilename());
+
+
+                        DownloadManager manager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
+                        manager.enqueue(request);
+                    });
+                    break;
             }
         }
 
@@ -212,6 +279,12 @@ public class ChatUserThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ((ViewHolder) holder).messageActions.setVisibility(View.VISIBLE);
             //((ViewHolder) holder).messageLayout.hasFocus();
             //((ViewHolder) holder).messageLayout.setFocusableInTouchMode(true);
+
+            if (!message.getUser().getId().equals(userId)) {
+                ((ViewHolder) holder).messageDelete.setVisibility(View.GONE);
+            } else {
+                ((ViewHolder) holder).messageDelete.setVisibility(View.VISIBLE);
+            }
             return false;
         });
 
@@ -260,6 +333,28 @@ public class ChatUserThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         });
     }
 
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    static long download(String sourceUrl, String targetFileName) throws Exception {
+        try (InputStream in = URI.create(sourceUrl).toURL().openStream()) {
+            return Files.copy(in, Paths.get(targetFileName));
+        }
+    }
+
+    private void saveUrl(final String filename, final String urlString)
+            throws IOException {
+
+        try (BufferedInputStream in = new BufferedInputStream(new URL(urlString).openStream()); FileOutputStream fout = new FileOutputStream(filename)) {
+
+            final byte[] data = new byte[1024];
+            int count;
+            while ((count = in.read(data, 0, 1024)) != -1) {
+                fout.write(data, 0, count);
+            }
+        }
+    }
+
     private @Nullable
     Drawable getTinted(@ColorInt int color) {
         // need to mutate otherwise all references to this drawable will be tinted
@@ -275,6 +370,60 @@ public class ChatUserThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         DrawableCompat.setTintList(wrappedDrawable, tint);
         DrawableCompat.setTintMode(wrappedDrawable, PorterDuff.Mode.MULTIPLY);
         return wrappedDrawable;
+    }
+
+    private static void openFile(Context context, File url) throws IOException {
+        // Create URI
+        Uri uri = Uri.fromFile(url);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        // Check what kind of file you are trying to open, by comparing the url with extensions.
+        // When the if condition is matched, plugin sets the correct intent (mime) type,
+        // so Android knew what application to use to open the file
+        if (url.toString().contains(".doc") || url.toString().contains(".docx")) {
+            // Word document
+            intent.setDataAndType(uri, "application/msword");
+        } else if(url.toString().contains(".pdf")) {
+            // PDF file
+            intent.setDataAndType(uri, "application/pdf");
+        } else if(url.toString().contains(".ppt") || url.toString().contains(".pptx")) {
+            // Powerpoint file
+            intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+        } else if(url.toString().contains(".xls") || url.toString().contains(".xlsx")) {
+            // Excel file
+            intent.setDataAndType(uri, "application/vnd.ms-excel");
+        } else if(url.toString().contains(".zip") || url.toString().contains(".rar")) {
+            // WAV audio file
+            intent.setDataAndType(uri, "application/x-wav");
+        } else if(url.toString().contains(".rtf")) {
+            // RTF file
+            intent.setDataAndType(uri, "application/rtf");
+        } else if(url.toString().contains(".wav") || url.toString().contains(".mp3")) {
+            // WAV audio file
+            intent.setDataAndType(uri, "audio/x-wav");
+        } else if(url.toString().contains(".gif")) {
+            // GIF file
+            intent.setDataAndType(uri, "image/gif");
+        } else if(url.toString().contains(".jpg") || url.toString().contains(".jpeg") || url.toString().contains(".png")) {
+            // JPG file
+            intent.setDataAndType(uri, "image/jpeg");
+        } else if(url.toString().contains(".txt")) {
+            // Text file
+            intent.setDataAndType(uri, "text/plain");
+        } else if(url.toString().contains(".3gp") || url.toString().contains(".mpg") || url.toString().contains(".mpeg") || url.toString().contains(".mpe") || url.toString().contains(".mp4") || url.toString().contains(".avi")) {
+            // Video files
+            intent.setDataAndType(uri, "video/*");
+        } else {
+            //if you want you can also define the intent type for any other file
+
+            //additionally use else clause below, to manage other unknown extensions
+            //in this case, Android will show all applications installed on the device
+            //so you can choose which application to use
+            intent.setDataAndType(uri, "*/*");
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     private void deleteMessage(final String message_id, String user_id) {

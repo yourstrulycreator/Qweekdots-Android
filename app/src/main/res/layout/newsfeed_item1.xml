@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="16dp"
+    android:layout_margin="7dp"
+    app:cardBackgroundColor="@color/contentBodyColor">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/drop_qweekSnapCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/bottom_sheet_corner_radius"
+            app:cardElevation="-1dp"
+            android:visibility="visible"
+            app:cardBackgroundColor="@color/contentBodyColor">
+
+            <ImageView
+                android:id="@+id/qweekSnap"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:maxHeight="500dp"
+                android:background="@color/QweekColorAccent"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                android:adjustViewBounds="true"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/reactionImage"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:background="@color/QweekColorAccent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
+
+            <!-->
+            <com.creator.qweekdots.mediaplayer.RSVideoPlayerStandard
+                android:id="@+id/videoplayer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_black"
+                android:visibility="gone"/>
+            <-->
+
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/video"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:controller_layout_id="@layout/exo_playback_control_view"
+                app:surface_type="texture_view"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/audioLayout">
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:tint="@color/contentTextColor"
+                    android:src="@drawable/play"
+                    android:visibility="gone"
+                    android:id="@+id/playAudio"
+                    tools:ignore="ContentDescription"
+                    android:layout_marginStart="15dp"/>
+
+                <com.gauravk.audiovisualizer.visualizer.BlobVisualizer
+                    xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/blast"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    custom:avDensity="0.8"
+                    custom:avType="fill"
+                    custom:avColor="@color/QweekColorAccent"
+                    custom:avSpeed="normal"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:id="@+id/audioTxtLayout"
+                    android:visibility="gone">
+                    <com.vanniktech.emoji.EmojiTextView
+                        android:id="@+id/txtDrop2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:textColor="@color/contentTextColor"
+                        android:paddingLeft="@dimen/feed_item_status_pad_left_right"
+                        android:paddingRight="@dimen/feed_item_status_pad_left_right"
+                        android:paddingTop="5dp"
+                        android:textSize="14sp"
+                        android:layout_marginTop="15dp"
+                        android:fontFamily="@font/vera_mono"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/feed_item_padding_top_bottom"
+            android:paddingTop="@dimen/feed_item_padding_top_bottom"
+            android:id="@+id/droptext_text_layout"
+            android:visibility="visible">
+
+            <com.vanniktech.emoji.EmojiTextView
+                android:id="@+id/txtDrop"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:textColor="@color/contentTextColor"
+                android:paddingLeft="@dimen/feed_item_status_pad_left_right"
+                android:paddingRight="@dimen/feed_item_status_pad_left_right"
+                android:paddingTop="5dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/vera_mono"/>
+
+            <io.github.ponnamkarthik.richlinkpreview.RichLinkView
+                android:id="@+id/txtUrl"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:linksClickable="true"
+                android:paddingLeft="@dimen/feed_item_status_pad_left_right"
+                android:paddingRight="@dimen/feed_item_status_pad_left_right"
+                android:paddingTop="10dp"
+                android:paddingBottom="5dp"
+                android:textColorLink="@color/link"/>
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="3dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="start|center_vertical"
+                android:id="@+id/drop_actions"
+                android:visibility="visible"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginStart="20dp"
+                        app:srcCompat="@drawable/ic_upvote"
+                        android:padding="5dp"
+                        android:tint="@color/Gray"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:id="@+id/upvote_btn"
+                        android:contentDescription="@string/upvote_txt" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:autoSizeMaxTextSize="16sp"
+                        android:textColor="@color/Gray"
+                        android:id="@+id/upvoteNum"
+                        tools:targetApi="o"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginStart="20dp"
+                        app:srcCompat="@drawable/ic_downvote"
+                        android:padding="5dp"
+                        android:tint="@color/Gray"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:id="@+id/downvote_btn"
+                        android:contentDescription="@string/downvote_txt" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:autoSizeMaxTextSize="16sp"
+                        android:textColor="@color/Gray"
+                        android:id="@+id/downvoteNum"
+                        tools:targetApi="o"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginStart="20dp"
+                        app:srcCompat="@drawable/q_comments"
+                        android:padding="5dp"
+                        android:tint="@color/Gray"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:id="@+id/expand_btn"
+                        android:contentDescription="@string/expand_txt" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:autoSizeMaxTextSize="16sp"
+                        android:textColor="@color/Gray"
+                        android:id="@+id/commentsNum"
+                        tools:targetApi="o" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginStart="20dp"
+                        app:srcCompat="@drawable/q_time"
+                        android:padding="5dp"
+                        android:tint="@color/Gray"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:id="@+id/time_btn"
+                        android:contentDescription="@string/expand_txt" />
+
+                    <TextView
+                        android:id="@+id/timestamp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:autoSizeMaxTextSize="16sp"
+                        android:textColor="@color/Gray"
+                        tools:targetApi="o"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:orientation="horizontal">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profilePic"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:civ_border_color="@color/imageBorderColor"
+                    app:civ_border_width="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="18dp"
+                    android:backgroundTint="@color/contentTextColor"
+                    android:tint="@color/contentTextColor"
+                    tools:targetApi="lollipop"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"/>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

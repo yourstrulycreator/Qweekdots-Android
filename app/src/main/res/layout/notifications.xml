@@ -16,13 +16,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:ignore="UselessParent">
+
+            <ImageView
+                android:id="@+id/closeSheet"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/ic_close2"
+                android:tint="@color/contentTextColor"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="10dp"
+                tools:ignore="ContentDescription" />
+
             <TextView
                 android:text="@string/notifications"
+                android:id="@+id/titleText"
                 style="@style/viewParent.headerText.PageTitle"
                 android:layout_gravity="bottom"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="25dp"
-                android:layout_alignParentStart="true"/>
+                android:layout_marginTop="35dp"
+                android:layout_centerHorizontal="true"/>
         </RelativeLayout>
     </LinearLayout>
 
@@ -48,7 +60,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
-                    android:paddingBottom="@dimen/activity_margin_content"/>
+                    android:paddingBottom="@dimen/activity_margin_content"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
             </LinearLayout>
 
@@ -64,6 +77,11 @@
 
         <include layout="@layout/qweekdots_error"/>
         <include layout="@layout/qweekdots_empty"/>
+
+        <View
+            android:id="@+id/extraSpace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

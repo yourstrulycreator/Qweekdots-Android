@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/contentBodyColor">
+
+    <ScrollView
+        android:id="@+id/post_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center">
+
+            <com.vanniktech.emoji.EmojiEditText
+                android:id="@+id/drop_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:background="@android:color/transparent"
+                android:textSize="18sp"
+                android:textColor="@color/contentTextColor"
+                android:hint="Let's hear that witty caption"
+                android:textColorHint="@color/SlateGray"
+                android:paddingTop="18dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:paddingBottom="20dp"
+                android:gravity="start|center"
+                android:inputType="textCapSentences|textMultiLine"
+                android:scrollHorizontally="false"
+                android:scrollbars="none"
+                android:singleLine="false"
+                android:textCursorDrawable="@null"
+                android:importantForAutofill="no"
+                tools:ignore="HardcodedText" />
+
+            <ImageView
+                android:id="@+id/captured_snap"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:scaleType="fitXY"
+                android:background="@color/colorAccent"
+                android:layout_gravity="start"
+                android:visibility="gone"
+                android:layout_marginTop="15dp"
+                android:contentDescription="@string/snap"
+                android:adjustViewBounds="true"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="20dp"
+        app:layout_anchor="@id/post_container"
+        app:layout_anchorGravity="bottom|right"
+        android:orientation="horizontal">
+
+        <com.github.jorgecastilloprz.FABProgressCircle
+            android:id="@+id/dropTextProgress"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            app:arcColor="@color/SpringGreen"
+            app:arcWidth="5dp"
+            android:padding="10dp"
+            app:reusable="true">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/upload_snap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                app:srcCompat="@drawable/ic_send"
+                app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
+                android:focusable="true"
+                app:pressedTranslationZ="12dp"
+                app:backgroundTint="@color/Salmon"
+                android:scaleType="centerCrop"
+                android:elevation="0dp"
+                app:elevation="0dp"
+                tools:ignore="VectorDrawableCompat"
+                tools:targetApi="lollipop" />
+
+        </com.github.jorgecastilloprz.FABProgressCircle>
+    </LinearLayout>
+
+    <!-- Custom Close Button -->
+    <ImageButton android:id="@+id/customClose"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@drawable/custom_back_btn"
+        app:srcCompat="@drawable/q_back"
+        android:tint="@color/contentTextColor"
+        android:layout_gravity="top|start"
+        android:scaleType="fitCenter"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="18dp"
+        android:onClick="onClick"
+        android:contentDescription="@string/custom_go_back" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

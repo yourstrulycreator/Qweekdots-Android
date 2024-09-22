@@ -1,12 +1,15 @@
 package com.creator.qweekdots.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +30,7 @@ import com.creator.qweekdots.models.UserItem;
 import com.creator.qweekdots.utils.PaginationAdapterCallback;
 import com.creator.qweekdots.utils.PaginationScrollListener;
 import com.creator.qweekdots.utils.RoundedBottomSheetDialogFragment;
+import com.creator.qweekdots.widget.CustomSwipeToRefresh;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -51,7 +55,7 @@ public class FollowersBottomSheet extends RoundedBottomSheetDialogFragment imple
     private SpinKitView progressBar;
     private LinearLayout errorLayout;
     private TextView txtError;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private CustomSwipeToRefresh swipeRefreshLayout;
     private LinearLayout emptyLayout;
 
     private boolean isLoading = false;
@@ -76,6 +80,7 @@ public class FollowersBottomSheet extends RoundedBottomSheetDialogFragment imple
         this.username = username;
     }
 
+    @SuppressLint("SetTextI18n")
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -97,6 +102,20 @@ public class FollowersBottomSheet extends RoundedBottomSheetDialogFragment imple
             Button btnRetry = view.findViewById(R.id.error_btn_retry);
             txtError = view.findViewById(R.id.error_txt_cause);
             swipeRefreshLayout = view.findViewById(R.id.follows_swiperefresh);
+
+            TextView optTitle = view.findViewById(R.id.optTitleSheetTxt);
+            optTitle.setText("Followers");
+
+            optTitle.setOnClickListener(v -> {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                dismiss();
+            });
+
+            ImageView closeSheet = view.findViewById(R.id.closeSheet);
+            closeSheet.setOnClickListener(v -> {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                dismiss();
+            });
 
             // Setup Adapter with RecyclerView
             adapter = new ListedUsersAdapter(getActivity(), this, username);
@@ -149,6 +168,9 @@ public class FollowersBottomSheet extends RoundedBottomSheetDialogFragment imple
             bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
                 public void onStateChanged(@NonNull View view, int i) {
+                    if (BottomSheetBehavior.STATE_EXPANDED == i) {
+                        bottomSheetBehavior.setDraggable(false);
+                    }
                     if (BottomSheetBehavior.STATE_HIDDEN == i) {
                         dismiss();
                     }
@@ -329,7 +351,7 @@ public class FollowersBottomSheet extends RoundedBottomSheetDialogFragment imple
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
 
-            txtError.setText(getResources().getString(R.string.error_msg_unknown));
+            txtError.setText(context.getResources().getString(R.string.error_msg_unknown));
         }
     }
 
@@ -345,12 +367,12 @@ public class FollowersBottomSheet extends RoundedBottomSheetDialogFragment imple
      * @return appropriate error message
      */
     private String fetchErrorMessage(Throwable throwable) {
-        String errorMsg = getResources().getString(R.string.error_msg_unknown);
+        String errorMsg = context.getResources().getString(R.string.error_msg_unknown);
 
         if (!isNetworkConnected()) {
-            errorMsg = getResources().getString(R.string.error_msg_no_internet);
+            errorMsg = context.getResources().getString(R.string.error_msg_no_internet);
         } else if (throwable instanceof TimeoutException) {
-            errorMsg = getResources().getString(R.string.error_msg_timeout);
+            errorMsg = context.getResources().getString(R.string.error_msg_timeout);
         }
 
         return errorMsg;
@@ -378,5 +400,14 @@ public class FollowersBottomSheet extends RoundedBottomSheetDialogFragment imple
     public void onStart() {
         super.onStart();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
     }
 }

@@ -50,10 +50,8 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
     private PaginationAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
 
-    private RecyclerView rv;
     private SpinKitView progressBar;
     private LinearLayout errorLayout;
-    private Button btnRetry;
     private TextView txtError;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout emptyLayout;
@@ -67,7 +65,7 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
     private String next_link;
     private String prev_link;
     private String max_id;
-    private String since_id;
+    //private String since_id;
 
     private SearchDropService feedService;
     private String queryString;
@@ -95,7 +93,6 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
         HashMap<String, String> user = db.getUserDetails();
 
         logged = user.get("username");
-        String avatar = user.get("avatar");
 
         RecyclerView rv = rootView.findViewById(R.id.search_recycler);
         progressBar = rootView.findViewById(R.id.mSearchProgressBar);
@@ -166,8 +163,6 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
 
         // TODO: Check if data is stale.
         //  Execute network request if cache is expired; otherwise do not update data.
-        adapter.getQweekFeed().clear();
-        adapter.notifyDataSetChanged();
         loadFirstPage();
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -180,8 +175,9 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
     }
 
     private void loadFirstPage() {
+        adapter.getQweekFeed().clear();
+        adapter.notifyDataSetChanged();
         Timber.tag(TAG).d("loadFirstPage: ");
-
         // To ensure list is visible when retry button in error view is clicked
         hideErrorView();
 
@@ -208,7 +204,7 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
                     next_link = cursorLink.getNextLink();
                     prev_link = cursorLink.getPrevLink();
                     max_id = cursorLink.getMaxID();
-                    since_id = cursorLink.getSinceID();
+                    //since_id = cursorLink.getSinceID();
 
                     TOTAL_PAGES = cursorLink.getPagesNum();
 
@@ -225,7 +221,7 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
             }
 
             @Override
-            public void onFailure(Call<SearchDropModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<SearchDropModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 showErrorView();
             }
@@ -271,7 +267,7 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
                 next_link = cursorLink.getNextLink();
                 prev_link = cursorLink.getPrevLink();
                 max_id = cursorLink.getMaxID();
-                since_id = cursorLink.getSinceID();
+                //since_id = cursorLink.getSinceID();
 
                 if (currentPage != TOTAL_PAGES) {
                     adapter.addLoadingFooter();
@@ -281,7 +277,7 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
             }
 
             @Override
-            public void onFailure(Call<SearchDropModel> call, Throwable t) {
+            public void onFailure(@NotNull Call<SearchDropModel> call, @NotNull Throwable t) {
                 t.printStackTrace();
                 adapter.showRetry(true, fetchErrorMessage(t));
             }
@@ -323,7 +319,7 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
      * Same API call for Pagination.
      * As {@link #currentPage} will be incremented automatically
      * by @{@link PaginationScrollListener} to load next page.
-     */
+
     private Call<SearchDropModel> callPrevDropSearchApi() {
         return feedService.getSearchedDrops(
                 queryString,
@@ -331,7 +327,7 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
                 null,
                 since_id
         );
-    }
+    }*/
 
     @Override
     public void retryPageLoad() {
@@ -341,12 +337,11 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
     /**
      */
     private void showErrorView() {
-
         if (errorLayout.getVisibility() == View.GONE) {
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
 
-            txtError.setText(getResources().getString(R.string.error_msg_unknown));
+            txtError.setText(context.getResources().getString(R.string.error_msg_unknown));
         }
     }
 
@@ -362,12 +357,12 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
      * @return appropriate error message
      */
     private String fetchErrorMessage(Throwable throwable) {
-        String errorMsg = getResources().getString(R.string.error_msg_unknown);
+        String errorMsg = context.getResources().getString(R.string.error_msg_unknown);
 
         if (!isNetworkConnected()) {
-            errorMsg = getResources().getString(R.string.error_msg_no_internet);
+            errorMsg = context.getResources().getString(R.string.error_msg_no_internet);
         } else if (throwable instanceof TimeoutException) {
-            errorMsg = getResources().getString(R.string.error_msg_timeout);
+            errorMsg = context.getResources().getString(R.string.error_msg_timeout);
         }
 
         return errorMsg;
@@ -380,12 +375,6 @@ public class DropSearchFragment extends Fragment implements PaginationAdapterCal
         if (errorLayout.getVisibility() == View.VISIBLE) {
             errorLayout.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideEmptyView() {
-        if (emptyLayout.getVisibility() == View.VISIBLE) {
-            emptyLayout.setVisibility(View.GONE);
         }
     }
 

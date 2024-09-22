@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.creator.qweekdots.models.StreamUser;
 import com.creator.qweekdots.models.User;
 
 public class PreferenceManager {
@@ -21,6 +22,7 @@ public class PreferenceManager {
 
     // All Shared Preferences Keys
     private static final String KEY_USER_ID = "id";
+    private static final String KEY_USER_SID = "stream_id";
     private static final String KEY_USER_NAME = "username";
     private static final String KEY_USER_FULL = "fullname";
     private static final String KEY_USER_EMAIL = "email";
@@ -59,6 +61,24 @@ public class PreferenceManager {
             avatar = pref.getString(KEY_USER_AVATAR, null);
 
             return new User(id, username, fullname, email, avatar);
+        }
+        return null;
+    }
+
+    @SuppressLint("LogNotTimber")
+    public void storeStreamUser(StreamUser suser) {
+        editor.putString(KEY_USER_SID, suser.getId());
+        editor.commit();
+
+        Log.e(TAG, "Stream token is stored in shared preferences. " + suser.getId());
+    }
+
+    public StreamUser getStreamUser() {
+        if (pref.getString(KEY_USER_SID, null) != null) {
+            String sid;
+            sid = pref.getString(KEY_USER_SID, null);
+
+            return new StreamUser(sid);
         }
         return null;
     }

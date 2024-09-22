@@ -123,7 +123,7 @@ public class DropReactionsActivity extends AppCompatActivity {
                     goBack();
 
                     // success
-                    String sent = jObj.getString("sent");
+                    String sent = "Dropped!";
                     Toasty.success(this, sent, Toast.LENGTH_SHORT).show();
                 } else {
                     // Error in drop. Get the error message

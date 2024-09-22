@@ -26,8 +26,11 @@ public class TagsAdapter<CTX extends ReactionsActivity>
 
     public static final int TYPE_REACTION_ITEM = 0;
 
-    public TagsAdapter(@Nullable CTX ctx) {
+    private String dropTxt;
+
+    public TagsAdapter(@Nullable CTX ctx, String droptext) {
         super(ctx);
+        dropTxt = droptext;
     }
 
     @Override
@@ -62,7 +65,7 @@ public class TagsAdapter<CTX extends ReactionsActivity>
         final LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         return new TagItemVH<>(
                 layoutInflater.inflate(R.layout.item_tag, parent, false),
-                getRef());
+                getRef(), dropTxt);
     }
 
     @Override

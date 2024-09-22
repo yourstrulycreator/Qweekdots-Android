@@ -3,6 +3,7 @@ package com.creator.qweekdots.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.view.GestureDetector;
@@ -39,7 +40,6 @@ import java.util.Date;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivityAdapter extends RecyclerView.Adapter<ChatActivityAdapter.ViewHolder> {
-
     private Context mContext;
     private ArrayList<ChatRoom> chatRoomArrayList;
     private static String today;
@@ -80,31 +80,29 @@ public class ChatActivityAdapter extends RecyclerView.Adapter<ChatActivityAdapte
         return new ViewHolder(itemView);
     }
 
+    @SuppressLint("ResourceType")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ChatRoom chatRoom = chatRoomArrayList.get(position);
         holder.name.setText(chatRoom.getName());
+
         holder.message.setText(chatRoom.getLastMessage());
+
         if (chatRoom.getUnreadCount() > 0) {
             holder.count.setText(String.valueOf(chatRoom.getUnreadCount()));
             holder.count.setVisibility(View.VISIBLE);
-        } else {
+            holder.message.setTextColor(Color.rgb(0,210,255));
+        } else  if (chatRoom.getUnreadCount() <= 0) {
             holder.count.setVisibility(View.GONE);
         }
 
         if(chatRoom.getLastMessageFrom().equals(selfUserId)) {
-            holder.message.setCompoundDrawablesWithIntrinsicBounds(R.drawable.alien, 0, 0, 0);
+            holder.message.setTextColor(mContext.getResources().getColor(R.color.SlateGray));
+        } else {
+            holder.message.setTextColor(mContext.getResources().getColor(R.color.QweekColorAccent));
         }
 
-        holder.timestamp.setText(getTimeStamp(chatRoom.getTimestamp()));
-
-        /*Picasso.get()
-                .load(chatRoom.getPrivate_avatar())
-                .resize(40, 40)
-                .placeholder(R.drawable.ic_alien)
-                .error(R.drawable.ic_alien)
-                .centerCrop()
-                .into(holder.avatar);*/
+        holder.timestamp.setText(chatRoom.getTimestamp());
 
         RequestOptions requestOptions = new RequestOptions() // because file name is always same
                 .format(DecodeFormat.PREFER_RGB_565);
@@ -112,7 +110,7 @@ public class ChatActivityAdapter extends RecyclerView.Adapter<ChatActivityAdapte
         Glide
                 .with(mContext)
                 .load(chatRoom.getPrivate_avatar())
-                .override(40, 40)
+                .override(60, 60)
                 .placeholder(placeholder)
                 .error(placeholder)
                 .thumbnail(0.3f)
@@ -171,7 +169,6 @@ public class ChatActivityAdapter extends RecyclerView.Adapter<ChatActivityAdapte
     }
 
     public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
-
         private GestureDetector gestureDetector;
         private ChatActivityAdapter.ClickListener clickListener;
 
@@ -195,7 +192,6 @@ public class ChatActivityAdapter extends RecyclerView.Adapter<ChatActivityAdapte
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-
             View child = rv.findChildViewUnder(e.getX(), e.getY());
             if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
                 clickListener.onClick(child, rv.getChildPosition(child));

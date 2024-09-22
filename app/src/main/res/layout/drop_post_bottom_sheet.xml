@@ -22,16 +22,17 @@
                 android:maxLines="1"
                 android:textColor="@color/contentTextColor"
                 android:text="@string/the_drops_factory"
-                android:fontFamily="@font/amatic_regular"
-                android:textSize="34sp"
+                android:fontFamily="@font/avenir_next_cyr_regular"
+                android:textSize="28dp"
                 android:textStyle="bold"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                tools:ignore="SpUsage" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="45dp"
+                android:layout_marginTop="15dp"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:weightSum="3"
@@ -81,6 +82,36 @@
                         android:id="@+id/postSnap"
                         android:layout_width="75dp"
                         android:layout_height="75dp"
+                        app:srcCompat="@drawable/drop_factory_icon_snap"
+                        android:clickable="true"
+                        android:focusable="true"
+                        tools:targetApi="lollipop"
+                        android:contentDescription="@string/drop"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Photos"
+                        android:layout_marginTop="5dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    style="@style/AppTheme.SelectableItemRippleTheme"
+                    android:background="@color/gradientViolet">
+                    <ImageView
+                        android:id="@+id/postQweekSnap"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
                         app:srcCompat="@drawable/drop_factory_icon_qweeksnap"
                         android:clickable="true"
                         android:focusable="true"
@@ -90,13 +121,24 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Snaps"
+                        android:text="QweekSnaps"
                         android:layout_marginTop="5dp"
                         android:textSize="16sp"
                         android:textColor="@color/white"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
 
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:weightSum="3"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -122,28 +164,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Audio"
-                         android:layout_marginTop="5dp"
+                        android:layout_marginTop="5dp"
                         android:textSize="16sp"
                         android:textColor="@color/white"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:weightSum="3"
-                android:baselineAligned="false">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    tools:ignore="UselessLeaf" />
 
                 <LinearLayout
                     android:layout_width="0dp"

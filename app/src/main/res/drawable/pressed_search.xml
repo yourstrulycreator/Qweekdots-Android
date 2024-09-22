@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_pressed="true" >
+        <shape android:shape="oval"  >
+            <corners android:radius="3dip" />
+            <stroke android:width="1dip" android:color="@color/settingsCardColor2" />
+            <gradient android:angle="-90" android:startColor="@color/settingsCardColor" android:endColor="@color/settingsCardColor2"  />
+
+            <padding android:top="10dp"
+                android:bottom="10dp"
+                android:left="10dp"
+                android:right="10dp"/>
+        </shape>
+    </item>
+    <item android:state_focused="true">
+        <shape android:shape="oval"  >
+            <corners android:radius="3dip" />
+            <stroke android:width="1dip" android:color="@color/settingsCardColor2" />
+            <solid android:color="@color/settingsCardColor2"/>
+
+            <padding android:top="10dp"
+                android:bottom="10dp"
+                android:left="10dp"
+                android:right="10dp"/>
+        </shape>
+    </item>
+    <item >
+        <shape android:shape="oval"  >
+            <corners android:radius="3dip" />
+            <stroke android:width="1dip" android:color="@color/contentBodyColor" />
+            <gradient android:angle="-90" android:startColor="@color/contentBodyColor" android:endColor="@color/contentBodyColor" />
+
+            <padding android:top="10dp"
+                android:bottom="10dp"
+                android:left="10dp"
+                android:right="10dp"/>
+        </shape>
+    </item>
+</selector>

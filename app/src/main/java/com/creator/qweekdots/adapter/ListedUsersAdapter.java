@@ -141,7 +141,7 @@ public class ListedUsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         i.putExtra("profile", userItem.getUsername());
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(i);
-                        customType(context, "fadein-to-fadeout");
+                        //customType(context, "fadein-to-fadeout");
                     });
 
                     /*
@@ -221,7 +221,7 @@ public class ListedUsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 if (!error) {
 
                     String sent = jObj.getString("sent");
-                    Toasty.success(context, sent, Toast.LENGTH_SHORT).show();
+                    //Toasty.success(context, sent, Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 // JSON error

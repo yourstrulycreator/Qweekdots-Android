@@ -4,6 +4,8 @@ public class AppConfig {
 	// Server user login url
 	public static String URL_LOGIN = "https://qweek.fun/genjitsu/signin.php";
 
+	public static String URL_STREAM = "https://qweek.fun/stream/stream.php";
+
 	// Server user register url
 	public static String URL_REGISTER = "https://qweek.fun/genjitsu/signup.php";
 
@@ -33,6 +35,12 @@ public class AppConfig {
 
 	// Server downvote url
 	public static String URL_DOWNVOTE = "https://qweek.fun/genjitsu/parse/drop_downvote.php";
+
+	// Server post report url
+	public static String URL_REPORT_DROP = "https://qweek.fun/genjitsu/parse/drop_report.php";
+
+	// Server user block url
+	public static String URL_BLOCK_USER = "https://qweek.fun/genjitsu/parse/block.php";
 
 	// Server follow url
 	public static String URL_FOLLOW = "https://qweek.fun/genjitsu/parse/follow.php";

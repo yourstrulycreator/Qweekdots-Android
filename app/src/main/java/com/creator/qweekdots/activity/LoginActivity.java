@@ -2,6 +2,7 @@ package com.creator.qweekdots.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -36,6 +39,7 @@ import com.creator.qweekdots.app.AppController;
 import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.helper.SessionManager;
 import com.creator.qweekdots.models.User;
+import com.creator.qweekdots.prefs.DarkModePrefManager;
 import com.creator.qweekdots.service.FCMIntentService;
 import com.creator.qweekdots.service.NotificationUtils;
 import com.creator.qweekdots.ui.PasswordResetBottomSheet;
@@ -96,6 +100,29 @@ public class LoginActivity extends AppCompatActivity {
 
         decorView = Objects.requireNonNull(this).getWindow().getDecorView();
 
+        // Make Changes according to theme selected
+        if(new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setStatusBarColor(getResources().getColor(R.color.contentBodyColor));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.getDecorView().getWindowInsetsController().setSystemBarsAppearance(0, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
+            }
+        } else {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //window.setStatusBarColor(Color.TRANSPARENT);
+            window.setStatusBarColor(getResources().getColor(R.color.contentBodyColor));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.getDecorView().getWindowInsetsController().setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
+            }
+
+        }
+
         // Check if user is already logged in or not
         if (session.isLoggedIn()) {
             // User is already logged in. Take him to main activity
@@ -152,9 +179,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         if(checkPlayServices()) {
-
             registerGCM();
-
+            subscribeToGlobalTopic();
         }
 
         if(!checkCameraHardware(this.getApplicationContext())) {
@@ -205,6 +231,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            @NotNull String[] permissions, @NotNull int[] grantResults) {
 
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_ID_MULTIPLE_PERMISSIONS) {
             Map<String, Integer> perms = new HashMap<>();
 
@@ -309,8 +336,16 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
+    // subscribing to global topic
+    private void subscribeToGlobalTopic() {
+        Intent intent = new Intent(this, FCMIntentService.class);
+        intent.putExtra(FCMIntentService.KEY, FCMIntentService.SUBSCRIBE);
+        intent.putExtra(FCMIntentService.TOPIC, AppConfig.TOPIC_GLOBAL);
+        startService(intent);
+    }
 
-        public void onLoginClick(View View){
+
+    public void onLoginClick(View View){
         startActivity(new Intent(this,RegisterActivity.class));
         overridePendingTransition(R.anim.slide_in_right,R.anim.stay);
 
@@ -337,6 +372,7 @@ public class LoginActivity extends AppCompatActivity {
                             stopButtonAnimation();
 
                             // user successfully logged in
+
                             // Now store the user in SQLite4
 
                             String id = jObj.getString("id");
@@ -351,6 +387,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             // Inserting row in users table
                             db.addUser(username1, fullname, email, bio, avatar, telephone, birthday, created_at);
+
                             // storing user in shared preferences
                             User user = new User(id,
                                     username1,
@@ -358,6 +395,7 @@ public class LoginActivity extends AppCompatActivity {
                                     email,
                                     avatar);
                             AppController.getInstance().getPrefManager().storeUser(user);
+
 
                             // Create login session
                             session.setLogin(true);
@@ -372,6 +410,9 @@ public class LoginActivity extends AppCompatActivity {
                             }else{
                                 //require all permission.
                             }
+
+                            //checkStream(username, password);
+
                         } else {
                             // Error in login. Get the error message
                             String errorMsg = jObj.getString("error_msg");
@@ -448,27 +489,16 @@ public class LoginActivity extends AppCompatActivity {
 
         // clear the notification area when the app is opened
         NotificationUtils.clearNotifications();
+
+        NotificationManager manager = (NotificationManager) getApplicationContext()
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancelAll();
     }
 
     @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
-    }
-
-    @Override
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
     }
 
 }

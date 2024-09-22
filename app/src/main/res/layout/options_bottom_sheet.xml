@@ -33,10 +33,11 @@
                 android:maxLines="1"
                 android:textColor="@color/contentTextColor"
                 android:text="@string/options"
-                android:fontFamily="@font/amatic_regular"
-                android:textSize="34sp"
+                android:fontFamily="@font/avenir_next_cyr_regular"
+                android:textSize="28dp"
                 android:textStyle="bold"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                tools:ignore="SpUsage" />
 
             <!-- Profile Section -->
             <TextView
@@ -70,7 +71,9 @@
                         android:text="@string/options_username"
                         android:layout_weight="3"
                         android:textColor="@color/contentTextColor"
-                        android:layout_margin="0dp"/>
+                        android:textSize="12dp"
+                        android:layout_margin="0dp"
+                        tools:ignore="SpUsage"/>
                     <TextView
                         style="@style/viewParent.headerText.settingsTextIcon"
                         android:layout_weight="1"
@@ -80,7 +83,8 @@
                         android:textColor="@color/SlateGray"
                         android:layout_margin="0dp"
                         android:id="@+id/optUsernameTxt"
-                        android:textSize="12sp"/>
+                        android:textSize="12dp"
+                        tools:ignore="SpUsage" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -105,7 +109,9 @@
                         android:text="@string/options_fullname"
                         android:layout_weight="3"
                         android:textColor="@color/contentTextColor"
-                        android:layout_margin="0dp"/>
+                        android:textSize="12dp"
+                        android:layout_margin="0dp"
+                        tools:ignore="SpUsage" />
                     <TextView
                         style="@style/viewParent.headerText.settingsTextIcon"
                         android:layout_weight="1"
@@ -115,7 +121,48 @@
                         android:textColor="@color/SlateGray"
                         android:layout_margin="0dp"
                         android:id="@+id/optFullnameTxt"
-                        android:textSize="12sp"/>
+                        android:textSize="12dp"
+                        tools:ignore="SpUsage" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Bio Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optBioCard">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextNoIcon"
+                        android:text="@string/options_bio"
+                        android:layout_weight="3"
+                        android:textColor="@color/contentTextColor"
+                        android:textSize="12dp"
+                        android:layout_margin="0dp"
+                        tools:ignore="SpUsage"/>
+                    <TextView
+                        style="@style/viewParent.headerText.settingsTextIcon"
+                        android:layout_weight="1"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/SlateGray"
+                        android:layout_margin="0dp"
+                        android:id="@+id/optBioTxt"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textSize="12dp"
+                        tools:ignore="SpUsage" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -140,7 +187,9 @@
                         android:text="@string/options_birthday"
                         android:layout_weight="3"
                         android:textColor="@color/contentTextColor"
-                        android:layout_margin="0dp"/>
+                        android:textSize="12dp"
+                        android:layout_margin="0dp"
+                        tools:ignore="SpUsage"/>
                     <TextView
                         style="@style/viewParent.headerText.settingsTextIcon"
                         android:layout_weight="1"
@@ -150,7 +199,8 @@
                         android:textColor="@color/SlateGray"
                         android:layout_margin="0dp"
                         android:id="@+id/optBirthdayTxt"
-                        android:textSize="12sp"/>
+                        android:textSize="12dp"
+                        tools:ignore="SpUsage" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -175,7 +225,9 @@
                         android:text="@string/options_email"
                         android:layout_weight="3"
                         android:textColor="@color/contentTextColor"
-                        android:layout_margin="0dp"/>
+                        android:textSize="12dp"
+                        android:layout_margin="0dp"
+                        tools:ignore="SpUsage"/>
                     <TextView
                         style="@style/viewParent.headerText.settingsTextIcon"
                         android:layout_weight="1"
@@ -185,7 +237,8 @@
                         android:textColor="@color/SlateGray"
                         android:layout_margin="0dp"
                         android:id="@+id/optEmailTxt"
-                        android:textSize="12sp"/>
+                        android:textSize="12dp"
+                        tools:ignore="SpUsage" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -210,7 +263,9 @@
                         android:text="@string/options_telephone"
                         android:layout_weight="3"
                         android:textColor="@color/contentTextColor"
-                        android:layout_margin="0dp"/>
+                        android:textSize="12dp"
+                        android:layout_margin="0dp"
+                        tools:ignore="SpUsage"/>
                     <TextView
                         style="@style/viewParent.headerText.settingsTextIcon"
                         android:layout_weight="1"
@@ -220,7 +275,8 @@
                         android:textColor="@color/SlateGray"
                         android:layout_margin="0dp"
                         android:id="@+id/optTelephoneTxt"
-                        android:textSize="12sp"/>
+                        android:textSize="12dp"
+                        tools:ignore="SpUsage" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -240,7 +296,9 @@
                         android:text="@string/options_password"
                         android:layout_weight="1"
                         android:textColor="@color/contentTextColor"
-                        android:layout_margin="0dp"/>
+                        android:textSize="12dp"
+                        android:layout_margin="0dp"
+                        tools:ignore="SpUsage"/>
             </androidx.cardview.widget.CardView>
             <!-- end of Profile Section -->
 
@@ -271,7 +329,9 @@
                     android:text="@string/theming"
                     android:layout_weight="1"
                     android:textColor="@color/contentTextColor"
-                    android:layout_margin="0dp"/>
+                    android:textSize="12dp"
+                    android:layout_margin="0dp"
+                    tools:ignore="SpUsage"/>
             </androidx.cardview.widget.CardView>
             <!-- end of Theme Section -->
 
@@ -298,7 +358,27 @@
                     style="@style/viewParent.headerText.settingsTextIcon"
                     android:text="@string/options_i_have_a_suggestion"
                     android:textColor="@color/contentTextColor"
-                    android:layout_margin="0dp"/>
+                    android:textSize="12dp"
+                    android:layout_margin="0dp"
+                    tools:ignore="SpUsage"/>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Rate Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginTop="20dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optRateCard">
+                <TextView
+                    style="@style/viewParent.headerText.settingsTextIcon"
+                    android:text="@string/rate_app"
+                    android:textColor="@color/contentTextColor"
+                    android:textSize="12dp"
+                    android:layout_margin="0dp"
+                    tools:ignore="SpUsage"/>
             </androidx.cardview.widget.CardView>
             <!-- end of Feedback Section -->
 
@@ -325,7 +405,9 @@
                     style="@style/viewParent.headerText.settingsTextIcon"
                     android:text="@string/options_privacy_policy"
                     android:textColor="@color/contentTextColor"
-                    android:layout_margin="0dp"/>
+                    android:textSize="12dp"
+                    android:layout_margin="0dp"
+                    tools:ignore="SpUsage"/>
             </androidx.cardview.widget.CardView>
 
             <!-- Terms Card -->
@@ -341,7 +423,28 @@
                     style="@style/viewParent.headerText.settingsTextIcon"
                     android:text="@string/terms_of_service"
                     android:textColor="@color/contentTextColor"
-                    android:layout_margin="0dp"/>
+                    android:textSize="12dp"
+                    android:layout_margin="0dp"
+                    tools:ignore="SpUsage"/>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Open Source Cards -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginTop="20dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optOpenSrcCard">
+                <TextView
+                    style="@style/viewParent.headerText.settingsTextIcon"
+                    android:text="@string/open_source_libraries"
+                    android:textColor="@color/contentTextColor"
+                    android:textSize="12dp"
+                    android:layout_margin="0dp"
+                    tools:ignore="SpUsage"/>
+
             </androidx.cardview.widget.CardView>
 
             <!-- About Card -->
@@ -357,7 +460,28 @@
                     style="@style/viewParent.headerText.settingsTextIcon"
                     android:text="@string/about"
                     android:textColor="@color/contentTextColor"
-                    android:layout_margin="0dp"/>
+                    android:textSize="12dp"
+                    android:layout_margin="0dp"
+                    tools:ignore="SpUsage"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- About Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/settingsCardColor"
+                app:cardCornerRadius="20dp"
+                android:layout_marginTop="20dp"
+                app:contentPadding="20dp"
+                android:id="@+id/optShareCard">
+                <TextView
+                    style="@style/viewParent.headerText.settingsTextIcon"
+                    android:text="@string/share_qweekdots"
+                    android:textColor="@color/contentTextColor"
+                    android:textSize="12dp"
+                    android:layout_margin="0dp"
+                    tools:ignore="SpUsage"/>
 
             </androidx.cardview.widget.CardView>
             <!-- end of Information Section -->
@@ -402,7 +526,9 @@
                     android:text="@string/logout"
                     android:textColor="@color/contentTextColor"
                     android:drawableStart="@drawable/ic_logout"
-                    android:layout_margin="0dp" />
+                    android:textSize="12dp"
+                    android:layout_margin="0dp"
+                    tools:ignore="SpUsage" />
             </androidx.cardview.widget.CardView>
             <!-- end of Account Section -->
 

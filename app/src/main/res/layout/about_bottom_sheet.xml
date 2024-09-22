@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/splash"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/aboutTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="55dp"
+                android:textStyle="bold"
+                android:fontFamily="@font/odin_rounded_bold"
+                android:layout_marginTop="25dp"
+                android:layout_alignParentStart="true"
+                tools:ignore="SpUsage" />
+
+            <TextView
+                android:id="@+id/aboutIcon"
+                android:layout_above="@id/aboutReactions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All lovely icons from FlatIcons"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="5dp"
+                android:textAlignment="viewStart"
+                android:layout_alignParentStart="true"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/aboutReactions"
+                android:layout_above="@id/aboutSpaces"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reactions Powered By Tenor Gif"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="5dp"
+                android:textAlignment="viewStart"
+                android:layout_alignParentStart="true"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/aboutSpaces"
+                android:layout_above="@id/tv_created_by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Spaces Gifs Powered By GIPHY"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="55dp"
+                android:textAlignment="viewStart"
+                android:layout_alignParentStart="true"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/tv_created_by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/with_love_from_the_qweek_company"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true" />
+
+            <View
+                android:id="@+id/extraSpace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

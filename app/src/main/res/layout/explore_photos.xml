@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="#FF402D"
-    app:cardCornerRadius="16dp"
-    android:layout_marginTop="20dp"
-    android:layout_marginBottom="20dp"
-    android:layout_marginEnd="20dp">
+    app:cardBackgroundColor="@color/QweekColorAccent"
+    app:cardCornerRadius="16dp">
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:minHeight="50dp"
-        android:maxHeight="385dp"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/explore_qweeksnaps" />
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="250dp"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/explore_qweeksnaps" />
+
 
 </androidx.cardview.widget.CardView>

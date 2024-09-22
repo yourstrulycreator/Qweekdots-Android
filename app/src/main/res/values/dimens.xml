@@ -8,6 +8,9 @@
     <dimen name="expanded_vertical_margin">16dp</dimen>
     <dimen name="reduced_vertical_margin">4dp</dimen>
 
+    <dimen name="size">30dp</dimen>
+    <dimen name="space">6dp</dimen>
+
     <!-- App Dimensions -->
     <dimen name="headerTextSize">25sp</dimen>
     <dimen name="newsMoreTextSize">12sp</dimen>

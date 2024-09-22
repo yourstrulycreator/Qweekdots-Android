@@ -9,7 +9,10 @@ public class ProfileModel {
 
     @SerializedName("user")
     @Expose
-    private List<UserItem> user = new ArrayList<UserItem>();
+    private List<UserItem> user = new ArrayList<>();
+    @SerializedName("cursor")
+    @Expose
+    private List<Cursor> cursor;
 
     /**
      *
@@ -28,6 +31,25 @@ public class ProfileModel {
      */
     public void setUserItems(List<UserItem> user) {
         this.user = user;
+    }
+
+    /**
+     *
+     * @return
+     * The cursors
+     */
+    public List<Cursor> getCursorLinks() {
+        return cursor;
+    }
+
+
+    /**
+     *
+     * @param cursor
+     * The results
+     */
+    public void setCursorlinks(List<Cursor> cursor) {
+        this.cursor = cursor;
     }
 
 }

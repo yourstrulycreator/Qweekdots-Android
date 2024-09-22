@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import com.creator.qweekdots.app.AppController;
 import com.creator.qweekdots.utils.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.spark.submitbutton.SubmitButton;
 import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.ios.IosEmojiProvider;
@@ -144,6 +146,7 @@ public class ReplyCommentBottomSheet extends RoundedBottomSheetDialogFragment {
 
                     // success
                     String sent = jObj.getString("sent");
+                    dismiss();
                     Toasty.success(requireContext(), sent, Toast.LENGTH_SHORT).show();
                 } else {
                     // Error in drop. Get the error message
@@ -194,5 +197,14 @@ public class ReplyCommentBottomSheet extends RoundedBottomSheetDialogFragment {
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
     }
 }

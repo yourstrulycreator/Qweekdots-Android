@@ -26,11 +26,14 @@ public class TagItemVH<CTX extends IMainView> extends StaggeredGridLayoutItemVie
 
     private Tag mTag;
 
-    public TagItemVH(@NonNull View itemView, CTX context) {
+    private String dropTxt;
+
+    public TagItemVH(@NonNull View itemView, CTX context, String droptext) {
         super(itemView, context);
 
         mImage = itemView.findViewById(R.id.it_iv_image);
         mName = itemView.findViewById(R.id.it_tv_name);
+        dropTxt = droptext;
 
         itemView.setOnClickListener(view -> onClicked());
     }
@@ -81,6 +84,7 @@ public class TagItemVH<CTX extends IMainView> extends StaggeredGridLayoutItemVie
         // Start a new search
         Intent intent = new Intent(getContext(), SearchReactionsActivity.class);
         intent.putExtra(SearchReactionsActivity.KEY_QUERY, getTag().getSearchTerm());
+        intent.putExtra("drop_txt", dropTxt);
         getContext().startActivity(intent);
     }
 }

@@ -34,6 +34,21 @@ public class NotificationItem {
     @SerializedName("avatar")
     @Expose
     private String avatar;
+    @SerializedName("hasMedia")
+    @Expose
+    private Integer hasMedia;
+    @SerializedName("hasLink")
+    @Expose
+    private Integer hasLink;
+    @SerializedName("qweeksnap")
+    @Expose
+    private String qweeksnap;
+    @SerializedName("url")
+    @Expose
+    private String url;
+    @SerializedName("audio")
+    @Expose
+    private String audio;
 
     /**
      *
@@ -160,7 +175,7 @@ public class NotificationItem {
      * @return
      * The Drop Type(when involved)
      */
-    public String geDropType() {
+    public String getDropType() {
         return drop_type;
     }
 
@@ -204,5 +219,92 @@ public class NotificationItem {
      */
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    /**
+     *
+     * @return
+     * The hasMedia
+     */
+    public Integer getHasMedia() {
+        return hasMedia;
+    }
+
+    /**
+     *
+     * The hasMedia
+     */
+    public void setHasMedia(Integer hasMedia) {
+        this.hasMedia = hasMedia;
+    }
+
+    /**
+     *
+     * @return
+     * The hasLink
+     */
+    public Integer getHasLink() {
+        return hasLink;
+    }
+
+    /**
+     *
+     * The hasLink
+     */
+    public void setHasLink(Integer hasLink) {
+        this.hasLink = hasLink;
+    }
+
+    /**
+     *
+     * @return
+     * The QweekSnap
+     */
+    public String getQweekSnap() {
+        return qweeksnap;
+    }
+
+    /**
+     *
+     * @param qweeksnap
+     * The QweekSnap
+     */
+    public void setQweekSnap(String qweeksnap) {
+        this.qweeksnap = qweeksnap;
+    }
+
+    /**
+     *
+     * @return
+     * The Url/Link
+     */
+    public String getLink() {
+        return url;
+    }
+
+    /**
+     *
+     * The Url/Link
+     */
+    public void setLink(String url) {
+        this.url = url;
+    }
+
+    /**
+     *
+     * @return
+     * The Audio
+     */
+    public String getAudio() {
+        return audio;
+    }
+
+    /**
+     *
+     * @param audio
+     *Audio
+     */
+    public void setAudio(String audio) {
+        this.audio = audio;
     }
 }

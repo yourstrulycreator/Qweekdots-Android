@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="1.7">
+      <module name="Qweekdots.app" target="11" />
+      <module name="Qweekdots.circleimageview" target="11" />
+      <module name="Qweekdots.imageviewer" target="11" />
+      <module name="Qweekdots.loading-button-android" target="11" />
+      <module name="Qweekdots.picasso" target="11" />
+      <module name="Qweekdots.progressFAB" target="11" />
+      <module name="Qweekdots.spinkit" target="11" />
+      <module name="Qweekdots.toasty" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

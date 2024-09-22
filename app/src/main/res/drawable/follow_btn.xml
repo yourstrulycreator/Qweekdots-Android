@@ -4,7 +4,7 @@
         android:radius="22dp" />
 
     <solid
-        android:color="@color/ArgentinanBlue"/>
+        android:color="@color/QweekColorAccent"/>
 
     <padding
         android:left="5dp"
@@ -12,5 +12,5 @@
         android:right="5dp"
         android:bottom="0dp" />
 
-    <stroke android:width="0.5dp" android:color="@color/ArgentinanBlue" />
+    <stroke android:width="0.5dp" android:color="@color/QweekColorAccent" />
 </shape>

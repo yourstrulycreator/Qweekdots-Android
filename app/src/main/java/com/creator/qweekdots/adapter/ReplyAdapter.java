@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -46,7 +45,6 @@ import com.creator.qweekdots.models.CommentItem;
 import com.creator.qweekdots.ui.MessageBottomSheet;
 import com.creator.qweekdots.ui.MessageReplyBottomSheet;
 import com.creator.qweekdots.utils.PaginationAdapterCallback;
-import com.squareup.picasso.Picasso;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiTextView;
 import com.vanniktech.emoji.ios.IosEmojiProvider;
@@ -132,7 +130,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
 
                     // Set username
-                    //feedVH.usernameTxt.setText("q/" + feedItem.getUsername());
+                    feedVH.usernameTxt.setText("q/" + feedItem.getUsername());
 
                     // Check for empty status message
                     if (!TextUtils.isEmpty(feedItem.getDrop())) {
@@ -278,14 +276,14 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         //check whether it is liked or unliked
                         if (feedItem.getLiked().equals("yes")) {
                             //unlike
-                            Toasty.info(context, "taking back like...", Toasty.LENGTH_SHORT).show();
+                            //Toasty.info(context, "taking back like...", Toasty.LENGTH_SHORT).show();
                             feedItem.setLiked("no");
                             feedVH.likeBtn.setImageResource(R.drawable.ic_like);
                             feedVH.likeBtn.setColorFilter(context.getResources().getColor(R.color.Gray));
                             doLike("unlike", feedItem.getDrop_Id(), username, feedItem.getUsername());
                         } else {
                             //like
-                            Toasty.info(context, "liking...", Toasty.LENGTH_SHORT).show();
+                            //Toasty.info(context, "liking...", Toasty.LENGTH_SHORT).show();
                             feedItem.setLiked("yes");
                             feedVH.likeBtn.setImageResource(R.drawable.ic_liked);
                             feedVH.likeBtn.setColorFilter(context.getResources().getColor(R.color.likeColor));
@@ -309,7 +307,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         //check whether it is liked or un-upvoted
                         if (feedItem.getUpvoted().equals("yes")) {
                             //un-upvote
-                            Toasty.info(context, "taking back upvote...", Toasty.LENGTH_SHORT).show();
+                            //Toasty.info(context, "taking back upvote...", Toasty.LENGTH_SHORT).show();
 
                             feedItem.setUpvoted("no");
                             feedVH.upvoteBtn.setImageResource(R.drawable.ic_upvote);
@@ -317,7 +315,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             doUpvote("undo", feedItem.getDrop_Id(), username, feedItem.getUsername());
                         } else {
                             //upvote
-                            Toasty.info(context, "upvoting...", Toasty.LENGTH_SHORT).show();
+                            //Toasty.info(context, "upvoting...", Toasty.LENGTH_SHORT).show();
 
                             feedItem.setUpvoted("yes");
                             //run downvote check and undo if downvoted
@@ -356,7 +354,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         //check whether it is downvoted or not
                         if (feedItem.getDownvoted().equals("yes")) {
                             //un-downvote
-                            Toasty.info(context, "taking back downvote...", Toasty.LENGTH_SHORT).show();
+                            //Toasty.info(context, "taking back downvote...", Toasty.LENGTH_SHORT).show();
 
                             feedItem.setDownvoted("no");
                             feedVH.downvoteBtn.setImageResource(R.drawable.ic_downvote);
@@ -364,7 +362,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             doDownvote("undo", feedItem.getDrop_Id(), username, feedItem.getUsername());
                         } else {
                             //downvote
-                            Toasty.info(context, "downvoting...", Toasty.LENGTH_SHORT).show();
+                            //Toasty.info(context, "downvoting...", Toasty.LENGTH_SHORT).show();
 
                             feedItem.setDownvoted("yes");
                             //run upvote check and undo if upvoted
@@ -469,7 +467,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 // Check for error node in json
                 if (!error) {
                     String sent = jObj.getString("sent");
-                    Toasty.success(context, sent, Toast.LENGTH_LONG).show();
+                    //Toasty.success(context, sent, Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 // JSON error
@@ -529,7 +527,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 // Check for error node in json
                 if (!error) {
                     String sent = jObj.getString("sent");
-                    Toasty.success(context, sent, Toast.LENGTH_LONG).show();
+                    //Toasty.success(context, sent, Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 // JSON error
@@ -589,7 +587,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 // Check for error node in json
                 if (!error) {
                     String sent = jObj.getString("sent");
-                    Toasty.success(context, sent, Toast.LENGTH_LONG).show();
+                    //Toasty.success(context, sent, Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 // JSON error
@@ -763,14 +761,14 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     protected class FeedVH extends RecyclerView.ViewHolder {
         private ImageView upvoteBtn, downvoteBtn, likeBtn, replyBtn, deleteBtn;
         private CircleImageView profilePic;
-        //private TextView usernameTxt;
+        private TextView usernameTxt;
         private EmojiTextView dropText;
         private LinearLayout commentParent;
 
         FeedVH(View itemView) {
             super(itemView);
 
-            //usernameTxt = itemView.findViewById(R.id.usernameTxt);
+            usernameTxt = itemView.findViewById(R.id.usernameTxt);
             dropText = itemView.findViewById(R.id.txtDrop);
             profilePic = itemView.findViewById(R.id.profilePic);
             upvoteBtn = itemView.findViewById(R.id.upvote_btn);

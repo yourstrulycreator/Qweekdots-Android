@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.creator.qweekdots.activity.SpaceActivity"
+    android:background="@color/contentBodyColor"
+    android:id="@+id/postFrame">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main_layout">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/id_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="10dp">
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/id_tabs"
+                android:layout_width="wrap_content"
+                app:elevation="3dp"
+                app:tabTextColor="@color/contentTextColor"
+                android:layout_centerHorizontal="true"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/tab_layout_bg"
+                app:tabMode="scrollable"
+                app:tabBackground="@drawable/tab_layout_selector"
+                app:tabSelectedTextColor="@color/colorPrimaryDark"
+                app:tabPaddingStart="16dp"
+                app:tabPaddingEnd="16dp"
+                app:tabIndicatorHeight="0dp"
+                app:tabRippleColor="@null"
+                app:tabTextAppearance="@style/TabTextAppearance"/>
+
+        </RelativeLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/backbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/QweekColorAccent"
+            app:backgroundTint="@color/QweekColorAccent"
+            android:src="@drawable/q_close"
+            android:tint="@color/contentTextColor"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            app:useCompatPadding="true"
+            android:onClick="onClick"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/dropBtn"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:background="@color/QweekColorAccent"
+            app:backgroundTint="@color/QweekColorAccent"
+            android:src="@drawable/q_drops2"
+            android:tint="@color/contentTextColor"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="60dp"
+            android:layout_marginEnd="15dp"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

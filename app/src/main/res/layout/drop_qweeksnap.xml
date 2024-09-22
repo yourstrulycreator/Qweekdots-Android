@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/contentBodyColor"
+    android:background="@color/black"
     android:padding="0dp">
 
     <!-- -->
@@ -79,6 +79,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_close_shadow_48dp"
             android:padding="3dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
             tools:ignore="ContentDescription" />
     </RelativeLayout>
 
@@ -94,26 +96,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <com.creator.qweekdots.qweekcamera.StickerView
-                android:id="@+id/sticker_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                app:showBorder="true"
-                app:showIcons="true"
-                android:background="@color/black">
-
-                <ImageView
-                    android:id="@+id/captured_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:background="@color/black"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/snap"
-                    android:adjustViewBounds="true"/>
-            </com.creator.qweekdots.qweekcamera.StickerView>
 
             <com.creator.qweekdots.qweekcamera.StickerView
                 android:id="@+id/sticker_view1"
@@ -149,17 +131,20 @@
                     android:src="@drawable/ic_close_shadow_48dp"
                     android:padding="3dp"
                     android:contentDescription="@string/snap" />
+
                 <ImageView
-                    android:id="@+id/add_stickers"
+                    android:id="@+id/toggle_audio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="-8dp"
-                    android:src="@drawable/ic_smile_shadow_48dp"
-                    android:padding="10dp"
+                    android:src="@drawable/ic_volume_up_white_24dp"
+                    android:padding="3dp"
+                    android:visibility="gone"
                     android:layout_alignParentStart="true"
-                    android:layout_marginStart="75dp"
+                    android:layout_marginStart="95dp"
+                    android:layout_marginBottom="12dp"
                     android:contentDescription="@string/snap" />
+
                 <ImageView
                     android:id="@+id/add_text"
                     android:layout_width="wrap_content"
@@ -170,17 +155,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="40dp"
                     android:contentDescription="@string/snap" />
-                <ImageView
-                    android:id="@+id/add_draw"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/ic_graffiti_shadow_48dp"
-                    android:padding="3dp"
-                    android:visibility="gone"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="0dp"
-                    android:contentDescription="@string/snap" />
+
                 <ImageView
                     android:id="@+id/save_media"
                     android:layout_width="wrap_content"
@@ -274,38 +249,6 @@
                     android:importantForAutofill="no"
                     android:inputType="text"
                     tools:ignore="LabelFor" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/select_sticker"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:background="#E13D3D3D"
-                android:visibility="gone"
-                android:paddingEnd="5dp"
-                android:paddingStart="5dp">
-                <ImageView
-                    android:id="@+id/hide_sticker_options"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_close_shadow_48dp"
-                    android:padding="3dp"
-                    android:contentDescription="@string/snap" />
-                <GridView
-                    android:id="@+id/sticker_grid"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fadingEdge="none"
-                    android:horizontalSpacing="1dp"
-                    android:verticalSpacing="10dp"
-                    android:focusable="false"
-                    android:numColumns="auto_fit"
-                    android:scrollbarStyle="outsideOverlay"
-                    android:scrollbars="none"
-                    android:stretchMode="spacingWidthUniform"
-                    android:columnWidth="35dp"
-                    android:gravity="center_vertical" />
             </LinearLayout>
         </RelativeLayout>
     </FrameLayout>

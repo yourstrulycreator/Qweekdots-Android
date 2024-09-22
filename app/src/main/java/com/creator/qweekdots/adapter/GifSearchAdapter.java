@@ -51,6 +51,8 @@ public class GifSearchAdapter<CTX extends IGifSearchView>
     private static final String ID_ITEM_NO_RESULT = "ID_ITEM_NO_RESULT";
     private static final String ID_ITEM_SEARCH_PIVOT = "ID_ITEM_SEARCH_PIVOT";
 
+    private String dropTxt;
+
     // Item to display a "No GIFs were found" TextView
     private static final AbstractRVItem NO_RESULT_ITEM = new AbstractRVItem(TYPE_NO_RESULTS,
             ID_ITEM_NO_RESULT) {
@@ -64,9 +66,10 @@ public class GifSearchAdapter<CTX extends IGifSearchView>
     // Listener for when a related suggestion is clicked
     private SearchSuggestionVH.OnClickListener mOnSearchSuggestionClickListener;
 
-    public GifSearchAdapter(@NonNull CTX context) {
+    public GifSearchAdapter(@NonNull CTX context, String droptext) {
         super(context);
         mHeights = new ArrayMap<>();
+        dropTxt = droptext;
     }
 
     @NotNull
@@ -91,7 +94,7 @@ public class GifSearchAdapter<CTX extends IGifSearchView>
             // View holder for GIF results
             case TYPE_GIF:
             default:
-                return new GifSearchItemVH<>(inflater.inflate(R.layout.gif_base, parent, false), getRef());
+                return new GifSearchItemVH<>(inflater.inflate(R.layout.gif_base, parent, false), getRef(), dropTxt);
         }
     }
 

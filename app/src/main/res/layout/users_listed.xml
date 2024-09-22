@@ -25,7 +25,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:layout_weight="3"
+                android:layout_weight="5"
                 android:gravity="start"
                 android:orientation="horizontal"
                 android:id="@+id/qClickLayout">
@@ -50,18 +50,20 @@
                     <TextView
                         android:id="@+id/fullnameTextView"
                         style="@style/viewParent.headerText"
-                        android:textSize="14sp"
+                        android:textSize="14dp"
                         android:fontFamily="@font/roboto_light"
                         android:layout_marginTop="7dp"
                         android:textColor="@color/contentTextColor"
-                        android:layout_marginBottom="7dp"/>
+                        android:layout_marginBottom="7dp"
+                        tools:ignore="SpUsage" />
 
                     <TextView
                         android:id="@+id/usernameTextView"
                         style="@style/viewParent.headerText"
-                        android:textSize="12sp"
+                        android:textSize="12dp"
                         android:fontFamily="@font/roboto_light"
-                        android:textColor="@color/QweekThemeColor"/>
+                        android:textColor="@color/QweekThemeColor"
+                        tools:ignore="SpUsage" />
 
                 </LinearLayout>
 
@@ -72,26 +74,23 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:id="@+id/profileActions"
-                    android:layout_marginTop="22dp"
-                    android:paddingLeft="15dp"
-                    android:paddingStart="15dp"
-                    android:paddingRight="15dp"
-                    android:paddingEnd="15dp">
+                    android:layout_marginTop="22dp">
 
                     <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
                         android:id="@+id/followActionButton"
                         style="@style/followButton"
-                        android:layout_width="125dp"
+                        android:layout_width="105dp"
                         android:layout_height="35dp"
                         app:spinning_bar_width="4dp"
                         app:spinning_bar_color="@color/contentTextColor"
                         android:text="@string/following"
-                        android:textSize="12sp"
+                        android:textSize="12dp"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginEnd="20dp"
+                        android:layout_marginEnd="5dp"
                         app:spinning_bar_padding="6dp"
                         app:initialCornerAngle="26dp"
-                        android:visibility="visible"/>
+                        android:visibility="visible"
+                        tools:ignore="SpUsage" />
                 </LinearLayout>
 
         </LinearLayout>

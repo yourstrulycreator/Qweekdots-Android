@@ -3,6 +3,13 @@ package com.creator.qweekdots.ui;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -11,25 +18,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.view.View;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.creator.qweekdots.R;
 import com.creator.qweekdots.adapter.PaginationAdapter;
+import com.creator.qweekdots.api.NewsFeedService;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.models.Cursor;
 import com.creator.qweekdots.models.FeedItem;
 import com.creator.qweekdots.models.NewsFeed;
-import com.creator.qweekdots.api.NewsFeedService;
 import com.creator.qweekdots.prefs.DarkModePrefManager;
 import com.creator.qweekdots.utils.PaginationAdapterCallback;
 import com.creator.qweekdots.utils.PaginationScrollListener;
+import com.creator.qweekdots.widget.CustomSwipeToRefresh;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -54,7 +54,7 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
     private SpinKitView progressBar;
     private LinearLayout errorLayout;
     private TextView txtError;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private CustomSwipeToRefresh swipeRefreshLayout;
     private LinearLayout emptyLayout;
 
     private FloatingActionButton backToTop;
@@ -73,7 +73,7 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.newsfeed, container, false);
+        View rootView = inflater.inflate(R.layout.newsfeed2, container, false);
 
         if(new DarkModePrefManager(requireActivity()).isNightMode()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -107,6 +107,7 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
         rv.setItemViewCacheSize(20);
         rv.setDrawingCacheEnabled(true);
         rv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        rv.setItemAnimator(null);
 
         rv.setAdapter(adapter);
 
@@ -190,7 +191,7 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
 
             // TODO: Check if data is stale.
             //  Execute network request if cache is expired; otherwise do not update data.
-            adapter.getQweekFeed().clear();
+            adapter.clear();
             adapter.notifyDataSetChanged();
             loadFirstPage();
             swipeRefreshLayout.setRefreshing(false);
@@ -224,7 +225,6 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
                     if(feedItem.isEmpty()) {
                         showEmptyView();
                     } else {
-
                         progressBar.setVisibility(View.GONE);
                         adapter.addAll(feedItem);
 
@@ -357,12 +357,11 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
     /**
      */
     private void showErrorView() {
-
         if (errorLayout.getVisibility() == View.GONE) {
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
 
-            txtError.setText(getResources().getString(R.string.error_msg_unknown));
+            txtError.setText(requireActivity().getResources().getString(R.string.error_msg_unknown));
         }
     }
 
@@ -378,12 +377,12 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
      * @return appropriate error message
      */
     private String fetchErrorMessage(Throwable throwable) {
-        String errorMsg = getResources().getString(R.string.error_msg_unknown);
+        String errorMsg = requireActivity().getResources().getString(R.string.error_msg_unknown);
 
         if (!isNetworkConnected()) {
-            errorMsg = getResources().getString(R.string.error_msg_no_internet);
+            errorMsg = requireActivity().getResources().getString(R.string.error_msg_no_internet);
         } else if (throwable instanceof TimeoutException) {
-            errorMsg = getResources().getString(R.string.error_msg_timeout);
+            errorMsg = requireActivity().getResources().getString(R.string.error_msg_timeout);
         }
 
         return errorMsg;
@@ -406,4 +405,18 @@ public class Newsfeed extends Fragment implements PaginationAdapterCallback {
         assert cm != null;
         return cm.getActiveNetworkInfo() != null;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //adapter.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //adapter.onPause();
+    }
+
+
 }

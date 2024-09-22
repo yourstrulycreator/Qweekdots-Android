@@ -1,71 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp">
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="3dp"
+    android:padding="10dp"
+    android:focusable="true"
+    android:clickable="true"
+    android:background="@drawable/select_item_bg"
+    tools:targetApi="m">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/chat_room_avatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="8dp" />
+        app:layout_constraintLeft_toLeftOf="parent" />
 
-    <com.vanniktech.emoji.EmojiTextView
-        android:id="@+id/name"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="60dp"
+    <LinearLayout
+        android:id="@+id/chat_info"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:textColor="@color/contentTextColor"
-        android:textStyle="bold"
-        android:textSize="14dp"
-        tools:ignore="SpUsage" />
-
-    <com.vanniktech.emoji.EmojiTextView
-        android:id="@+id/message"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name"
-        android:textColor="#888888"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/chat_room_avatar"
+        android:layout_marginStart="65dp"
         android:layout_marginTop="5dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginEnd="95dp"
-        android:layout_alignParentTop="true"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textStyle="bold"
-        android:textSize="12sp"
-        android:drawablePadding="5dp"
-        app:drawableTint="@color/contentTextColor"/>
+        android:layout_marginEnd="25dp">
 
-    <TextView android:id="@+id/timestamp"
+        <com.vanniktech.emoji.EmojiTextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/contentTextColor"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:ignore="SpUsage" />
+
+        <com.vanniktech.emoji.EmojiTextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="13sp"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/SlateGray"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="11sp"
-        android:textColor="@color/contentTextColor"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        tools:ignore="RelativeOverlap,SmallSp" />
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="0dp">
 
-    <TextView android:id="@+id/count"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:gravity="center"
-        android:textSize="10dp"
-        android:textColor="@android:color/white"
-        android:layout_below="@id/timestamp"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentEnd="true"
-        android:background="@drawable/bg_circle"
-        tools:ignore="SpUsage" />
+        <TextView android:id="@+id/timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:textColor="@color/SlateGray"
+            tools:ignore="RelativeOverlap,SmallSp" />
 
-</RelativeLayout>
+        <TextView android:id="@+id/count"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:textSize="10dp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_circle"
+            tools:ignore="SpUsage" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

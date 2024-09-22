@@ -14,7 +14,6 @@
         android:layout_height="48dp"
         android:background="@android:color/transparent"
         android:elevation="0dp"
-        android:layout_marginTop="4dp"
         android:layout_marginLeft="7dp"
         android:layout_marginRight="7dp"
         android:layout_marginBottom="7dp"
@@ -25,12 +24,12 @@
         <TextView android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Private Messages"
-            android:fontFamily="@font/odin_rounded_bold"
-            android:textSize="23sp"
-            android:layout_marginTop="5dp"
+            android:fontFamily="@font/avenir_next_cyr_regular"
+            android:textSize="20dp"
+            android:layout_marginTop="0dp"
             android:layout_marginStart="55dp"
-            android:textColor="@color/QweekColorAccent"
-            tools:ignore="HardcodedText" />
+            android:textColor="@color/contentTextColor"
+            tools:ignore="HardcodedText,SmallSp,SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -59,8 +58,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:fabCustomSize="48dp"
-        app:srcCompat="@drawable/ic_float_button"
-        />
+        app:srcCompat="@drawable/ic_float_button" />
 
     <ImageButton android:id="@+id/customClose"
         android:layout_width="26dp"

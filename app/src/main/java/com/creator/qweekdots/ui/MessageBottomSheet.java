@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -72,6 +73,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -204,6 +206,12 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
             dropService = QweekdotsApi.getClient(context).create(MessageService.class);
             commentFeedService = QweekdotsApi.getClient(context).create(ReplyFeedService.class);
 
+            ImageView closeSheet = view.findViewById(R.id.closeSheet);
+            closeSheet.setOnClickListener(v -> {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                dismiss();
+            });
+
             // init Functions
             loadDrop();
             loadFirstCommentsPage();
@@ -246,6 +254,9 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
+                if (BottomSheetBehavior.STATE_EXPANDED == i) {
+                    bottomSheetBehavior.setDraggable(false);
+                }
                 if (BottomSheetBehavior.STATE_HIDDEN == i) {
                     dismiss();
                 }
@@ -298,6 +309,15 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                                     .override(com.bumptech.glide.request.target.Target.SIZE_ORIGINAL)
                                     .apply(requestOptions)
                                     .into(qweeksnap);
+
+                            /*
+                            List<String> images = Collections.singletonList(drop.getQweekSnap());
+                            qweeksnap.setOnClickListener(v-> new StfalconImageViewer.Builder<>(context, images, (imageView, imageUrl) -> Glide.with(context).load(imageUrl).into(imageView))
+                                    .withTransitionFrom(qweeksnap)
+                                    .withBackgroundColor(context.getResources().getColor(R.color.tabColor))
+                                    .show());
+
+                             */
                             break;
                         case "video":
                             video.setVisibility(View.VISIBLE);
@@ -434,14 +454,16 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                     //check whether it is liked or unliked
                     if (drop.getLiked().equals("yes")) {
                         //isliked, unlike
-                        Toasty.info(context, "taking back like...", Toasty.LENGTH_SHORT).show();
+                        //Toasty.info(context, "taking back like...", Toasty.LENGTH_SHORT).show();
+
                         drop.setLiked("no");
                         likeBtn.setImageResource(R.drawable.ic_like);
                         likeBtn.setColorFilter(context.getResources().getColor(R.color.Gray));
                         doLike("unlike", drop.getDrop_Id(), username, drop.getUsername());
                     } else {
                         //like
-                        Toasty.info(context, "liking...", Toasty.LENGTH_SHORT).show();
+                        //Toasty.info(context, "liking...", Toasty.LENGTH_SHORT).show();
+
                         drop.setLiked("yes");
                         likeBtn.setImageResource(R.drawable.ic_liked);
                         likeBtn.setColorFilter(context.getResources().getColor(R.color.likeColor));
@@ -529,7 +551,7 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
                 if (!error) {
                     String sent = jObj.getString("sent");
 
-                    Toasty.success(context, sent, Toast.LENGTH_LONG).show();
+                    //Toasty.success(context, sent, Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 // JSON error
@@ -892,5 +914,14 @@ public class MessageBottomSheet extends RoundedBottomSheetDialogFragment impleme
     public void onStart() {
         super.onStart();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
     }
 }

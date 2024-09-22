@@ -1,25 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/transparent">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/closeSheet"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_close2"
+            android:tint="@color/contentTextColor"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/optTitleSheetTxt"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:maxLines="1"
+            android:textColor="@color/contentTextColor"
+            android:fontFamily="@font/avenir_next_cyr_regular"
+            android:layout_alignParentStart="true"
+            android:textSize="24dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            android:textStyle="bold"
+            tools:targetApi="m"
+            tools:ignore="SpUsage" />
+    </RelativeLayout>
+
+    <com.creator.qweekdots.widget.CustomSwipeToRefresh
         android:id="@+id/follows_swiperefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/follows_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="@dimen/activity_margin_content"
+            android:paddingTop="50dp"
             android:paddingBottom="@dimen/activity_margin_content"/>
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </com.creator.qweekdots.widget.CustomSwipeToRefresh>
 
     <com.github.ybq.android.spinkit.SpinKitView
         xmlns:app="http://schemas.android.com/apk/res-auto"

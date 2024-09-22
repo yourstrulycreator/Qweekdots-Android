@@ -1,26 +1,35 @@
 package com.creator.qweekdots.adapter.holder;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.OrientationHelper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.creator.qweekdots.R;
 import com.creator.qweekdots.activity.DropReactionsActivity;
+import com.creator.qweekdots.activity.MainActivity;
+import com.creator.qweekdots.activity.ReactionsActivity;
 import com.creator.qweekdots.adapter.view.IGifSearchView;
 import com.creator.qweekdots.sdk.concurrency.WeakRefOnPreDrawListener;
+import com.creator.qweekdots.ui.DropTextBottomSheet;
 import com.creator.qweekdots.widget.IFetchGifDimension;
 import com.tenor.android.core.constant.MediaCollectionFormats;
 import com.tenor.android.core.model.impl.Result;
 import com.tenor.android.core.network.ApiClient;
 import com.tenor.android.core.util.AbstractListUtils;
 import com.tenor.android.core.widget.viewholder.StaggeredGridLayoutItemViewHolder;
+
+import java.util.Objects;
 
 import static maes.tech.intentanim.CustomIntent.customType;
 
@@ -35,11 +44,15 @@ public class GifSearchItemVH<CTX extends IGifSearchView> extends StaggeredGridLa
     // Waits for holder's view to be pre-drawn, and returns the height and width values based on the GIFs aspectRatio
     private IFetchGifDimension mFetchGifDimensionListener;
 
-    public GifSearchItemVH(View itemView, CTX ctx) {
+    private String dropTxt;
+
+    public GifSearchItemVH(View itemView, CTX ctx, String droptext) {
         super(itemView, ctx);
 
         mImageView = itemView.findViewById(R.id.gdi_iv_image);
         mAudio = itemView.findViewById(R.id.gdi_v_audio);
+
+        dropTxt = droptext;
 
         itemView.setOnClickListener(view -> onClicked());
 
@@ -129,10 +142,16 @@ public class GifSearchItemVH<CTX extends IGifSearchView> extends StaggeredGridLa
         // register share to receive more relevant results in the future
         ApiClient.registerShare(getContext(), mResult.getId());
 
+        /*
         // todo - Add in functionality for when a GIF is clicked by the user
         Intent intent = new Intent(getContext(), DropReactionsActivity.class);
         intent.putExtra("url", mResult.getMedias().get(0).get(MediaCollectionFormats.GIF_MEDIUM).getUrl());
         getContext().startActivity(intent);
         customType(getContext(), "right-to-left");
+         */
+
+        DropTextBottomSheet bottomSheet = new DropTextBottomSheet(mResult.getMedias().get(0).get(MediaCollectionFormats.GIF_MEDIUM).getUrl(), dropTxt, null);
+        FragmentManager manager = ((AppCompatActivity)getContext()).getSupportFragmentManager();
+        bottomSheet.show(Objects.requireNonNull(manager),bottomSheet.getTag());
     }
 }

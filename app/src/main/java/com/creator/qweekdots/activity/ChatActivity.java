@@ -1,5 +1,6 @@
 package com.creator.qweekdots.activity;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,12 +34,11 @@ import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.helper.SessionManager;
 import com.creator.qweekdots.models.ChatRoom;
 import com.creator.qweekdots.models.Message;
-import com.creator.qweekdots.service.FCMIntentService;
-import com.creator.qweekdots.service.NotificationUtils;
 import com.creator.qweekdots.ui.AddChatBottomSheet;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.onesignal.OneSignal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,10 +46,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import timber.log.Timber;
+
+import static maes.tech.intentanim.CustomIntent.customType;
 
 public class ChatActivity extends AppCompatActivity {
     private static final String TAG = ChatActivity.class.getSimpleName();
@@ -81,7 +84,6 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.QweekColorAccent));
 
         decorView = Objects.requireNonNull(this).getWindow().getDecorView();
 
@@ -109,15 +111,7 @@ public class ChatActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onReceive(Context context, Intent intent) {
-                // checking for type intent filter
-                if (Objects.equals(intent.getAction(), AppConfig.REGISTRATION_COMPLETE)) {
-                    // gcm successfully registered
-                    // now subscribe to `global` topic to receive app wide notifications
-                    subscribeToGlobalTopic();
-                } else if (Objects.equals(intent.getAction(), AppConfig.SENT_TOKEN_TO_SERVER)) {
-                    // gcm registration id is stored in our server's MySQL
-                    Timber.tag(TAG).d("GCM registration id is sent to our server");
-                } else if (intent.getAction().equals(AppConfig.PUSH_NOTIFICATION)) {
+                if (intent.getAction().equals(AppConfig.PUSH_NOTIFICATION)) {
                     // new push notification is received
                     Timber.tag(TAG).d("Push notification is received!");
                     handlePushNotification(intent);
@@ -142,6 +136,9 @@ public class ChatActivity extends AppCompatActivity {
                 intent.putExtra("to", chatRoom.getPrivate_to());
                 intent.putExtra("to_name", chatRoom.getName());
                 startActivity(intent);
+                customType(ChatActivity.this, "fadein-to-fadeout");
+
+                resetMessageStatus(chatRoom.getId(), username);
             }
 
             @Override
@@ -156,7 +153,6 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         if (checkPlayServices()) {
-            registerGCM();
             fetchUserChatRooms();
         }
 
@@ -185,8 +181,6 @@ public class ChatActivity extends AppCompatActivity {
             assert message != null;
             //Toast.makeText(getApplicationContext(), "New push: " + message.getMessage(), Toast.LENGTH_LONG).show();
         }
-
-
     }
 
     /**
@@ -204,6 +198,28 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void resetMessageStatus(String chat_room_id, String user_id) {
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                "https://qweek.fun/genjitsu/chat/parse/message_reset.php", response -> Timber.tag(TAG).e("response: %s", response), error -> {
+            NetworkResponse networkResponse = error.networkResponse;
+            Timber.tag(TAG).e("Volley error: " + error.getMessage() + ", code: " + networkResponse);
+            //Toast.makeText(getApplicationContext(), "Volley error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("id", chat_room_id);
+                params.put("u", user_id);
+
+                Timber.tag(TAG).d("params: %s", params.toString());
+                return params;
+            }
+        };
+
+        //Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq);
     }
 
 
@@ -241,7 +257,7 @@ public class ChatActivity extends AppCompatActivity {
                                     cr.setLastMessage(chatRoomsObj.getString("last_message"));
                                     cr.setLastMessageTo(chatRoomsObj.getString("last_message_to"));
                                     cr.setLastMessageFrom(chatRoomsObj.getString("last_message_from"));
-                                    cr.setUnreadCount(0);
+                                    cr.setUnreadCount(chatRoomsObj.getInt("unreadCount"));
                                     cr.setTimestamp(chatRoomsObj.getString("created_at"));
                                     cr.setPrivate_avatar(chatRoomsObj.getString("avatar"));
 
@@ -263,8 +279,6 @@ public class ChatActivity extends AppCompatActivity {
 
                     mAdapter.notifyDataSetChanged();
 
-                    // subscribing to all chat room topics
-                    subscribeToAllTopics();
                 }, error -> {
                     NetworkResponse networkResponse = error.networkResponse;
                     Timber.tag(TAG).e("Volley error: " + error.getMessage() + ", code: " + networkResponse);
@@ -274,27 +288,6 @@ public class ChatActivity extends AppCompatActivity {
 
         //Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq);
-    }
-
-    // subscribing to global topic
-    private void subscribeToGlobalTopic() {
-        Intent intent = new Intent(this, FCMIntentService.class);
-        intent.putExtra(FCMIntentService.KEY, FCMIntentService.SUBSCRIBE);
-        intent.putExtra(FCMIntentService.TOPIC, AppConfig.TOPIC_GLOBAL);
-        startService(intent);
-    }
-
-    // Subscribing to all chat room topics
-    // each topic name starts with `topic_` followed by the ID of the chat room
-    // Ex: topic_1, topic_2
-    private void subscribeToAllTopics() {
-        for (ChatRoom cr : chatRoomArrayList) {
-
-            Intent intent = new Intent(this, FCMIntentService.class);
-            intent.putExtra(FCMIntentService.KEY, FCMIntentService.SUBSCRIBE);
-            intent.putExtra(FCMIntentService.TOPIC, "topic_" + cr.getId());
-            startService(intent);
-        }
     }
 
     private void launchLoginActivity() {
@@ -311,18 +304,15 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        // register GCM registration complete receiver
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(AppConfig.REGISTRATION_COMPLETE));
-
         // register new push message receiver
         // by doing this, the activity will be notified each time a new message arrives
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(AppConfig.PUSH_NOTIFICATION));
 
-        // clearing the notification tray
-        NotificationUtils.clearNotifications();
+        NotificationManager manager = (NotificationManager) getApplicationContext()
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancelAll();
+        OneSignal.clearOneSignalNotifications();
     }
 
     @Override
@@ -330,13 +320,6 @@ public class ChatActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         Glide.get(getApplicationContext()).clearMemory();
         super.onPause();
-    }
-
-    // starting the service to register with GCM
-    private void registerGCM() {
-        Intent intent = new Intent(this, FCMIntentService.class);
-        intent.putExtra("key", "register");
-        startService(intent);
     }
 
     private boolean checkPlayServices() {

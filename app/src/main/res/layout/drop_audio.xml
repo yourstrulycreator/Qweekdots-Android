@@ -22,7 +22,7 @@
         android:orientation="vertical"
         android:gravity="top|center">
 
-        <Chronometer
+       <Chronometer
             android:id="@+id/record_timer"
             android:layout_marginTop="30dp"
             android:textSize="44sp"
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:textSize="12sp"
-            android:text="Best Practice \n 1. Record in a quite space \n 2. Use a microphone enabled headphone or earpice"
+            android:text="Best Practice \n 1. Record in a quiet space \n 2. Use a microphone enabled headphone or earpice"
             tools:ignore="HardcodedText,SmallSp" />
 
         <LinearLayout

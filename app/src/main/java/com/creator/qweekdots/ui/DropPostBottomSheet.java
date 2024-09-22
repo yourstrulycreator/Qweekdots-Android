@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.creator.qweekdots.R;
 import com.creator.qweekdots.activity.ReactionsActivity;
+import com.creator.qweekdots.activity.SnapActivity;
 import com.creator.qweekdots.utils.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -39,6 +41,7 @@ public class DropPostBottomSheet extends RoundedBottomSheetDialogFragment {
         // Init Layout
         ImageView postText = view.findViewById(R.id.postText);
         ImageView postSnap = view.findViewById(R.id.postSnap);
+        ImageView postQweekSnap = view.findViewById(R.id.postQweekSnap);
         ImageView postAudio = view.findViewById(R.id.postAudio);
         ImageView postReactions = view.findViewById(R.id.postReactions);
 
@@ -53,6 +56,13 @@ public class DropPostBottomSheet extends RoundedBottomSheetDialogFragment {
         });
 
         postSnap.setOnClickListener(v-> {
+            Intent intent = new Intent(requireContext(), SnapActivity.class);
+            startActivity(intent);
+            customType(requireActivity(), "fadein-to-fadeout");
+            bottomSheet.dismiss();
+        });
+
+        postQweekSnap.setOnClickListener(v-> {
             assert getFragmentManager() != null;
             final FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
@@ -61,7 +71,6 @@ public class DropPostBottomSheet extends RoundedBottomSheetDialogFragment {
             ft.addToBackStack(null);
             bottomSheet.dismiss();
         });
-
 
         postAudio.setOnClickListener(v-> {
             assert getFragmentManager() != null;
@@ -108,5 +117,14 @@ public class DropPostBottomSheet extends RoundedBottomSheetDialogFragment {
     public void onStart() {
         super.onStart();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
     }
 }

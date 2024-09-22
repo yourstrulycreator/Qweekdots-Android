@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,7 +49,7 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
     private Context context;
     private String logged;
 
-    SearchBottomSheet(Context context, String logged) {
+    public SearchBottomSheet(Context context, String logged) {
         this.context = context;
         this.logged = logged;
     }
@@ -90,8 +92,8 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
                 }
             });
 
-            TextView titleTxtView = view.findViewById(R.id.optTitleSheetTxt);
-            titleTxtView.setOnClickListener(v -> {
+            ImageView closeSheet = view.findViewById(R.id.closeSheet);
+            closeSheet.setOnClickListener(v -> {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 dismiss();
             });
@@ -113,7 +115,7 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
                 @Override
                 public boolean onQueryTextChange(String query) {
                     // this is your adapter that will be filtered
-                    /*ViewPagerAdapter pagerAdapter = (ViewPagerAdapter) viewPager
+                    ViewPagerAdapter pagerAdapter = (ViewPagerAdapter) viewPager
                             .getAdapter();
                     for (int i = 0; i < Objects.requireNonNull(pagerAdapter).getCount(); i++) {
 
@@ -132,7 +134,7 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
                                 Timber.tag(TAG).i("Query String for Drops: %s", query);
                             }
                         }
-                    }*/
+                    }
                     return true;
                 }
 
@@ -248,5 +250,14 @@ public class SearchBottomSheet extends RoundedBottomSheetDialogFragment {
             notifyDataSetChanged();
             return POSITION_NONE;
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
     }
 }

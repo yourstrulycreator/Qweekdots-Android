@@ -149,8 +149,6 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
 
         // TODO: Check if data is stale.
         //  Execute network request if cache is expired; otherwise do not update data.
-        adapter.getUsers().clear();
-        adapter.notifyDataSetChanged();
         loadFirstPage();
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -166,6 +164,8 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
      * Load First Page
      */
     private void loadFirstPage() {
+        adapter.getUsers().clear();
+        adapter.notifyDataSetChanged();
         Timber.tag(TAG).d("loadFirstPage: ");
         // To ensure list is visible when retry button in error view is clicked
         hideErrorView();
@@ -314,7 +314,7 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
 
-            txtError.setText(getResources().getString(R.string.error_msg_unknown));
+            txtError.setText(context.getResources().getString(R.string.error_msg_unknown));
         }
     }
 
@@ -330,11 +330,11 @@ public class SearchUserFragment extends Fragment implements PaginationAdapterCal
      * @return appropriate error message
      */
     private String fetchErrorMessage(Throwable throwable) {
-        String errorMsg = getResources().getString(R.string.error_msg_unknown);
+        String errorMsg = context.getResources().getString(R.string.error_msg_unknown);
         if (!isNetworkConnected()) {
-            errorMsg = getResources().getString(R.string.error_msg_no_internet);
+            errorMsg = context.getResources().getString(R.string.error_msg_no_internet);
         } else if (throwable instanceof TimeoutException) {
-            errorMsg = getResources().getString(R.string.error_msg_timeout);
+            errorMsg = context.getResources().getString(R.string.error_msg_timeout);
         }
         return errorMsg;
     }

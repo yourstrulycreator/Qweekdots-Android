@@ -16,15 +16,22 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
+import com.arasthel.spannedgridlayoutmanager.SpanSize;
+import com.arasthel.spannedgridlayoutmanager.SpannedGridLayoutManager;
 import com.creator.qweekdots.R;
+import com.creator.qweekdots.adapter.ExploreAdapter;
 import com.creator.qweekdots.adapter.ExplorePhotosAdapter;
 import com.creator.qweekdots.adapter.HotSpacesAdapter;
+import com.creator.qweekdots.adapter.StaggeredPaginationAdapter;
+import com.creator.qweekdots.adapter.StaggeredPaginationAdapter2;
 import com.creator.qweekdots.adapter.SuggestionsAdapter;
 import com.creator.qweekdots.adapter.TrendsAdapter;
 import com.creator.qweekdots.api.ExplorePhotosService;
@@ -34,7 +41,10 @@ import com.creator.qweekdots.api.TrendsService;
 import com.creator.qweekdots.app.AppController;
 import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.models.ChatRoom;
+import com.creator.qweekdots.models.Cursor;
 import com.creator.qweekdots.models.ExplorePhotos;
+import com.creator.qweekdots.models.FeedItem;
+import com.creator.qweekdots.models.NewsFeed;
 import com.creator.qweekdots.models.Pager;
 import com.creator.qweekdots.models.PhotoItem;
 import com.creator.qweekdots.models.Suggestions;
@@ -42,6 +52,9 @@ import com.creator.qweekdots.models.TrendsItem;
 import com.creator.qweekdots.models.TrendsModel;
 import com.creator.qweekdots.models.UserItem;
 import com.creator.qweekdots.prefs.DarkModePrefManager;
+import com.creator.qweekdots.utils.PaginationAdapterCallback;
+import com.creator.qweekdots.utils.PaginationScrollListener;
+import com.creator.qweekdots.utils.StaggeredScrollListener;
 import com.creator.qweekdots.view.StaggeredGridView;
 import com.creator.qweekdots.view.StaggeredGridViewItem;
 import com.github.ybq.android.spinkit.SpinKitView;
@@ -54,14 +67,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import es.dmoral.toasty.Toasty;
+import kotlin.jvm.functions.Function1;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
-public class Spotlight extends Fragment {
+public class Spotlight extends Fragment implements PaginationAdapterCallback {
     View rootView;
     private final String TAG = Spotlight.class.getSimpleName();
 
@@ -71,17 +86,22 @@ public class Spotlight extends Fragment {
     private TrendsService trendsService;
     private SuggestionsAdapter sugAdapter;
     private HotSpacesAdapter spacesAdapter;
+    private ExploreAdapter exploreAdapter;
     private SuggestionsService suggestionsService;
     private ExplorePhotosService explorePhotosService;
     private LinearLayout trendsErrorLayout, trendsEmptyLayout, spacesErrorLayout, spacesEmptyLayout, suggestionsErrorLayout, suggestionsEmptyLayout, exploreErrorLayout, exploreEmptyLayout;
     private TextView trendsTxtError, suggestionsTxtError, exploreTxtError;
     private SpinKitView sugProgress, trendsProgress, spacesProgress, exploreProgress;
-    private StaggeredGridView mStaggeredView;
+    //private StaggeredGridView mStaggeredView;
     private ArrayList<ChatRoom> chatRoomArrayList;
     private static final int PAGE_START = 1;
-    private int TOTAL_PAGES;
+    private static int TOTAL_PAGES;
     private int currentPage = PAGE_START;
+    private String max_id;
     private String username;
+
+    private StaggeredPaginationAdapter2 exploreAdapter2;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -99,22 +119,23 @@ public class Spotlight extends Fragment {
 
         // initialize spotlight layout elements
         RecyclerView sugV = rootView.findViewById(R.id.suggestionsRecyclerView);
+        RecyclerView exploreRV = rootView.findViewById(R.id.explore_grid);
         RecyclerView trendsV = rootView.findViewById(R.id.trendsRecyclerView);
-        RecyclerView spacesV = rootView.findViewById(R.id.spacesRecyclerView);
+        //RecyclerView spacesV = rootView.findViewById(R.id.spacesRecyclerView);
         sugProgress = rootView.findViewById(R.id.suggestionsProgress);
-        spacesProgress = rootView.findViewById(R.id.spacesProgress);
+        //spacesProgress = rootView.findViewById(R.id.spacesProgress);
         exploreProgress = rootView.findViewById(R.id.exploreProgress);
         trendsProgress = rootView.findViewById(R.id.trendsProgress);
         trendsErrorLayout = rootView.findViewById(R.id.trends_error_layout);
         trendsEmptyLayout = rootView.findViewById(R.id.trends_empty_layout);
-        spacesErrorLayout = rootView.findViewById(R.id.spaces_error_layout);
-        spacesEmptyLayout = rootView.findViewById(R.id.spaces_empty_layout);
+        //spacesErrorLayout = rootView.findViewById(R.id.spaces_error_layout);
+        //spacesEmptyLayout = rootView.findViewById(R.id.spaces_empty_layout);
         suggestionsErrorLayout = rootView.findViewById(R.id.suggestions_error_layout);
         suggestionsEmptyLayout = rootView.findViewById(R.id.suggestions_empty_layout);
         exploreErrorLayout = rootView.findViewById(R.id.explore_error_layout);
         exploreEmptyLayout = rootView.findViewById(R.id.explore_empty_layout);
         Button trendsBtnRetry = rootView.findViewById(R.id.trends_error_btn_retry);
-        Button spacesBtnRetry = rootView.findViewById(R.id.spaces_error_btn_retry);
+        //Button spacesBtnRetry = rootView.findViewById(R.id.spaces_error_btn_retry);
         Button suggestionsBtnRetry = rootView.findViewById(R.id.suggestions_error_btn_retry);
         Button exploreBtnRetry = rootView.findViewById(R.id.explore_error_btn_retry);
         trendsTxtError = rootView.findViewById(R.id.trends_error_txt_cause);
@@ -127,14 +148,22 @@ public class Spotlight extends Fragment {
             SearchBottomSheet bottomSheet = new SearchBottomSheet(getActivity(), username);
             bottomSheet.show(requireFragmentManager(),bottomSheet.getTag());
         });
+        EditText searchBar = rootView.findViewById(R.id.searchQweekdotsBar);
+        searchBar.setOnClickListener(v -> {
+            SearchBottomSheet bottomSheet = new SearchBottomSheet(getActivity(), username);
+            bottomSheet.show(requireFragmentManager(),bottomSheet.getTag());
+        });
+
 
         //Trends
-        LinearLayoutManager trendsLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager trendsLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         trendsV.setLayoutManager(trendsLinearLayoutManager);
         trendsAdapter = new TrendsAdapter(getActivity());
         trendsV.setAdapter(trendsAdapter);
         trendsV.setItemAnimator(new DefaultItemAnimator());
 
+
+        /*
         //Hot Spaces
         chatRoomArrayList = new ArrayList<>();
         LinearLayoutManager myRingsLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -143,6 +172,8 @@ public class Spotlight extends Fragment {
         spacesV.setAdapter(spacesAdapter);
         spacesV.setItemAnimator(new DefaultItemAnimator());
 
+         */
+
         // Suggestions
         LinearLayoutManager sugLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         sugV.setLayoutManager(sugLinearLayoutManager);
@@ -150,33 +181,53 @@ public class Spotlight extends Fragment {
         sugV.setAdapter(sugAdapter);
         sugV.setItemAnimator(new DefaultItemAnimator());
 
-        // Explore Photos w/ Scroll Handling
-        StaggeredGridView.OnScrollListener scrollListener = new StaggeredGridView.OnScrollListener() {
-            public void onTop() {
+        // Explore / Discover
+        SpannedGridLayoutManager spannedGridLayoutManager = new SpannedGridLayoutManager(
+                SpannedGridLayoutManager.Orientation.VERTICAL, 3);
+
+        spannedGridLayoutManager.setSpanSizeLookup(new SpannedGridLayoutManager.SpanSizeLookup(position -> {
+            if(position == 0) {
+                return new SpanSize(2, 2);
             }
+            return null;
+        }));
 
-            public void onScroll() {
-            }
+        //exploreV.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+        //exploreV.setLayoutManager(spannedGridLayoutManager);
+        //exploreAdapter = new ExploreAdapter(getActivity(), username);
+        //exploreV.setAdapter(exploreAdapter);
+        //exploreV.setItemAnimator(new DefaultItemAnimator());
+        //mStaggeredView = rootView.findViewById(R.id.explore_grid);
 
-            public void onBottom() {
-                if (!isLoading() && !isLastPage()) {
-                    isLoading = true;
-                    currentPage += 1;
+        /*
+        RecyclerView rv = rootView.findViewById(R.id.exploreRecyclerView);
+        exploreAdapter = new ExploreAdapter(getActivity(), username);
+        exploreAdapter.setHasStableIds(true);
 
-                    if(isNetworkConnected()) {
-                        loadMoreExplore();
-                    } else {
-                        Toasty.info(requireContext(), "No Jet Fuel, connect to the internet", Toast.LENGTH_LONG).show();
-                        exploreProgress.setVisibility(View.GONE);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL);
 
-                        Timber.tag(TAG).d("No internet connection available");
-                    }
-                }
-            }
-        };
-        mStaggeredView = rootView.findViewById(R.id.staggeredview);
-        // Be sure before calling initialize that you haven't initialised from XML
-        mStaggeredView.setOnScrollListener(scrollListener);
+        // setting recycler view layout to staggered grid
+
+        rv.setLayoutManager(staggeredGridLayoutManager);
+        rv.setItemAnimator(new DefaultItemAnimator());
+        rv.setItemViewCacheSize(20);
+        rv.setDrawingCacheEnabled(true);
+        rv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        rv.setItemAnimator(null);
+        rv.setAdapter(exploreAdapter);
+
+         */
+
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
+        exploreRV.setLayoutManager(staggeredGridLayoutManager);
+        exploreRV.setItemAnimator(new DefaultItemAnimator());
+        exploreRV.setItemViewCacheSize(20);
+        exploreRV.setDrawingCacheEnabled(true);
+        exploreRV.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
+        exploreAdapter2 = new StaggeredPaginationAdapter2(getActivity(), getTargetFragment(), username);
+        exploreRV.setAdapter(exploreAdapter2);
+
 
         //init service and load data
         trendsService = QweekdotsApi.getClient(getContext()).create(TrendsService.class);
@@ -186,13 +237,13 @@ public class Spotlight extends Fragment {
         if(isAdded()) {
             if (isNetworkConnected()) {
                 loadTrends();
-                loadHotSpaces();
+                //loadHotSpaces();
                 loadSuggestions();
                 loadExplore();
                 Timber.tag(TAG).d("Loading First Pages");
             } else {
                 Toasty.info(requireContext(), "No Jet Fuel, connect to the internet", Toast.LENGTH_LONG).show();
-                trendsProgress.setVisibility(View.GONE);
+                //trendsProgress.setVisibility(View.GONE);
                 sugProgress.setVisibility(View.GONE);
                 exploreProgress.setVisibility(View.GONE);
                 Timber.tag(TAG).d("No internet connection available");
@@ -200,6 +251,7 @@ public class Spotlight extends Fragment {
         }
 
         // Retry Buttons
+
         trendsBtnRetry.setOnClickListener(view ->  {
             if(isNetworkConnected()) {
                 loadTrends();
@@ -209,6 +261,8 @@ public class Spotlight extends Fragment {
                 Timber.tag(TAG).d("No internet connection available");
             }
         });
+
+        /*
         spacesBtnRetry.setOnClickListener(view-> {
             if(isNetworkConnected()) {
                 loadHotSpaces();
@@ -218,6 +272,8 @@ public class Spotlight extends Fragment {
                 Timber.tag(TAG).d("No internet connection available");
             }
         });
+
+         */
         suggestionsBtnRetry.setOnClickListener(view -> {
             if(isNetworkConnected()) {
                 loadSuggestions();
@@ -240,9 +296,10 @@ public class Spotlight extends Fragment {
         return rootView;
     }
 
-    /**
+    /*
      * Load Trends
      */
+
     private void loadTrends() {
         Timber.tag(TAG).d("loadTrends: ");
 
@@ -267,6 +324,7 @@ public class Spotlight extends Fragment {
                 } else {
                     trendsProgress.setVisibility(View.GONE);
                     trendsAdapter.addAll(trendsItem);
+                    trendsAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -278,9 +336,11 @@ public class Spotlight extends Fragment {
         });
     }
 
+
     /**
      * Load Hot Spaces
      */
+    /*
     private void loadHotSpaces() {
         spacesAdapter.clear();
         Timber.tag(TAG).d("loadHotSpaces: ");
@@ -309,6 +369,7 @@ public class Spotlight extends Fragment {
                             ChatRoom cr = new ChatRoom();
                             cr.setId(chatRoomsObj.getString("chat_room_id"));
                             cr.setName(chatRoomsObj.getString("name"));
+                            cr.setSpace_art(chatRoomsObj.getString("art"));
 
                             chatRoomArrayList.add(cr);
                         }
@@ -332,6 +393,8 @@ public class Spotlight extends Fragment {
         //Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq);
     }
+
+     */
 
     /**
      * Load Suggestions
@@ -371,8 +434,52 @@ public class Spotlight extends Fragment {
     }
 
     /**
+     * Load Explore
+     */
+    /*
+    private void loadExplore() {
+        Timber.tag(TAG).d("loadExplore: ");
+        // To ensure list is visible when retry button in error view is clicked
+        hideExploreErrorView();
+        hideExploreEmptyView();
+
+        callExploreApi().enqueue(new Callback<ExplorePhotos>() {
+            @Override
+            public void onResponse(@NotNull Call<ExplorePhotos> call, @NotNull Response<ExplorePhotos> response) {
+                hideExploreErrorView();
+                hideExploreEmptyView();
+
+                Timber.tag(TAG).i("onResponse: %s", (response.raw().cacheResponse() != null ? "Cache" : "Network"));
+
+                // Got data. Send it to adapter
+                List<PhotoItem> photoItem = fetchExplore(response);
+                if(photoItem.isEmpty()) {
+                    //showEmptyView();
+                    exploreProgress.setVisibility(View.GONE);
+                    exploreEmptyLayout.setVisibility(View.VISIBLE);
+                } else {
+                    exploreProgress.setVisibility(View.GONE);
+
+                    exploreProgress.setVisibility(View.GONE);
+                    exploreAdapter.addAll(photoItem);
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<ExplorePhotos> call, @NotNull Throwable t) {
+                t.printStackTrace();
+                showExploreErrorView();
+            }
+        });
+    }
+
+     */
+
+    /**
      * Load First Set of Explore (QweekSnaps)
      */
+
+    /*
     private void loadExplore() {
         Timber.tag(TAG).d("loadExplore: ");
 
@@ -393,35 +500,21 @@ public class Spotlight extends Fragment {
                 // Got data. Send it to adapter
                 exploreProgress.setVisibility(View.GONE);
 
-                    List<PhotoItem> photoItem = fetchExplore(response);
-                    if(photoItem.isEmpty()) {
-                        //showEmptyView();
-                        exploreProgress.setVisibility(View.GONE);
-                        exploreEmptyLayout.setVisibility(View.VISIBLE);
-                    } else {
-                        for (int index = 0; index < photoItem.size(); index++) {
-                            PhotoItem flkrImage = photoItem.get(index);
-                            StaggeredGridViewItem item;
+                List<PhotoItem> photoItem = fetchExplore(response);
+                if(photoItem.isEmpty()) {
+                    //showEmptyView();
+                    exploreProgress.setVisibility(View.GONE);
+                    exploreEmptyLayout.setVisibility(View.VISIBLE);
+                } else {
+                    exploreProgress.setVisibility(View.GONE);
 
-                            item = new ExplorePhotosAdapter(getContext(), flkrImage, username);
-                            mStaggeredView.addItem(item);
-                        }
-
-                        // Cursor Links
-                        List<Pager> cursor = fetchPageLinks(response);
-                        Pager cursorLink = cursor.get(0);
-                        TOTAL_PAGES = cursorLink.getTotalPages();
-
-                        if(TOTAL_PAGES == 1) {
-                            isLastPage = true;
-                        } else {
-                            if (currentPage < TOTAL_PAGES) {
-                                exploreProgress.setVisibility(View.VISIBLE);
-                            } else if(currentPage == TOTAL_PAGES) {
-                                isLastPage = true;
-                            }
-                        }
+                    for (int i = 0; i < photoItem.size(); i++) {
+                        PhotoItem pItem = photoItem.get(i);
+                        StaggeredGridViewItem item;
+                        item = new ExplorePhotosAdapter(requireActivity(), pItem, username);
+                        mStaggeredView.addItem(item);
                     }
+                }
             }
 
             @Override
@@ -432,41 +525,52 @@ public class Spotlight extends Fragment {
         });
     }
 
-    // Load Next Set of Explore (QweekSnaps)
-    private void loadMoreExplore() {
-        Timber.tag(TAG).d("loadNextPage: %s", currentPage);
-        callExploreApi().enqueue(new Callback<ExplorePhotos>() {
+     */
+
+    private void loadExplore() {
+        Timber.tag(TAG).d("loadFirstPage: ");
+        // To ensure list is visible when retry button in error view is clicked
+        hideExploreErrorView();
+        callNewsFeedApi().enqueue(new Callback<NewsFeed>() {
             @Override
-            public void onResponse(@NotNull Call<ExplorePhotos> call, @NotNull Response<ExplorePhotos> response) {
-                hideExploreEmptyView();
+            public void onResponse(@NotNull Call<NewsFeed> call, @NotNull Response<NewsFeed> response) {
                 hideExploreErrorView();
-                isLoading = false;
+                Timber.tag(TAG).i("onResponse: %s", (response.raw().cacheResponse() != null ? "Cache" : "Network"));
+                List<FeedItem> feedItem = fetchNewsFeed(response);
+                if(feedItem.isEmpty()) {
+                    showExploreEmptyView();
+                } else {
+                    // Got data. Send it to adapter
+                    exploreProgress.setVisibility(View.GONE);
+                    exploreAdapter2.addAll(feedItem);
+                    exploreAdapter2.notifyDataSetChanged();
 
-                // Got data. Send it to adapter
-                List<PhotoItem> photoItem = fetchExplore(response);
-                exploreProgress.setVisibility(View.GONE);
-                for(int index = 0 ; index < photoItem.size(); index++) {
-                    PhotoItem flkrImage = photoItem.get(index);
-                    StaggeredGridViewItem item;
+                    // Cursor Links
+                    //List<Cursor> cursor = fetchCursorLinks(response);
+                    //Cursor cursorLink = cursor.get(0);
+                    //max_id = cursorLink.getMaxID();
+                    //since_id = cursorLink.getSinceID();
+                    //TOTAL_PAGES = cursorLink.getPagesNum();
 
-                    item = new ExplorePhotosAdapter(getContext(), flkrImage, username);
-                    mStaggeredView.addItem(item);
-                }
+                    /*
+                    if(TOTAL_PAGES == 1) {
+                        isLastPage = true;
+                    } else {
+                        if (currentPage < TOTAL_PAGES) {
+                            exploreAdapter2.addLoadingFooter();
+                        } else if(currentPage == TOTAL_PAGES) {
+                            isLastPage = true;
+                        }
+                    }
 
-                // Cursor Links
-                List<Pager> cursor = fetchPageLinks(response);
-                Pager cursorLink = cursor.get(0);
-                TOTAL_PAGES = cursorLink.getTotalPages();
-
-                if (currentPage == TOTAL_PAGES) {
-                    isLastPage = true;
+                     */
                 }
             }
 
             @Override
-            public void onFailure(@NotNull Call<ExplorePhotos> call, @NotNull Throwable t) {
+            public void onFailure(@NotNull Call<NewsFeed> call, @NotNull Throwable t) {
                 t.printStackTrace();
-                Toasty.info(requireContext(), "Apollo, we have a problem !", Toasty.LENGTH_SHORT).show();
+                showExploreErrorView();
             }
         });
     }
@@ -474,6 +578,7 @@ public class Spotlight extends Fragment {
     /**
      * @param response extracts List<{@link TrendsItem >} from response
      */
+
     private List<TrendsItem> fetchTrends(Response<TrendsModel> response) {
         TrendsModel trendsModel = response.body();
         assert trendsModel != null;
@@ -517,27 +622,44 @@ public class Spotlight extends Fragment {
         );
     }
 
+
     /**
      * @param response extracts List<{@link PhotoItem >} from response
      */
-    private List<PhotoItem> fetchExplore(Response<ExplorePhotos> response) {
-        ExplorePhotos explorePhotos = response.body();
+    /*
+    private List<FeedItem> fetchExplore(@NotNull Response<NewsFeed> response) {
+        NewsFeed explorePhotos = response.body();
         assert explorePhotos != null;
         return explorePhotos.getPhotoItems();
     }
 
-    /**
-     * Performs a Retrofit call to the Explore API.
      */
-    private Call<ExplorePhotos> callExploreApi() {
-        return explorePhotosService.getExplorePhotos(
-                username,
-                currentPage
+
+    /**
+     * @param response extracts List<{@link FeedItem>} from response
+     */
+    private List<FeedItem> fetchNewsFeed(Response<NewsFeed> response) {
+        NewsFeed newsFeed = response.body();
+        assert newsFeed != null;
+        return newsFeed.getFeedItems();
+    }
+
+    /**
+     * Performs a Retrofit call to the first QweekFeed API.
+     * Same API call for Pagination.
+     * As {@link #currentPage} will be incremented automatically
+     * by @{@link PaginationScrollListener} to load next page.
+     */
+    private Call<NewsFeed> callNewsFeedApi() {
+        return explorePhotosService.getNewsFeed(
+                username
         );
     }
 
     /**
+     * View Handlers
      */
+
     private void showTrendsErrorView() {
         if (trendsErrorLayout.getVisibility() == View.GONE) {
             trendsErrorLayout.setVisibility(View.VISIBLE);
@@ -548,7 +670,7 @@ public class Spotlight extends Fragment {
     private void showSuggestionsErrorView() {
         if (suggestionsErrorLayout.getVisibility() == View.GONE) {
             suggestionsErrorLayout.setVisibility(View.VISIBLE);
-            suggestionsTxtError.setText(getResources().getString(R.string.error_msg_unknown));
+            suggestionsTxtError.setText(requireActivity().getResources().getString(R.string.error_msg_unknown));
         }
     }
 
@@ -561,34 +683,43 @@ public class Spotlight extends Fragment {
     private void showExploreErrorView() {
         if (exploreErrorLayout.getVisibility() == View.GONE) {
             exploreErrorLayout.setVisibility(View.VISIBLE);
-            exploreTxtError.setText(getResources().getString(R.string.error_msg_unknown));
+            exploreTxtError.setText(requireActivity().getResources().getString(R.string.error_msg_unknown));
+        }
+    }
+
+    private void showExploreEmptyView() {
+        if (exploreEmptyLayout.getVisibility() == View.GONE) {
+            exploreEmptyLayout.setVisibility(View.VISIBLE);
         }
     }
 
     // Helpers -------------------------------------------------------------------------------------
+
     private void hideTrendsErrorView() {
         if (trendsErrorLayout.getVisibility() == View.VISIBLE) {
             trendsErrorLayout.setVisibility(View.GONE);
         }
     }
-
     private void hideTrendsEmptyView() {
         if (trendsEmptyLayout.getVisibility() == View.VISIBLE) {
             trendsEmptyLayout.setVisibility(View.GONE);
         }
     }
 
+    /*
     private void hideSpacesErrorView() {
-        if (trendsErrorLayout.getVisibility() == View.VISIBLE) {
-            trendsErrorLayout.setVisibility(View.GONE);
+        if (spacesErrorLayout.getVisibility() == View.VISIBLE) {
+            spacesErrorLayout.setVisibility(View.GONE);
         }
     }
 
     private void hideSpacesEmptyView() {
-        if (trendsEmptyLayout.getVisibility() == View.VISIBLE) {
-            trendsEmptyLayout.setVisibility(View.GONE);
+        if (spacesEmptyLayout.getVisibility() == View.VISIBLE) {
+            spacesEmptyLayout.setVisibility(View.GONE);
         }
     }
+
+     */
 
     private void hideSuggestionsErrorView() {
         if (suggestionsErrorLayout.getVisibility() == View.VISIBLE) {
@@ -615,6 +746,26 @@ public class Spotlight extends Fragment {
     }
 
     /**
+     * @param throwable to identify the type of error
+     * @return appropriate error message
+     */
+    private String fetchErrorMessage(Throwable throwable) {
+        String errorMsg = requireContext().getResources().getString(R.string.error_msg_unknown);
+        if (!isNetworkConnected()) {
+            errorMsg = requireContext().getResources().getString(R.string.error_msg_no_internet);
+        } else if (throwable instanceof TimeoutException) {
+            errorMsg = requireContext().getResources().getString(R.string.error_msg_timeout);
+        }
+        return errorMsg;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //loadExplore();
+    }
+
+    /**
      * Remember to add android.permission.ACCESS_NETWORK_STATE permission.
      *
      */
@@ -630,5 +781,10 @@ public class Spotlight extends Fragment {
 
     private boolean isLoading() {
         return isLoading;
+    }
+
+    @Override
+    public void retryPageLoad() {
+
     }
 }

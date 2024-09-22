@@ -1,0 +1,13 @@
+R_DEF: Internal format may change without notice
+local
+attr? finalCornerAngle
+attr? initialCornerAngle
+attr? spinning_bar_color
+attr? spinning_bar_padding
+attr? spinning_bar_width
+color black
+color color_button_default
+color green
+drawable ic_done_white_48dp
+drawable shape_default
+styleable CircularProgressButton spinning_bar_width spinning_bar_color spinning_bar_padding initialCornerAngle finalCornerAngle

@@ -99,7 +99,7 @@ public class RSVideoPlayerStandard extends RSVideoPlayer {
 
     public void setThumbImageView(String url) {
         try {
-            Bitmap bitmap = retriveVideoFrameFromVideo(url);
+            Bitmap bitmap = retrieveVideoFrameFromVideo(url);
             if (bitmap != null) {
                 thumbImageView.setImageBitmap(bitmap);
             }
@@ -108,7 +108,7 @@ public class RSVideoPlayerStandard extends RSVideoPlayer {
         }
     }
 
-    public static Bitmap retriveVideoFrameFromVideo(String videoPath) throws Throwable {
+    public static Bitmap retrieveVideoFrameFromVideo(String videoPath) throws Throwable {
         Bitmap bitmap = null;
         MediaMetadataRetriever mediaMetadataRetriever = null;
         try {

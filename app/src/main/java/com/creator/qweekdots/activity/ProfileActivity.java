@@ -14,8 +14,10 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,12 +54,11 @@ import com.creator.qweekdots.ui.EditProfileBottomSheet;
 import com.creator.qweekdots.ui.FollowersBottomSheet;
 import com.creator.qweekdots.ui.FollowingBottomSheet;
 import com.creator.qweekdots.ui.LikedFeed;
+import com.creator.qweekdots.ui.MediaFeed;
 import com.creator.qweekdots.ui.OptionsBottomSheet;
 import com.creator.qweekdots.ui.ProfileFeed;
-import com.creator.qweekdots.ui.QweeksnapFeed;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
-import com.squareup.picasso.Target;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiTextView;
 import com.vanniktech.emoji.ios.IosEmojiProvider;
@@ -92,11 +93,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     private ProfileService profileService;
     private static CircleImageView profilePic;
+    @SuppressLint("StaticFieldLeak")
+    private static ImageView profileCover;
     private ImageButton chatBtn;
     private CircularProgressButton followBtn;
     private TextView usernameTxt, dropCount, followingCount,  followersCount;
     private EmojiTextView fullnameTxt, bioTxt;
-    private static Target profilePicTarget;
     @SuppressLint("StaticFieldLeak")
     private static TextView staticBioTxt;
     private boolean collapsed;
@@ -130,14 +132,27 @@ public class ProfileActivity extends AppCompatActivity {
         HashMap<String, String> userData = db.getUserDetails();
         username = userData.get("username");
 
+        // Make Changes according to theme selected
         if(new DarkModePrefManager(this).isNightMode()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//            window.setStatusBarColor(Color.TRANSPARENT);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                window.setStatusBarColor(getResources().getColor(R.color.contentBodyColor));
+            //            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setStatusBarColor(getResources().getColor(R.color.contentBodyColor));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.getDecorView().getWindowInsetsController().setSystemBarsAppearance(0, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
             }
+        } else {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //window.setStatusBarColor(Color.TRANSPARENT);
+            window.setStatusBarColor(getResources().getColor(R.color.contentBodyColor));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.getDecorView().getWindowInsetsController().setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
+            }
+
         }
 
         // session manager
@@ -149,23 +164,28 @@ public class ProfileActivity extends AppCompatActivity {
 
         ImageButton customOpt = findViewById(R.id.customOptions);
         chatBtn = findViewById(R.id.customChat);
+        ImageButton editBtn = findViewById(R.id.customEdit);
         if(profile.equals(username)) {
             customOpt.setVisibility(View.VISIBLE);
             chatBtn.setVisibility(View.GONE);
+            editBtn.setVisibility(View.VISIBLE);
         } else {
             customOpt.setVisibility(View.GONE);
             chatBtn.setVisibility(View.VISIBLE);
+            editBtn.setVisibility(View.GONE);
         }
 
         //init service and load data
         profileService = QweekdotsApi.getClient(getApplicationContext()).create(ProfileService.class);
 
+        // Setup ViewPager
         ViewPager viewPager = findViewById(R.id.profile_viewpager);
         setupViewPager(viewPager);
         TabLayout tabLayout = findViewById(R.id.profile_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
         profilePic = findViewById(R.id.profileAvatar);
+        profileCover = findViewById(R.id.profileCover);
         followBtn = findViewById(R.id.followActionButton);
         fullnameTxt = findViewById(R.id.fullnameTextView);
         usernameTxt = findViewById(R.id.usernameTextView);
@@ -214,6 +234,11 @@ public class ProfileActivity extends AppCompatActivity {
             customType(ProfileActivity.this, "fadein-to-fadeout");
         });
 
+        editBtn.setOnClickListener(v-> {
+            EditProfileBottomSheet bottomSheet = new EditProfileBottomSheet();
+            bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
+        });
+
         followingBox.setOnClickListener(v -> {
             FollowingBottomSheet bottomSheet = new FollowingBottomSheet(getApplicationContext(), profile, username);
             bottomSheet.show(getSupportFragmentManager(),bottomSheet.getTag());
@@ -223,53 +248,6 @@ public class ProfileActivity extends AppCompatActivity {
             FollowersBottomSheet bottomSheet = new FollowersBottomSheet(getApplicationContext(), profile, username);
             bottomSheet.show(getSupportFragmentManager(),bottomSheet.getTag());
         });
-
-        if(profile.equals(username)) {
-            profilePic.setOnTouchListener(new View.OnTouchListener() {
-                private GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
-                    public void onLongPress(MotionEvent e) {
-                        Timber.i("Longpress detected");
-
-                        EditProfileBottomSheet bottomSheet = new EditProfileBottomSheet();
-                        bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
-                    }
-                });
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    return gestureDetector.onTouchEvent(event);
-                }
-            });
-
-            fullnameTxt.setOnTouchListener(new View.OnTouchListener() {
-                private GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
-                    public void onLongPress(MotionEvent e) {
-                        Timber.i("Longpress detected");
-
-                        EditFullnameBottomSheet bottomSheet = new EditFullnameBottomSheet();
-                        bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
-                    }
-                });
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    return gestureDetector.onTouchEvent(event);
-                }
-            });
-
-            bioTxt.setOnTouchListener(new View.OnTouchListener() {
-                private GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
-                    public void onLongPress(MotionEvent e) {
-                        Timber.i("Longpress detected");
-
-                        EditBioBottomSheet bottomSheet = new EditBioBottomSheet();
-                        bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
-                    }
-                });
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    return gestureDetector.onTouchEvent(event);
-                }
-            });
-        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -298,8 +276,8 @@ public class ProfileActivity extends AppCompatActivity {
                         followBtn.saveInitialState();
                     }
 
-                    String sent = jObj.getString("sent");
-                    Toasty.success(getApplicationContext(), sent, Toast.LENGTH_LONG).show();
+                    //String sent = jObj.getString("sent");
+                    //Toasty.success(getApplicationContext(), sent, Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 // JSON error
@@ -332,40 +310,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public static void loadProfileImage(String url, Context context) {
-
-        //qweeksnap
-        /*profilePicTarget = new com.squareup.picasso.Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                profilePic.setImageBitmap(bitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-
-        profilePic.setTag(profilePicTarget);
-        // load User ProfileModel Picture
-        Picasso.get().
-                load(url)
-                .resize(80, 80)
-                .error(R.drawable.ic_alien)
-                .centerCrop()
-                .into(profilePicTarget);*/
-
         RequestOptions requestOptions = new RequestOptions() // because file name is always same
                 .format(DecodeFormat.PREFER_RGB_565);
         Glide
                 .with(context)
                 .load(url)
-                .override(100, 100)
+                .override(60, 60)
                 .placeholder(R.drawable.alien)
                 .error(R.drawable.alien)
                 .thumbnail(0.3f)
@@ -373,6 +323,21 @@ public class ProfileActivity extends AppCompatActivity {
                 .apply(requestOptions)
                 .into(profilePic);
     }
+
+    public static void loadProfileCover(String url, Context context) {
+        RequestOptions requestOptions = new RequestOptions() // because file name is always same
+                .format(DecodeFormat.PREFER_RGB_565);
+        Glide
+                .with(context)
+                .load(url)
+                .thumbnail(0.3f)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .apply(requestOptions)
+                .centerCrop()
+                .into(profileCover);
+    }
+
+
 
     public static void loadProfileBio(String bio) {
         staticBioTxt.setText(bio);
@@ -394,40 +359,14 @@ public class ProfileActivity extends AppCompatActivity {
                 profileId = user.getId();
                 profileName = user.getFullname();
 
-                        //qweeksnap
-                /*profilePicTarget = new com.squareup.picasso.Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        profilePic.setImageBitmap(bitmap);
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                };
-
-                profilePic.setTag(profilePicTarget);
-                // load User ProfileModel Picture
-                Picasso.get().
-                        load(user.getAvatar())
-                        .resize(100, 100)
-                        .error(R.drawable.ic_alien)
-                        .centerCrop()
-                        .into(profilePicTarget);*/
-
                 RequestOptions requestOptions = new RequestOptions() // because file name is always same
                         .format(DecodeFormat.PREFER_RGB_565);
                 Drawable placeholder = getTinted(getResources().getColor(R.color.contentTextColor));
+                // Load Avatar
                 Glide
                         .with(getApplicationContext())
                         .load(user.getAvatar())
-                        .override(100, 100)
+                        .override(60, 60)
                         .placeholder(placeholder)
                         .error(placeholder)
                         .thumbnail(0.3f)
@@ -435,13 +374,22 @@ public class ProfileActivity extends AppCompatActivity {
                         .apply(requestOptions)
                         .into(profilePic);
 
+                // Load Cover
+                Glide
+                        .with(getApplicationContext())
+                        .load(user.getProfileCover())
+                        .thumbnail(0.3f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .apply(requestOptions)
+                        .into(profileCover);
+
                 fullnameTxt.setText(user.getFullname());
                 usernameTxt.setText("q/"+ user.getUsername());
 
                 bioTxt.setText(user.getBio());
                 if(user.getBio().equals("") && (profile.equals(username))) {
                     if(user.getBio().isEmpty()) {
-                        bioTxt.setText("Hold down to set your new Bio... and other things");
+                        bioTxt.setText("Your self expressions are limitless");
                     } else {
                         bioTxt.setText(user.getBio());
                     }
@@ -522,10 +470,10 @@ public class ProfileActivity extends AppCompatActivity {
         TabsAdapter adapter = new TabsAdapter(
                 getSupportFragmentManager());
         adapter.addFragment(new ProfileFeed(getApplicationContext(), profile, username), "Drops");
-        adapter.addFragment(new QweeksnapFeed(getApplicationContext(), profile, username), "QweekSnaps");
-        adapter.addFragment(new LikedFeed(getApplicationContext(), profile, username), "Liked");
+        //adapter.addFragment(new QweeksnapFeed(getApplicationContext(), profile, username), "QweekSnaps");
+        adapter.addFragment(new MediaFeed(getApplicationContext(), profile, username), "Media");
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(1);
     }
 
     public void onClick(View v) {
@@ -545,6 +493,8 @@ public class ProfileActivity extends AppCompatActivity {
         session.setLogin(false);
 
         db.deleteUsers();
+
+        AppController.getInstance().getPrefManager().clear();
 
         // Launching the login activity
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -590,21 +540,6 @@ public class ProfileActivity extends AppCompatActivity {
     public void onDestroy() {
         Glide.get(getApplicationContext()).clearMemory();
         super.onDestroy();
-    }
-
-    @Override
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
     }
 
 }

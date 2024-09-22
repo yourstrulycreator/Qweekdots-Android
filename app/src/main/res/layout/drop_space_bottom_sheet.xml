@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <ImageView
+                    android:id="@+id/closeSheet"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="start"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="0.5"
+                    android:src="@drawable/ic_close"
+                    android:tint="@color/contentTextColor"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/TitleSheetTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:gravity="start"
+                    android:maxLines="1"
+                    android:textColor="@color/contentTextColor"
+                    android:text=""
+                    android:fontFamily="@font/amatic_regular"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:layout_weight="1.5"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/btn_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:text="Send"
+                    android:layout_weight="1"
+                    android:textColor="@color/Gray"
+                    android:textSize="18sp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="1dp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="0dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/contentBodyColor">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.vanniktech.emoji.EmojiEditText
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:layout_weight="9"
+                            android:layout_marginEnd="15dp"
+                            android:textColorHint="@color/SlateGray"
+                            android:backgroundTint="@color/settingsCardColor"
+                            android:background="@drawable/spaces_edittext"
+                            android:textColor="@color/contentTextColor"
+                            android:inputType="textCapSentences|textMultiLine"
+                            tools:targetApi="lollipop"
+                            android:scrollHorizontally="false"
+                            android:scrollbars="none"
+                            android:singleLine="false"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/roboto_light"
+                            android:hint="@string/spaces_edittext_string1"
+                            android:id="@+id/space_drop"/>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:orientation="horizontal"
+                        android:gravity="end"
+                        android:paddingEnd="30dp"
+                        android:paddingStart="30dp"
+                        android:layout_marginTop="5dp">
+
+                        <ImageView
+                            android:id="@+id/mediaBtn"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/q_media"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="7dp"
+                            android:tint="@color/contentTextColor"
+                            android:contentDescription="@string/media_image" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="100dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="-1dp"
+                        app:cardBackgroundColor="@color/contentBodyColor"
+                        android:visibility="gone"
+                        android:id="@+id/post_photoCard">
+
+                        <ImageView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:maxHeight="500dp"
+                            android:adjustViewBounds="true"
+                            android:layout_gravity="start"
+                            android:scaleType="fitCenter"
+                            android:layout_marginStart="10dp"
+                            android:visibility="gone"
+                            android:id="@+id/mediaImage"
+                            android:contentDescription="@string/media_image"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="100dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/message"
+                        android:layout_marginEnd="20dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="-1dp"
+                        app:cardBackgroundColor="@color/contentBodyColor"
+                        android:visibility="gone"
+                        android:id="@+id/post_videoCard">
+
+                        <VideoView
+                            android:id="@+id/mediaVideo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:layout_gravity="start"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"/>
+
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/extraSpace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

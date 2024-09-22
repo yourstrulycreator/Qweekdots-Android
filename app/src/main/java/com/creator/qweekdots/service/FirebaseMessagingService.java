@@ -35,7 +35,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     @Override
     public void onMessageReceived(@NotNull RemoteMessage remoteMessage) {
 
-        // Check if message contains a notification payload.
+        /*// Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.e(TAG, "Notification Body: " + remoteMessage.getNotification().getBody());
             handleNotification(remoteMessage.getNotification().getBody());
@@ -56,7 +56,18 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         //sendNotification(Objects.requireNonNull(remoteMessage.getNotification()).getBody());
 
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-        Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+        Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());*/
+        Log.d(TAG, "From: " + remoteMessage.getFrom());
+
+        if (remoteMessage.getData().size() > 0) {
+            Log.e(TAG, "Data Payload: " + remoteMessage.getData().toString());
+            try {
+                JSONObject json = new JSONObject(remoteMessage.getData().toString());
+                sendNotification(remoteMessage.getNotification().getBody());
+            } catch (Exception e) {
+                Log.e(TAG, "Exception: " + e.getMessage());
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -70,6 +81,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             // play notification sound
             NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
             notificationUtils.playNotificationSound();
+
+
         }else{
             // If the app is in background, firebase itself handles the notification
         }
@@ -177,4 +190,42 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         assert notificationManager != null;
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
+
+    //this method will display the notification
+    //We are passing the JSONObject that is received from
+    //Firebase cloud messaging
+    private void sendPushNotification(JSONObject json) {
+        //optionally we can display the json into log
+        Log.e(TAG, "Notification JSON " + json.toString());
+        try {
+            //getting the json data
+            JSONObject data = json.getJSONObject("data");
+
+            //parsing json data
+            String title = data.getString("title");
+            String message = data.getString("message");
+            String imageUrl = data.getString("image");
+
+            //creating MyNotificationManager object
+             NotificationUtils mNotificationManager = new NotificationUtils(getApplicationContext());
+
+            //creating an intent for the notification
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+
+            //if there is no image
+            if(imageUrl.equals("null")){
+                //displaying small notification
+                mNotificationManager.showSmallNotificationUtil(title, message, intent);
+            }else{
+                //if there is an image
+                //displaying a big notification
+                mNotificationManager.showBigNotificationUtil(title, message, imageUrl, intent);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Json Exception: " + e.getMessage());
+        } catch (Exception e) {
+            Log.e(TAG, "Exception: " + e.getMessage());
+        }
+    }
+
 }

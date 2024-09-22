@@ -9,24 +9,35 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
+import com.android.volley.RetryPolicy;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.creator.qweekdots.R;
 import com.creator.qweekdots.activity.ProfileActivity;
 import com.creator.qweekdots.api.ProfileService;
 import com.creator.qweekdots.api.QweekdotsApi;
 import com.creator.qweekdots.app.AppConfig;
+import com.creator.qweekdots.app.AppController;
 import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.models.ProfileModel;
 import com.creator.qweekdots.models.UserItem;
@@ -41,8 +52,7 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.vanniktech.emoji.EmojiEditText;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -74,15 +84,21 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
 
     private CircularProgressButton saveBtn;
     private CircleImageView profilePic;
-
-    private Target profilePicTarget;
+    private ImageView profileCover;
+    private EmojiEditText optBioTxt;
 
     private List<UserItem> userItem;
     private UserItem user;
 
     private Bitmap profilePicBitmap;
+    private Bitmap profileCoverBitmap;
+
+    private boolean isAvatar = false;
+    private boolean isCover = false;
+    private boolean isBioChanged = false;
 
     private static final int REQUEST_IMAGE = 100;
+    private static final int REQUEST_COVER = 200;
 
     @NotNull
     @Override
@@ -105,7 +121,10 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
 
             View extraSpace = view.findViewById(R.id.extraSpace);
             profilePic = view.findViewById(R.id.optProfilePic);
+            profileCover = view.findViewById(R.id.optProfileCover);
+            optBioTxt = view.findViewById(R.id.optBioSheetTxt);
             FloatingActionButton picEditBtn = view.findViewById(R.id.optPicEditBtn);
+            FloatingActionButton picCoverEditBtn = view.findViewById(R.id.optCoverEditBtn);
             saveBtn = view.findViewById(R.id.optProfileSheetSaveButton);
             saveBtn.setClickable(false);
 
@@ -131,9 +150,54 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
                         }
                     }).check());
 
+            picCoverEditBtn.setOnClickListener(v-> Dexter.withActivity(getActivity())
+                    .withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            if (report.areAllPermissionsGranted()) {
+                                showCoverImagePickerOptions();
+                            }
+
+                            if (report.isAnyPermissionPermanentlyDenied()) {
+                                showSettingsDialog();
+                            }
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    }).check());
+
+            optBioTxt.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    isBioChanged = true;
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    isBioChanged = true;
+                }
+            });
+
             saveBtn.setOnClickListener(v-> {
                 saveBtn.startAnimation();
-                updateBitmap(profilePicBitmap, username);
+                if(profilePicBitmap!=null) {
+                    updateAvatar(profilePicBitmap, username);
+                }
+                if(profileCoverBitmap!=null) {
+                    updateCover(profileCoverBitmap, username);
+                }
+                if(isBioChanged) {
+                    updateBio(optBioTxt.getText().toString(), username);
+                }
             });
 
             //setting layout with bottom sheet
@@ -181,33 +245,35 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
         return bottomSheet;
     }
 
-    private void loadProfile(String url) {
+    private void loadAvatar(String url) {
         Timber.tag(TAG).d("Image cache path: %s", url);
 
-        //qweeksnap
-        profilePicTarget = new com.squareup.picasso.Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                profilePic.setImageBitmap(bitmap);
-            }
+        RequestOptions requestOptions = new RequestOptions() // because file name is always same
+                .format(DecodeFormat.PREFER_RGB_565);
+        Glide
+                .with(requireContext())
+                .load(url)
+                .override(100, 100)
+                .placeholder(R.drawable.alien)
+                .error(R.drawable.alien)
+                .thumbnail(0.3f)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .apply(requestOptions)
+                .into(profilePic);
+    }
 
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+    private void loadCover(String url) {
+        Timber.tag(TAG).d("Cover cache path: %s", url);
 
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-
-        profilePic.setTag(profilePicTarget);
-        // load User ProfileModel Picture
-        Picasso.get().
-                load(url)
-                .resize(150, 150)
-                .into(profilePicTarget);
+        RequestOptions requestOptions = new RequestOptions() // because file name is always same
+                .format(DecodeFormat.PREFER_RGB_565);
+        Glide
+                .with(requireContext())
+                .load(url)
+                .thumbnail(0.3f)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .apply(requestOptions)
+                .into(profileCover);
     }
 
     private void loadOptProfile() {
@@ -222,32 +288,31 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
                 userItem = fetchProfile(response);
                 user = userItem.get(0);
 
-                //qweeksnap
-                profilePicTarget = new com.squareup.picasso.Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        profilePic.setImageBitmap(bitmap);
-                    }
+                //Load Avatar
+                RequestOptions requestOptions = new RequestOptions() // because file name is always same
+                        .format(DecodeFormat.PREFER_RGB_565);
+                Glide
+                        .with(requireContext())
+                        .load(user.getAvatar())
+                        .override(100, 100)
+                        .placeholder(R.drawable.alien)
+                        .error(R.drawable.alien)
+                        .thumbnail(0.3f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .apply(requestOptions)
+                        .into(profilePic);
 
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                //Load Cover
+                Glide
+                        .with(requireContext())
+                        .load(user.getProfileCover())
+                        .thumbnail(0.3f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .apply(requestOptions)
+                        .into(profileCover);
 
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                };
-
-                profilePic.setTag(profilePicTarget);
-                // load User ProfileModel Picture
-                Picasso.get().
-                        load(user.getAvatar())
-                        .resize(150, 150)
-                        .error(R.drawable.ic_alien)
-                        .centerCrop()
-                        .into(profilePicTarget);
+                // Load Bio
+                optBioTxt.setText(user.getBio());
             }
 
             @Override
@@ -292,6 +357,20 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
         });
     }
 
+    private void showCoverImagePickerOptions() {
+        ImagePicker.showImagePickerOptions(getContext(), new ImagePicker.PickerOptionListener() {
+            @Override
+            public void onTakeCameraSelected() {
+                launchCoverCameraIntent();
+            }
+
+            @Override
+            public void onChooseGallerySelected() {
+                launchCoverGalleryIntent();
+            }
+        });
+    }
+
     private void launchCameraIntent() {
         Intent intent = new Intent(getActivity(), ImagePicker.class);
         intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_IMAGE_CAPTURE);
@@ -320,6 +399,34 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
         startActivityForResult(intent, REQUEST_IMAGE);
     }
 
+    private void launchCoverCameraIntent() {
+        Intent intent = new Intent(getActivity(), ImagePicker.class);
+        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_IMAGE_CAPTURE);
+
+        // setting aspect ratio
+        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true);
+        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, 3); // 16x9, 1x1, 3:4, 3:2
+        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, 4);
+
+        // setting maximum bitmap width and height
+        intent.putExtra(ImagePicker.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true);
+        intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_WIDTH, 1200);
+        intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_HEIGHT, 1200);
+
+        startActivityForResult(intent, REQUEST_COVER);
+    }
+
+    private void launchCoverGalleryIntent() {
+        Intent intent = new Intent(getActivity(), ImagePicker.class);
+        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_GALLERY_IMAGE);
+
+        // setting aspect ratio
+        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true);
+        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, 3); // 16x9, 1x1, 3:4, 3:2
+        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, 4);
+        startActivityForResult(intent, REQUEST_COVER);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_IMAGE) {
@@ -328,9 +435,26 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
                 try {
                     // You can update this bitmap to your server
                     profilePicBitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), uri);
+                    isAvatar = true;
 
                     // loading profile image from local cache
-                    loadProfile(Objects.requireNonNull(uri).toString());
+                    loadAvatar(Objects.requireNonNull(uri).toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (requestCode == REQUEST_COVER) {
+            if (resultCode == Activity.RESULT_OK) {
+                Uri uri = Objects.requireNonNull(data).getParcelableExtra("path");
+                try {
+                    // You can update this bitmap to your server
+                    profileCoverBitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), uri);
+                    isCover = true;
+
+                    // loading profile image from local cache
+                    loadCover(Objects.requireNonNull(uri).toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -379,12 +503,14 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
      * */
     private byte[] getFileDataFromDrawable(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
     }
 
-    private void updateBitmap(final Bitmap bitmap, final String username) {
-
+    /*
+     * Update Avatar Function
+     */
+    private void updateAvatar(final Bitmap bitmap, final String username) {
         //our custom volley request
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, AppConfig.URL_PROFILE_SETTINGS,
                 response -> {
@@ -461,6 +587,165 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
         Volley.newRequestQueue(requireContext()).add(volleyMultipartRequest);
     }
 
+
+    /*
+     * Update Cover Function
+     */
+    private void updateCover(final Bitmap bitmap, final String username) {
+        //our custom volley request
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, AppConfig.URL_PROFILE_SETTINGS,
+                response -> {
+                    Timber.tag(TAG).d("Settings Response: %s", new String(response.data));
+
+                    try {
+                        JSONObject jObj = new JSONObject(new String(response.data));
+                        boolean error = jObj.getBoolean("error");
+
+                        // Check for error node in json
+                        if (!error) {
+                            // Stop animation
+                            stopButtonAnimation();
+
+                            // success
+                            String sent = jObj.getString("sent");
+                            String profileCover = jObj.getString("cover");
+                            Toasty.success(requireContext(), sent, Toast.LENGTH_LONG).show();
+
+                            //ContentValues values = new ContentValues();
+                            //values.put("cover", profileCover);
+
+                            //db.getWritableDatabase().update("user", values, "id='1'", null);
+
+                            ProfileActivity.loadProfileCover(profileCover, requireContext());
+                        } else {
+                            // Error in drop. Get the error message
+                            String errorMsg = jObj.getString("error_msg");
+                            Toasty.error(requireContext(),
+                                    errorMsg, Toast.LENGTH_LONG).show();
+                            stopButtonAnimation();
+                        }
+                    } catch (JSONException e) {
+                        // JSON Error
+                        e.printStackTrace();
+                        Toasty.error(requireContext(), "Mission Control, come in !", Toast.LENGTH_LONG).show();
+                        stopButtonAnimation();
+                    }
+
+                },
+                error -> {
+                    Timber.tag(TAG).e("Drop Error: %s", error.getMessage());
+                    Toasty.error(requireContext(),
+                            "Apollo, we have a problem !", Toast.LENGTH_LONG).show();
+
+                    stopButtonAnimation();
+                }) {
+            /*
+             * If you want to add more parameters with the image
+             * you can do it here
+             * here we have only one parameter with the image
+             * which is tags
+             * */
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("u", username);
+                return params;
+            }
+
+            /*
+             * Here we are passing image by renaming it with a unique name
+             * */
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                long imagename = System.currentTimeMillis();
+                params.put("pCover", new DataPart("cover_" + imagename + ".jpg", getFileDataFromDrawable(bitmap)));
+                return params;
+            }
+        };
+
+        //adding the request to volley
+        Volley.newRequestQueue(requireContext()).add(volleyMultipartRequest);
+    }
+
+    /*
+     * Update Bio Function
+     * */
+    private void updateBio(final String updated, final String username) {
+        // Tag used to cancel the request
+        String tag_string_req = "req_update";
+
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                AppConfig.URL_PROFILE_SETTINGS, response -> {
+            Timber.tag(TAG).d("Settings Response: %s", response);
+
+            try {
+                JSONObject jObj = new JSONObject(response);
+                boolean error = jObj.getBoolean("error");
+
+                // Check for error node in json
+                if (!error) {
+                    // Stop animation
+                    stopButtonAnimation();
+
+                    // success
+                    String sent = jObj.getString("sent");
+                    String bio = jObj.getString("bio");
+                    Toasty.success(requireContext(), sent, Toast.LENGTH_LONG).show();
+
+                    ContentValues values = new ContentValues();
+                    values.put("bio", bio);
+
+                    ProfileActivity.loadProfileBio(bio);
+
+                    db.getWritableDatabase().update("user", values, "id='1'", null);
+                } else {
+                    // Error in drop. Get the error message
+                    String errorMsg = jObj.getString("error_msg");
+                    Toasty.error(requireContext(),
+                            errorMsg, Toast.LENGTH_LONG).show();
+                    stopButtonAnimation();
+                }
+            } catch (JSONException e) {
+                // JSON error
+                e.printStackTrace();
+                Toasty.error(requireContext(), "Mission Control, come in !", Toast.LENGTH_LONG).show();
+                stopButtonAnimation();
+            }
+
+        }, error -> {
+            Timber.tag(TAG).e("Settings Error: %s", error.getMessage());
+            Toasty.error(requireContext(),
+                    "Apollo, we have a problem !", Toast.LENGTH_LONG).show();
+
+            stopButtonAnimation();
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to drop url
+                Map<String, String> params = new HashMap<>();
+                params.put("bio", updated);
+                params.put("u", username);
+
+                return params;
+            }
+
+        };
+
+        // disabling retry policy so that it won't make
+        // multiple http calls
+        int socketTimeout = 0;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
+        strReq.setRetryPolicy(policy);
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -470,5 +755,14 @@ public class EditProfileBottomSheet extends RoundedBottomSheetDialogFragment {
 
     private void stopButtonAnimation(){
         saveBtn.revertAnimation();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
     }
 }

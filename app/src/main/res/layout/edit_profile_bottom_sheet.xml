@@ -11,23 +11,46 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
-            android:paddingLeft="25dp"
-            android:paddingRight="25dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/optTitleSheetTxt"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:maxLines="1"
-                android:textColor="@color/contentTextColor"
-                android:text="@string/edit_avatar"
-                android:fontFamily="@font/amatic_regular"
-                android:textSize="34sp"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"/>
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+                <TextView
+                    android:id="@+id/optTitleSheetTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_gravity="start"
+                    android:gravity="start"
+                    android:maxLines="1"
+                    android:textColor="@color/contentTextColor"
+                    android:text="@string/edit_profile"
+                    android:fontFamily="@font/avenir_next_cyr_regular"
+                    android:textSize="24dp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="5dp"
+                    tools:ignore="SpUsage" />
+
+                <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                    android:id="@+id/optProfileSheetSaveButton"
+                    style="@style/followButton"
+                    android:layout_width="80dp"
+                    android:layout_height="35dp"
+                    android:padding="10dp"
+                    android:text="@string/options_save"
+                    android:textSize="14dp"
+                    android:visibility="visible"
+                    app:initialCornerAngle="26dp"
+                    app:spinning_bar_color="@color/contentBodyColor"
+                    app:spinning_bar_padding="6dp"
+                    app:spinning_bar_width="4dp"
+                    android:layout_alignParentEnd="true"
+                    tools:ignore="SpUsage"
+                    android:elevation="0dp"
+                    android:layout_marginTop="5dp"/>
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -36,14 +59,43 @@
                 android:id="@+id/optViewProfile"
                 android:gravity="center">
 
+                <ImageView
+                    android:id="@+id/optProfileCover"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:background="@color/QweekColorAccent"
+                    android:contentDescription="@string/profile_cover"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/optCoverEditBtn"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:clickable="true"
+                    app:backgroundTint="@color/DeepSkyBlue"
+                    app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
+                    android:focusable="true"
+                    app:pressedTranslationZ="12dp"
+                    android:scaleType="centerCrop"
+                    android:visibility="visible"
+                    android:layout_alignBottom="@id/optProfileCover"
+                    app:fabSize="normal"
+                    app:fabCustomSize="45dp"
+                    app:srcCompat="@drawable/q_edit2"
+                    android:tint="@color/contentTextColor"
+                    android:layout_toEndOf="@id/optProfileCover"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginStart="-50dp" />
+
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/optProfilePic"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
                     app:civ_border_width="4dp"
                     app:civ_border_color="@color/imageBorderColor"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginStart="45dp"
+                    android:layout_marginTop="155dp"
+                    android:layout_marginStart="25dp"
                     android:backgroundTint="@color/contentTextColor"
                     android:tint="@color/contentTextColor"
                     tools:targetApi="lollipop"/>
@@ -62,23 +114,27 @@
                     android:layout_alignBottom="@id/optProfilePic"
                     app:fabSize="normal"
                     app:fabCustomSize="45dp"
-                    app:srcCompat="@drawable/q_edit"
+                    app:srcCompat="@drawable/q_edit2"
                     android:tint="@color/contentTextColor"
                     android:layout_toEndOf="@id/optProfilePic"
                     android:layout_marginStart="-10dp" />
 
             </RelativeLayout>
 
-            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
-                android:id="@+id/optProfileSheetSaveButton"
-                style="@style/loginButton"
-                app:spinning_bar_width="4dp"
-                app:spinning_bar_color="#FFF"
-                android:text="@string/options_save"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/loginViewsMargin"
-                app:initialCornerAngle="27dp"
-                app:spinning_bar_padding="6dp"/>
+            <com.vanniktech.emoji.EmojiEditText
+                android:id="@+id/optBioSheetTxt"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                style="@style/modifiedEditText"
+                android:inputType="textMultiLine"
+                android:textColor="@color/contentTextColor"
+                android:textSize="16sp"
+                android:hint="@string/hint_bio"
+                android:importantForAutofill="no"
+                android:textColorHint="@color/SlateGray"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"/>
 
             <View
                 android:id="@+id/extraSpace"

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs size="@dimen/size"
+    space="@dimen/space">
+
+    <tab
+        inactiveColor="@color/darkTransparentGrey"
+        activeColor="@color/QweekColorAccent"
+        drawable="@drawable/feed_home"/>
+
+    <tab
+        inactiveColor="@color/darkTransparentGrey"
+        activeColor="@color/QweekColorAccent"
+        drawable="@drawable/feed_spaces"/>
+
+    <tab
+        inactiveColor="@color/darkTransparentGrey"
+        activeColor="@color/QweekColorAccent"
+        drawable="@drawable/feed_popular"/>
+
+</tabs>

@@ -1,194 +1,342 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@color/contentBodyColor"
-    tools:context=".activity.RingSpaceActivity"
-    android:paddingTop="10dp">
+    tools:context=".activity.ChatUserActivity"
+    android:fitsSystemWindows="true"
+    android:paddingTop="10dp"
+    android:paddingBottom="0dp">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@android:color/transparent"
-        android:elevation="0dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp"
-        android:layout_marginBottom="7dp"
-        tools:targetApi="lollipop"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:layout_scrollFlags="scroll|enterAlways">
-
-        <com.vanniktech.emoji.EmojiTextView
-            android:id="@+id/toolbarTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/odin_rounded_bold"
-            android:textSize="32sp"
-            android:layout_marginStart="55dp"
-            android:textColor="@color/QweekColorAccent"/>
-
-    </androidx.appcompat.widget.Toolbar>
-
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="55dp"
-        android:layout_marginBottom="40dp"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_alignParentTop="true">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="20dp"
-            android:scrollbars="vertical" />
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:elevation="0dp"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginBottom="7dp"
+            tools:targetApi="lollipop"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_scrollFlags="scroll|enterAlways">
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="5"
+                android:gravity="center">
+                <com.vanniktech.emoji.EmojiTextView
+                    android:id="@+id/toolbarTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4.5"
+                    android:fontFamily="@font/sf_regular"
+                    android:textSize="16sp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:layout_marginStart="20dp"
+                    android:textColor="@color/contentTextColor" />
 
-    <include layout="@layout/qweekchat_empty" />
+                <ImageView
+                    android:id="@+id/toolbarCall"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/ic_voice_call"
+                    android:backgroundTint="@color/contentTextColor"
+                    tools:targetApi="lollipop"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:tint="@color/contentTextColor" />
+            </LinearLayout>
 
-    <ImageButton android:id="@+id/customClose"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:background="@drawable/custom_back_btn"
-        app:srcCompat="@drawable/q_back"
-        android:tint="@color/contentTextColor"
-        android:layout_gravity="top|start"
-        android:scaleType="fitCenter"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:onClick="onClick"
-        android:contentDescription="@string/custom_go_back" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="55dp"
+            android:layout_marginBottom="50dp"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:scrollbars="vertical" />
+
+        </LinearLayout>
+
+        <include layout="@layout/qweekchat_empty" />
+
+        <ImageButton android:id="@+id/customClose"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/custom_back_btn"
+            app:srcCompat="@drawable/q_back"
+            android:layout_gravity="top|start"
+            android:scaleType="fitCenter"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:onClick="onClick"
+            android:contentDescription="@string/custom_go_back"
+            app:tint="@color/contentTextColor" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="bottom"
-        android:layout_gravity="bottom"
-        android:background="@android:color/transparent"
+        android:background="@color/contentBodyColor"
         android:descendantFocusability="beforeDescendants"
         android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:focusableInTouchMode="true"
+        android:layout_alignParentBottom="true">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:id="@+id/attachment_meta"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp">
 
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="280dp"
-                android:minWidth="100dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="-1dp"
-                app:cardBackgroundColor="@color/contentBodyColor"
-                android:visibility="gone"
-                android:id="@+id/post_photoCard">
+                android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/delete_meta"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_close"
+                    android:layout_gravity="end"
+                    tools:ignore="ContentDescription"
+                    app:tint="@color/contentTextColor" />
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxWidth="280dp"
-                    android:maxHeight="350dp"
-                    android:adjustViewBounds="true"
-                    android:layout_gravity="start"
-                    android:scaleType="fitCenter"
-                    android:layout_marginStart="10dp"
-                    android:visibility="gone"
-                    android:id="@+id/mediaImage"
-                    android:contentDescription="@string/media_image"/>
+                    android:maxWidth="350dp"
+                    android:minWidth="100dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="-1dp"
+                    app:cardBackgroundColor="@color/contentBodyColor"
+                    android:visibility="visible"
+                    android:id="@+id/post_photoCard">
 
-            </androidx.cardview.widget.CardView>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxWidth="350dp"
+                        android:maxHeight="450dp"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="start"
+                        android:scaleType="fitCenter"
+                        android:visibility="visible"
+                        android:id="@+id/mediaImage"
+                        android:contentDescription="@string/media_image"/>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxWidth="350dp"
-                android:minWidth="100dp"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/message"
-                android:layout_marginEnd="20dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="-1dp"
-                app:cardBackgroundColor="@color/contentBodyColor"
-                android:visibility="gone"
-                android:id="@+id/post_videoCard">
+                </androidx.cardview.widget.CardView>
 
-                <VideoView
-                    android:id="@+id/mediaVideo"
-                    android:layout_width="350dp"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:maxWidth="350dp"
+                    android:minWidth="100dp"
+                    android:layout_marginEnd="20dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="-1dp"
+                    app:cardBackgroundColor="@color/contentBodyColor"
                     android:visibility="gone"
-                    android:layout_gravity="start"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"/>
+                    android:id="@+id/post_videoCard">
 
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
+                    <VideoView
+                        android:id="@+id/mediaVideo"
+                        android:layout_width="350dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_gravity="start"/>
 
-        <LinearLayout
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="10dp"
+                    app:cardBackgroundColor="@color/settingsCardColor2"
+                    app:cardElevation="1dp"
+                    app:contentPadding="15dp"
+                    android:padding="15dp"
+                    android:visibility="gone"
+                    android:id="@+id/post_fileCard">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/file"/>
+
+                        <TextView
+                            android:id="@+id/attached_filename"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/contentTextColor"
+                            android:fontFamily="@font/arial"
+                            android:textSize="14sp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="5dp"/>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:orientation="horizontal"
-            android:weightSum="10">
+            android:layout_marginBottom="5dp">
 
-            <com.vanniktech.emoji.EmojiEditText
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="9"
-                android:layout_marginStart="10dp"
-                android:textColorHint="@color/SlateGray"
-                android:backgroundTint="@color/settingsCardColor"
-                android:background="@drawable/comment_edittext"
-                android:textColor="@color/contentTextColor"
-                android:inputType="textCapSentences|textMultiLine"
-                tools:targetApi="lollipop"
-                android:scrollHorizontally="false"
-                android:scrollbars="none"
-                android:singleLine="false"
-                android:textSize="14sp"
-                android:fontFamily="@font/roboto_light"
-                android:hint="@string/comment_hint"
-                android:id="@+id/chat_message"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/mediaBtn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/q_media"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="7dp"
-                android:tint="@color/contentTextColor"
-                android:contentDescription="@string/media_image" />
+                <ImageView
+                    android:id="@+id/attachBtn"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="12dp"
+                    android:src="@drawable/ic_attach"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:visibility="visible"
+                    app:tint="@color/contentTextColor" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_send"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:clickable="true"
-                app:srcCompat="@drawable/ic_send"
-                app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
-                android:focusable="true"
-                app:pressedTranslationZ="12dp"
-                app:backgroundTint="@android:color/transparent"
-                android:tint="@color/contentTextColor"
-                android:scaleType="centerCrop"
-                app:fabSize="normal"
-                app:fabCustomSize="30dp"
-                app:elevation="0dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="4dp"
-                tools:ignore="VectorDrawableCompat" />
+                <com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout
+                    xmlns:rfal="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/activity_main_rfal"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    rfal:rfal_frame_color="#ffffff"
+                    rfal:rfal_frame_alpha="0.7"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    android:visibility="gone"
+                    rfal:layout_constraintTop_toTopOf="parent"
+                    rfal:layout_constraintStart_toStartOf="parent"
+                    >
+                    <com.wangjie.rapidfloatingactionbutton.RapidFloatingActionButton
+                        xmlns:rfab="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/activity_main_rfab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:padding="8dp"
+                        rfab:rfab_size="normal"
+                        rfab:rfab_drawable="@drawable/rfab__drawable_rfab_default"
+                        rfab:rfab_color_normal="#37474f"
+                        rfab:rfab_color_pressed="#263238"
+                        rfab:rfab_shadow_radius="7dp"
+                        rfab:rfab_shadow_color="#999999"
+                        rfab:rfab_shadow_dx="0dp"
+                        rfab:rfab_shadow_dy="5dp"
+                        />
+                </com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout>
 
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/mediaBtn"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/q_media"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="12dp"
+                    android:contentDescription="@string/media_image"
+                    app:tint="@color/contentTextColor"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/attachBtn"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="45dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginStart="68dp"
+                    app:layout_constraintStart_toEndOf="@id/mediaBtn"
+                    android:backgroundTint="@color/settingsCardColor"
+                    android:background="@drawable/comment_full_bg">
+
+                    <com.vanniktech.emoji.EmojiEditText
+                        android:layout_width="fill_parent"
+                        android:layout_marginEnd="40dp"
+                        android:layout_height="match_parent"
+                        android:textColorHint="@color/SlateGray"
+                        android:backgroundTint="@color/settingsCardColor"
+                        android:background="@drawable/comment_edittext"
+                        android:textColor="@color/contentTextColor"
+                        android:inputType="textCapSentences|textMultiLine"
+                        tools:targetApi="lollipop"
+                        android:scrollHorizontally="false"
+                        android:scrollbars="none"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/roboto_light"
+                        android:hint="Message"
+                        android:id="@+id/chat_message"
+                        android:layout_marginTop="3dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/btn_send"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:clickable="true"
+                        android:layout_alignParentEnd="true"
+                        app:srcCompat="@drawable/ic_paper_send"
+                        app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
+                        android:focusable="true"
+                        app:pressedTranslationZ="12dp"
+                        app:backgroundTint="@android:color/transparent"
+                        android:tint="@color/contentTextColor"
+                        android:scaleType="centerCrop"
+                        app:fabSize="normal"
+                        app:fabCustomSize="30dp"
+                        app:elevation="0dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="20dp"
+                        tools:ignore="VectorDrawableCompat"
+                        app:layout_constraintStart_toEndOf="@id/chat_message"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RelativeLayout>
     </LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

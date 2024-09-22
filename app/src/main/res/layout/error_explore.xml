@@ -12,12 +12,13 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible">
+        tools:visibility="visible"
+        android:layout_marginTop="-130dp">
 
         <ImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/television"
+            android:src="@drawable/ufo"
             android:layout_gravity="center"/>
 
         <TextView
@@ -42,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/activity_margin_content"
+            android:layout_marginBottom="100dp"
             android:text="@string/btn_retry"
             android:textColor="@color/colorPrimary"/>
 

@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.creator.qweekdots.R;
@@ -108,11 +107,11 @@ public class AddChatUsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             .into(userVH.profilePic);
 
                     userVH.qClickLayout.setOnClickListener(v -> {
-                        Intent i = new Intent(context, ChatUserActivity.class);
+                        Intent i = new Intent(context.getApplicationContext(), ChatUserActivity.class);
                         i.putExtra("to", userItem.getId());
                         i.putExtra("to_name", userItem.getFullname());
-                        context.startActivity(i);
-                        customType(context, "fadein-to-fadeout");
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.getApplicationContext().startActivity(i);
                     });
 
                     break;

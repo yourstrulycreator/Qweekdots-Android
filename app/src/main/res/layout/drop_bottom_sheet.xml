@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/htab_maincontent"
@@ -13,7 +13,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/drop_relayout"
-            android:background="@android:color/transparent">
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
@@ -49,7 +51,7 @@
                             tools:targetApi="lollipop" />
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:orientation="vertical">
@@ -58,8 +60,8 @@
                                 android:id="@+id/usernameTxt"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="?attr/colorAccent"
-                                android:textSize="14sp"
+                                android:textColor="@color/QweekColorAccent"
+                                android:textSize="14dp"
                                 android:textStyle="bold" />
 
                             <com.vanniktech.emoji.EmojiTextView
@@ -68,8 +70,56 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="3dp"
                                 android:textColor="@color/contentTextColor"
-                                android:textSize="12sp" />
+                                android:textSize="12dp" />
                         </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="end">
+                            <ImageView
+                                android:id="@+id/closeSheet"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_close2"
+                                android:tint="@color/contentTextColor"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginEnd="5dp"
+                                tools:ignore="ContentDescription" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/mediaMeta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="start|center_vertical"
+                        android:visibility="gone">
+
+                        <com.vanniktech.emoji.EmojiTextView
+                            android:id="@+id/mediaDrop"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="5dp"
+                            android:textColor="@color/contentTextColor"
+                            android:paddingLeft="@dimen/feed_item_status_pad_left_right"
+                            android:paddingRight="@dimen/feed_item_status_pad_left_right"
+                            android:paddingTop="5dp"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/vera_mono" />
+
+                        <io.github.ponnamkarthik.richlinkpreview.RichLinkView
+                            android:id="@+id/mediaUrl"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:linksClickable="true"
+                            android:paddingLeft="@dimen/feed_item_status_pad_left_right"
+                            android:paddingRight="@dimen/feed_item_status_pad_left_right"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="5dp"
+                            android:textColorLink="@color/link"/>
 
                     </LinearLayout>
 
@@ -84,6 +134,8 @@
                             android:layout_height="wrap_content"
                             android:visibility="gone"
                             app:cardCornerRadius="@dimen/bottom_sheet_corner_radius"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="20dp"
                             app:cardElevation="0dp"
                             app:cardBackgroundColor="@color/contentBodyColor">
 
@@ -92,9 +144,10 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:minHeight="100dp"
+                                android:maxHeight="450dp"
                                 android:adjustViewBounds="true"
                                 android:background="@color/QweekColorAccent"
-                                android:scaleType="fitXY"
+                                android:scaleType="centerCrop"
                                 android:visibility="gone"
                                 tools:ignore="ContentDescription" />
 
@@ -207,13 +260,13 @@
                                 <androidx.cardview.widget.CardView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    app:cardCornerRadius="0dp"
+                                    app:cardCornerRadius="16dp"
                                     app:cardElevation="0dp"
                                     android:id="@+id/reactionCard"
                                     android:visibility="gone"
                                     android:layout_marginTop="10dp"
-                                    android:layout_marginStart="0dp"
-                                    android:layout_marginEnd="0dp"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginEnd="20dp"
                                     android:layout_gravity="center_horizontal">
                                     <ImageView
                                         android:id="@+id/reactionImage"
@@ -233,6 +286,19 @@
 
                     </RelativeLayout>
 
+                    <TextView
+                        android:id="@+id/space_tag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/sf_regular"
+                        android:textColor="@color/white"
+                        android:background="@drawable/rounded_corner"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
                     <LinearLayout
                         android:id="@+id/drop_actions"
                         android:layout_width="match_parent"
@@ -240,32 +306,6 @@
                         android:gravity="start|center_vertical"
                         android:orientation="horizontal"
                         android:visibility="visible">
-
-                        <LinearLayout android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            tools:ignore="UseCompoundDrawables">
-                            <ImageView
-                                android:id="@+id/like_btn"
-                                android:layout_width="26dp"
-                                android:layout_height="26dp"
-                                android:layout_marginStart="10dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/like_txt"
-                                android:focusable="true"
-                                android:padding="5dp"
-                                android:tint="@color/Gray"
-                                app:srcCompat="@drawable/ic_like" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="12sp"
-                                android:textColor="@color/Gray"
-                                android:id="@+id/likeNum"/>
-                        </LinearLayout>
-
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -274,8 +314,8 @@
                             tools:ignore="UseCompoundDrawables">
                             <ImageView
                                 android:id="@+id/upvote_btn"
-                                android:layout_width="26dp"
-                                android:layout_height="26dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
                                 android:layout_marginStart="20dp"
                                 android:clickable="true"
                                 android:contentDescription="@string/upvote_txt"
@@ -300,9 +340,9 @@
                             tools:ignore="UseCompoundDrawables">
                             <ImageView
                                 android:id="@+id/downvote_btn"
-                                android:layout_width="26dp"
-                                android:layout_height="26dp"
-                                android:layout_marginStart="10dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_marginStart="15dp"
                                 android:clickable="true"
                                 android:contentDescription="@string/downvote_txt"
                                 android:focusable="true"
@@ -321,39 +361,68 @@
 
                         <ImageView
                             android:id="@+id/share_btn"
-                            android:layout_width="26dp"
-                            android:layout_height="26dp"
-                            android:layout_marginStart="20dp"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginStart="15dp"
                             android:clickable="true"
                             android:contentDescription="@string/expand_txt"
                             android:focusable="true"
                             android:padding="5dp"
-                            android:tint="@color/Gray"
+                            android:visibility="visible"
+                            app:srcCompat="@drawable/ic_sharing"
+                            app:tint="@color/Gray" />
+
+                        <ImageView
+                            android:id="@+id/report_btn"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginStart="15dp"
+                            android:clickable="true"
+                            android:contentDescription="@string/expand_txt"
+                            android:focusable="true"
+                            android:padding="5dp"
                             android:visibility="gone"
-                            app:srcCompat="@drawable/ic_share" />
+                            app:srcCompat="@drawable/ic_report2"
+                            app:tint="@color/Gray" />
 
                         <ImageView
                             android:id="@+id/delete_btn"
-                            android:layout_width="26dp"
-                            android:layout_height="26dp"
-                            android:layout_marginStart="20dp"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginStart="15dp"
                             android:clickable="true"
                             android:contentDescription="@string/expand_txt"
                             android:focusable="true"
                             android:padding="5dp"
-                            android:tint="@color/Gray"
                             android:visibility="gone"
-                            app:srcCompat="@drawable/ic_delete" />
+                            app:srcCompat="@drawable/ic_recycling_bin"
+                            app:tint="@color/Gray" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
+                            android:layout_marginStart="15dp"
                             android:textSize="12sp"
                             android:text="No comments"
                             android:textColor="@color/Gray"
                             android:id="@+id/commentNum"
                             tools:ignore="HardcodedText" />
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="end"
+                            android:layout_gravity="end">
+                            <TextView
+                                android:id="@+id/timestamp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:textColor="@color/SlateGray"
+                                android:layout_marginEnd="5dp"/>
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -364,7 +433,8 @@
                         android:layout_height="match_parent"
                         android:layout_marginTop="10dp"
                         android:clipToPadding="false"
-                        android:paddingBottom="50dp" />
+                        android:paddingBottom="30dp"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
                     <com.github.ybq.android.spinkit.SpinKitView
                         android:id="@+id/spin_kit"
@@ -382,55 +452,6 @@
 
             </androidx.core.widget.NestedScrollView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:layout_alignParentBottom="true"
-                android:weightSum="10"
-                android:layout_marginBottom="10dp"
-                android:background="@color/contentBodyColor">
-                <com.vanniktech.emoji.EmojiEditText
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="9.5"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="5dp"
-                    android:textColorHint="@color/SlateGray"
-                    android:backgroundTint="@color/settingsCardColor"
-                    android:background="@drawable/comment_edittext"
-                    android:textColor="@color/contentTextColor"
-                    android:inputType="textCapSentences|textMultiLine"
-                    tools:targetApi="lollipop"
-                    android:scrollHorizontally="false"
-                    android:scrollbars="none"
-                    android:singleLine="false"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/roboto_light"
-                    android:hint="@string/comment_hint"
-                    android:id="@+id/dropCommentTxt"/>
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/dropCommentBtn"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:clickable="true"
-                        app:srcCompat="@drawable/ic_send"
-                        app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
-                        android:focusable="true"
-                        app:pressedTranslationZ="12dp"
-                        app:backgroundTint="@android:color/transparent"
-                        android:tint="@color/contentTextColor"
-                        android:scaleType="centerCrop"
-                        app:fabSize="normal"
-                        app:fabCustomSize="30dp"
-                        app:elevation="0dp"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginTop="8dp"
-                        tools:ignore="VectorDrawableCompat" />
-            </LinearLayout>
-
             <View
                 android:id="@+id/extraSpace"
                 android:layout_width="match_parent"
@@ -438,5 +459,58 @@
 
         </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:weightSum="10"
+        android:layout_marginBottom="2dp"
+        android:background="@color/contentBodyColor"
+        android:descendantFocusability="beforeDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <com.vanniktech.emoji.EmojiEditText
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="9.5"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="5dp"
+            android:textColorHint="@color/SlateGray"
+            android:backgroundTint="@color/settingsCardColor"
+            android:background="@drawable/comment_edittext"
+            android:textColor="@color/contentTextColor"
+            android:inputType="textCapSentences|textMultiLine"
+            tools:targetApi="lollipop"
+            android:scrollHorizontally="false"
+            android:scrollbars="none"
+            android:singleLine="false"
+            android:textSize="14sp"
+            android:fontFamily="@font/roboto_light"
+            android:hint="@string/comment_hint"
+            android:id="@+id/dropCommentTxt"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/dropCommentBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_send"
+            app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
+            android:focusable="true"
+            app:pressedTranslationZ="12dp"
+            app:backgroundTint="@android:color/transparent"
+            android:tint="@color/contentTextColor"
+            android:scaleType="centerCrop"
+            app:fabSize="normal"
+            app:fabCustomSize="30dp"
+            app:elevation="0dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="8dp"
+            tools:ignore="VectorDrawableCompat" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

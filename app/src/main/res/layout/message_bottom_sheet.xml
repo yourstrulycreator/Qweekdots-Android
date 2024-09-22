@@ -65,6 +65,21 @@
                             android:textStyle="bold" />
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end">
+                        <ImageView
+                            android:id="@+id/closeSheet"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_close"
+                            android:tint="@color/contentTextColor"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            tools:ignore="ContentDescription" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <RelativeLayout
@@ -150,8 +165,8 @@
                         tools:ignore="UseCompoundDrawables">
                         <ImageView
                             android:id="@+id/like_btn"
-                            android:layout_width="26dp"
-                            android:layout_height="26dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
                             android:layout_marginStart="10dp"
                             android:clickable="true"
                             android:contentDescription="@string/like_txt"
@@ -203,6 +218,22 @@
                         android:textColor="@color/Gray"
                         android:id="@+id/commentNum"/>
 
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="end"
+                        android:layout_gravity="end">
+                        <TextView
+                            android:id="@+id/timestamp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12sp"
+                            android:textColor="@color/SlateGray"
+                            android:layout_marginEnd="20dp"/>
+                    </LinearLayout>
+
                 </LinearLayout>
 
 
@@ -212,7 +243,8 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
                     android:clipToPadding="false"
-                    android:paddingBottom="50dp" />
+                    android:paddingBottom="30dp"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
                 <com.github.ybq.android.spinkit.SpinKitView
                     android:id="@+id/spin_kit"

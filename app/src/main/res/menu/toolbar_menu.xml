@@ -2,18 +2,18 @@
 <menu xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
-        android:title="@string/qweekchat"
-        android:id="@+id/menu_one"
+        android:title="@string/notifications"
+        android:id="@+id/menu_two"
         app:showAsAction="always"
-        android:icon="@drawable/q_chat3"
         android:iconTint="@color/contentTextColor"
-        tools:targetApi="o"
-        tools:ignore="AlwaysShowAction" />
+        app:actionLayout="@layout/menu_action_item_badge"
+        tools:ignore="AlwaysShowAction,UnusedAttribute" />
 
     <item
         android:title="@string/profile"
-        android:id="@+id/menu_two"
+        android:id="@+id/menu_three"
         app:showAsAction="always"
         app:actionLayout="@layout/profile_menu_layout" />
 </menu>

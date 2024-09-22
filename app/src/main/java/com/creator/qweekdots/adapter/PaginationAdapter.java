@@ -7,13 +7,20 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.media.MediaPlayer;
 import android.media.audiofx.NoiseSuppressor;
 import android.net.Uri;
+import android.os.Build;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,12 +56,35 @@ import com.creator.qweekdots.R;
 import com.creator.qweekdots.activity.ProfileActivity;
 import com.creator.qweekdots.app.AppConfig;
 import com.creator.qweekdots.app.AppController;
-import com.creator.qweekdots.mediaplayer.RSVideoPlayer;
-import com.creator.qweekdots.mediaplayer.RSVideoPlayerStandard;
 import com.creator.qweekdots.models.FeedItem;
 import com.creator.qweekdots.ui.DropBottomSheet;
+import com.creator.qweekdots.ui.ReplyCommentBottomSheet;
 import com.creator.qweekdots.utils.PaginationAdapterCallback;
 import com.gauravk.audiovisualizer.visualizer.BlobVisualizer;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.source.LoopingMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.source.dash.DashChunkSource;
+import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiTextView;
 import com.vanniktech.emoji.ios.IosEmojiProvider;
@@ -64,10 +94,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -98,6 +130,13 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private boolean isPlaying = false;
     private MediaPlayer player;
 
+    private SimpleExoPlayer video_player;
+    private PlayerView simpleExoPlayerView;
+
+    private final Random mRandom;
+    private final ArrayList<Integer> mBackgroundColors;
+
+
     private static final String TAG = PaginationAdapter.class.getSimpleName();
 
     public PaginationAdapter(Context context, Fragment f, String username) {
@@ -105,6 +144,33 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.mCallback = (PaginationAdapterCallback) f;
         this.username = username;
         feedItems = new ArrayList<>();
+
+        mRandom = new Random();
+        mBackgroundColors = new ArrayList<>();
+        mBackgroundColors.add(R.color.DodgerBlue);
+        mBackgroundColors.add(R.color.Tomato);
+        mBackgroundColors.add(R.color.Coral);
+        mBackgroundColors.add(R.color.SteelBlue);
+        mBackgroundColors.add(R.color.DarkSlateBlue);
+        mBackgroundColors.add(R.color.DodgerBlue);
+        mBackgroundColors.add(R.color.DarkSlateGray);
+        mBackgroundColors.add(R.color.ArgentinanBlue);
+        mBackgroundColors.add(R.color.DeepPurple);
+        mBackgroundColors.add(R.color.MediumSlateBlue);
+        mBackgroundColors.add(R.color.VioletBlue);
+        mBackgroundColors.add(R.color.SeaGreen);
+        mBackgroundColors.add(R.color.CornflowerBlue);
+        mBackgroundColors.add(R.color.DeepSkyBlue);
+        mBackgroundColors.add(R.color.DarkTurquoise);
+        mBackgroundColors.add(R.color.BottleGreen);
+        mBackgroundColors.add(R.color.DarkCyan);
+        mBackgroundColors.add(R.color.GoGreen);
+        mBackgroundColors.add(R.color.JungleGreen);
+        mBackgroundColors.add(R.color.Raspberry);
+        mBackgroundColors.add(R.color.Folly);
+        mBackgroundColors.add(R.color.WarriorsBlue);
+        mBackgroundColors.add(R.color.SpaceCadet);
+        mBackgroundColors.add(R.color.MajorelleBlue);
     }
 
     public List<FeedItem> getQweekFeed() {
@@ -135,19 +201,35 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if(context!=null) {
+            holder.setIsRecyclable(false);
             FeedItem feedItem = feedItems.get(position);
             Timber.tag(TAG).d(String.valueOf(position));
 
             switch (getItemViewType(position)) {
 
                 case FEED:
-                    FeedVH feedVH = (FeedVH) holder;
-
                     // Set fullname
-                    ((FeedVH) holder).fullnameTxt.setText(feedItem.getFullname());
+                    //((FeedVH) holder).fullnameTxt.setText(feedItem.getFullname());
 
                     // Set username
                     ((FeedVH) holder).usernameTxt.setText("q/" + feedItem.getUsername());
+
+                    //Set time ago
+                    ((FeedVH) holder).timestamp.setText(feedItem.getTimeStamp());
+
+                    int randomColor = mBackgroundColors.get(mRandom.nextInt(15));
+
+                    Drawable background = ((FeedVH) holder).spaceTag.getBackground();
+                    if (background instanceof ShapeDrawable) {
+                        ((ShapeDrawable)background).getPaint().setColor(ContextCompat.getColor(context, randomColor));
+                    } else if (background instanceof GradientDrawable) {
+                        ((GradientDrawable)background).setColor(ContextCompat.getColor(context, randomColor));
+                    } else if (background instanceof ColorDrawable) {
+                        ((ColorDrawable)background).setColor(ContextCompat.getColor(context, randomColor));
+                    }
+
+                    String spacename = "s/"+feedItem.getSpace();
+                    ((FeedVH) holder).spaceTag.setText(spacename);
 
                     //Build layout depending on type
                     if(feedItem.getHasMedia() == 1) {
@@ -155,13 +237,13 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         switch (feedItem.getType()) {
                             case "qweekpic":
                                 //Drop has media
-                                ((FeedVH) holder).droptextTextLayout.setVisibility(View.GONE);
+                                ((FeedVH) holder).droptextTextLayout.setVisibility(View.VISIBLE);
                                 // QweekSnap Card
                                 ((FeedVH) holder).qweeksnapCard.setVisibility(View.VISIBLE);
 
                                 //Media type is QweekPic
                                 ((FeedVH) holder).qweeksnap.setVisibility(View.VISIBLE);
-                                ((FeedVH) holder).video.setVisibility(View.GONE);
+                                ((FeedVH) holder).exoPlayerView.setVisibility(View.GONE);
                                 ((FeedVH) holder).audioLayout.setVisibility(View.GONE);
 
                                 RequestOptions requestOptions = new RequestOptions() // because file name is always same
@@ -169,27 +251,129 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 Glide
                                         .with(context)
                                         .load(feedItem.getQweekSnap())
-                                        .override(Target.SIZE_ORIGINAL)
+                                        //.override(Target.SIZE_ORIGINAL)
                                         .thumbnail(0.3f)
                                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                                         .apply(requestOptions)
                                         .into(((FeedVH) holder).qweeksnap);
+
+                                /*
+                                List<String> images = Collections.singletonList(feedItem.getQweekSnap());
+                                ((FeedVH) holder).qweeksnap.setOnClickListener(v-> new StfalconImageViewer.Builder<>(context, images, (imageView, imageUrl) -> Glide.with(context).load(imageUrl).into(imageView))
+                                        .withTransitionFrom(((FeedVH) holder).qweeksnap)
+                                        .withBackgroundColor(context.getResources().getColor(R.color.black))
+                                        .show());
+
+                                 */
+                                ((FeedVH) holder).qweeksnap.setOnClickListener(v-> {
+                                    DropBottomSheet bottomSheet = new DropBottomSheet(context, username, feedItem.getDrop_Id());
+                                    FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
+                                    bottomSheet.show(Objects.requireNonNull(manager),bottomSheet.getTag());
+                                });
+
                                 break;
                             case "qweekvid":
+
                                 //Drop has media
-                                ((FeedVH) holder).droptextTextLayout.setVisibility(View.GONE);
+                                ((FeedVH) holder).droptextTextLayout.setVisibility(View.VISIBLE);
                                 // QweekSnap Card
                                 ((FeedVH) holder).qweeksnapCard.setVisibility(View.VISIBLE);
 
                                 //Media type is QweekVid
-                                ((FeedVH) holder).video.setVisibility(View.VISIBLE);
+                                ((FeedVH) holder).exoPlayerView.setVisibility(View.VISIBLE);
                                 ((FeedVH) holder).qweeksnap.setVisibility(View.GONE);
                                 ((FeedVH) holder).audioLayout.setVisibility(View.GONE);
 
+                                /*
                                 // Setup QweekVid with thumbnail
                                 ((FeedVH) holder).video.setUp(feedItem.getQweekSnap(),
                                         RSVideoPlayer.SCREEN_LAYOUT_LIST);
                                 ((FeedVH) holder).video.setThumbImageView(feedItem.getQweekSnap());
+                                 */
+
+                                DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter(); //test
+
+                                AdaptiveTrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory();
+                                TrackSelector trackSelector =
+                                        new DefaultTrackSelector(videoTrackSelectionFactory);
+
+                                video_player = ExoPlayerFactory.newSimpleInstance(context, trackSelector);
+                                simpleExoPlayerView = new PlayerView(context);
+                                simpleExoPlayerView = ((FeedVH) holder).exoPlayerView;
+
+                                int h = simpleExoPlayerView.getResources().getConfiguration().screenHeightDp;
+                                int w = simpleExoPlayerView.getResources().getConfiguration().screenWidthDp;
+                                Timber.v("height : " + h + " weight: " + w);
+                                ////Set media controller
+                                simpleExoPlayerView.setUseController(true); //set to true or false to see controllers
+                                simpleExoPlayerView.requestFocus();
+                                simpleExoPlayerView.setMinimumHeight(h);
+                                // Bind the player to the view.
+                                simpleExoPlayerView.setPlayer(video_player);
+
+                                //DashChunkSource.Factory dataChunkSourceFactory = new DefaultDashChunkSource.Factory(DefaultHttpDataSourceFactory("ua", BANDWIDTH_METER));
+                                DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, "Qweekdots"), bandwidthMeter);
+
+                                MediaSource videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(feedItem.getQweekSnap()));
+                                final LoopingMediaSource loopingSource = new LoopingMediaSource(videoSource);
+                                // Prepare the player with the source.
+                                video_player.prepare(videoSource);
+
+                                video_player.addListener(new ExoPlayer.EventListener() {
+                                    @Override
+                                    public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+
+                                    }
+
+                                    @Override
+                                    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+                                        Timber.v("Listener-onTracksChanged... ");
+                                    }
+
+                                    @Override
+                                    public void onLoadingChanged(boolean isLoading) {
+
+                                    }
+
+                                    @Override
+                                    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                                        Timber.v("Listener-onPlayerStateChanged..." + playbackState + "|||isDrawingCacheEnabled():" + simpleExoPlayerView.isDrawingCacheEnabled());
+                                    }
+
+                                    @Override
+                                    public void onRepeatModeChanged(int repeatMode) {
+
+                                    }
+
+                                    @Override
+                                    public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+                                    }
+
+                                    @Override
+                                    public void onPlayerError(ExoPlaybackException error) {
+                                        Timber.v("Listener-onPlayerError...");
+                                        video_player.stop();
+                                        video_player.prepare(loopingSource);
+                                        video_player.setPlayWhenReady(false);
+                                    }
+
+                                    @Override
+                                    public void onPositionDiscontinuity(int reason) { }
+
+                                    @Override
+                                    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) { }
+
+                                    @Override
+                                    public void onSeekProcessed() {
+
+                                    }
+                                });
+                                video_player.setPlayWhenReady(false); //run file/link when ready to play.
+                                //video_player.setVideoDebugListener((VideoRendererEventListener) context);
+
+                                //((FeedVH) holder).initMediaUri(feedItem.getQweekSnap());
+
                                 break;
                             case "audio":
                                 //Drop has media
@@ -203,7 +387,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 ((FeedVH) holder).audioTxtLayout.setVisibility(View.VISIBLE);
 
                                 ((FeedVH) holder).qweeksnap.setVisibility(View.GONE);
-                                ((FeedVH) holder).video.setVisibility(View.GONE);
+                                ((FeedVH) holder).exoPlayerView.setVisibility(View.GONE);
 
                                 ((FeedVH) holder).blastAudio.setVisibility(View.GONE);
 
@@ -211,7 +395,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 SpannableString hashText = new SpannableString(feedItem.getDrop());
                                 Matcher matcher = Pattern.compile("#([A-Za-z0-9_-]+)").matcher(hashText);
                                 while (matcher.find()) {
-                                    hashText.setSpan(new BackgroundColorSpan(Color.BLUE), matcher.start(), matcher.end(), 0);
+                                    hashText.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.QweekThemeColor)), matcher.start(), matcher.end(), 0);
                                 }
                                 ((FeedVH) holder).audioDropTxt.setText(hashText);
 
@@ -268,13 +452,13 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 break;
 
                             case "reaction":
-                                // Drop has media but Different Layout design
+                                // Drop has media
                                 ((FeedVH) holder).droptextTextLayout.setVisibility(View.VISIBLE);
-                                // QweekSnap Card is not in use for Reactions
-                                ((FeedVH) holder).qweeksnapCard.setVisibility(View.GONE);
+                                // QweekSnap Card
+                                ((FeedVH) holder).qweeksnapCard.setVisibility(View.VISIBLE);
+                                // Reaction Image
+                                ((FeedVH) holder).reactionImage.setVisibility(View.VISIBLE);
 
-                                // Reaction Card is used instead
-                                ((FeedVH) holder).reactionCard.setVisibility(View.VISIBLE);
                                 // Set Reaction GIF
                                 Glide
                                         .with(context)
@@ -285,57 +469,82 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                                         .into(((FeedVH) holder).reactionImage);
 
+                                /*
+                                List<String> images2 = Collections.singletonList(feedItem.getQweekSnap());
+                                ((FeedVH) holder).reactionImage.setOnClickListener(v-> new StfalconImageViewer.Builder<>(context, images2, (imageView, imageUrl) -> Glide.with(context).asGif().load(imageUrl).into(imageView))
+                                        .withTransitionFrom(((FeedVH) holder).reactionImage)
+                                        .withBackgroundColor(context.getResources().getColor(R.color.black))
+                                        .show());
+
+                                 */
+
+                                ((FeedVH) holder).reactionImage.setOnClickListener(v-> {
+                                    DropBottomSheet bottomSheet = new DropBottomSheet(context, username, feedItem.getDrop_Id());
+                                    FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
+                                    bottomSheet.show(Objects.requireNonNull(manager),bottomSheet.getTag());
+                                });
+
+                                // Check for empty status message
+                                if (!TextUtils.isEmpty(feedItem.getDrop())) {
+                                    SpannableString hashTextReaction = new SpannableString(feedItem.getDrop());
+                                    Matcher matcherReaction = Pattern.compile("#([A-Za-z0-9_-]+)").matcher(hashTextReaction);
+                                    while (matcherReaction.find()) {
+                                        hashTextReaction.setSpan(new BackgroundColorSpan(Color.BLUE), matcherReaction.start(), matcherReaction.end(), 0);
+                                    }
+                                    //if none set text and make it visible
+                                    ((FeedVH) holder).dropText.setText(hashTextReaction);
+                                    ((FeedVH) holder).dropText.setVisibility(View.VISIBLE);
+                                } else {
+                                    // status is empty, remove from view
+                                    ((FeedVH) holder).dropText.setVisibility(View.GONE);
+                                }
+
                                 break;
                         }
                     } else {
                         // The drop has no media
                         ((FeedVH) holder).droptextTextLayout.setVisibility(View.VISIBLE);
                         ((FeedVH) holder).qweeksnap.setVisibility(View.GONE);
-                        ((FeedVH) holder).video.setVisibility(View.GONE);
+                        ((FeedVH) holder).exoPlayerView.setVisibility(View.GONE);
                     }
 
-                    // Check for empty status message
-                    if (!TextUtils.isEmpty(feedItem.getDrop())) {
-                        SpannableString hashText = new SpannableString(feedItem.getDrop());
-                        Matcher matcher = Pattern.compile("#([A-Za-z0-9_-]+)").matcher(hashText);
-                        while (matcher.find()) {
-                            hashText.setSpan(new BackgroundColorSpan(Color.BLUE), matcher.start(), matcher.end(), 0);
+                        // Check for empty status message
+                        if (!TextUtils.isEmpty(feedItem.getDrop())) {
+                            SpannableString hashText = new SpannableString(feedItem.getDrop());
+                            Matcher matcher = Pattern.compile("#([A-Za-z0-9_-]+)").matcher(hashText);
+                            while (matcher.find()) {
+                                hashText.setSpan(
+                                        new ForegroundColorSpan(context.getResources().getColor(R.color.QweekThemeColor)),
+                                        matcher.start(),
+                                        matcher.end(),
+                                        0);
+                            }
+                            //if none set text and make it visible
+                            ((FeedVH) holder).dropText.setText(hashText);
+                            ((FeedVH) holder).dropText.setVisibility(View.VISIBLE);
+                        } else {
+                            // status is empty, remove from view
+                            ((FeedVH) holder).dropText.setVisibility(View.GONE);
                         }
-                        //if none set text and make it visible
-                        ((FeedVH) holder).dropText.setText(hashText);
-                        ((FeedVH) holder).dropText.setVisibility(View.VISIBLE);
-                    } else {
-                        // status is empty, remove from view
-                        ((FeedVH) holder).dropText.setVisibility(View.GONE);
-                    }
 
-                    // Checking for null feed url
-                    if (feedItem.getHasLink() == 1) {
-                        ((FeedVH) holder).url.setLink(feedItem.getLink(), new ViewListener() {
-                            @Override
-                            public void onSuccess(boolean status) {
+                        // Checking for null feed url
+                        if (feedItem.getHasLink() == 1) {
+                            ((FeedVH) holder).url.setLink(feedItem.getLink(), new ViewListener() {
+                                @Override
+                                public void onSuccess(boolean status) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onError(Exception e) {
+                                @Override
+                                public void onError(Exception e) {
 
-                            }
-                        });
-                        ((FeedVH) holder).url.setVisibility(View.VISIBLE);
-                    } else {
-                        // url is null, remove from the view
-                        ((FeedVH) holder).url.setVisibility(View.GONE);
-                    }
-
-                    // load Drop Profile Avatar
-                    /*Picasso.get()
-                            .load(feedItem.getProfilePic())
-                            .resize(40, 40)
-                            .placeholder(R.drawable.ic_alien)
-                            .error(R.drawable.ic_alien)
-                            .centerCrop()
-                            .into(((FeedVH) holder).profilePic);*/
+                                }
+                            });
+                            ((FeedVH) holder).url.setVisibility(View.VISIBLE);
+                        } else {
+                            // url is null, remove from the view
+                            ((FeedVH) holder).url.setVisibility(View.GONE);
+                        }
 
                     RequestOptions requestOptions = new RequestOptions() // because file name is always same
                             .format(DecodeFormat.PREFER_RGB_565);
@@ -358,20 +567,33 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         context.startActivity(i);
                         customType(context, "fadein-to-fadeout");
                     });
-                    ((FeedVH) holder).usernameTxt.setOnClickListener(v -> {
-                        Intent i = new Intent(context, ProfileActivity.class);
-                        i.putExtra("profile", feedItem.getUsername());
-                        context.startActivity(i);
-                        customType(context, "fadein-to-fadeout");
-                    });
-                    ((FeedVH) holder).fullnameTxt.setOnClickListener(v -> {
-                        Intent i = new Intent(context, ProfileActivity.class);
-                        i.putExtra("profile", feedItem.getUsername());
-                        context.startActivity(i);
-                        customType(context, "fadein-to-fadeout");
-                    });
 
                     // Build Drop Actions
+
+                    //Actions Stats
+                    /*if(feedItem.getLikedNum().equals("0")) {
+                        ((FeedVH) holder).likeNum.setText("");
+                    } else {
+                        ((FeedVH) holder).likeNum.setText(feedItem.getLikedNum());
+                    }*/
+                    if(feedItem.getUpvoteNum().equals("0")) {
+                        ((FeedVH) holder).upvoteNum.setText("");
+                    } else {
+                        ((FeedVH) holder).upvoteNum.setText(feedItem.getUpvoteNum());
+                    }
+                    if(feedItem.getDownvoteNum().equals("0")) {
+                        ((FeedVH) holder).downvoteNum.setText("");
+                    } else {
+                        ((FeedVH) holder).downvoteNum.setText(feedItem.getDownvoteNum());
+                    }
+                    //Comments Num
+                    if(feedItem.getCommentNum().equals("0")) {}
+                    else if(feedItem.getCommentNum().equals("1")) {
+                        ((FeedVH) holder).commentsNum.setText(feedItem.getCommentNum());
+                    } else {
+                        ((FeedVH) holder).commentsNum.setText(feedItem.getCommentNum());
+                    }
+
 
                     // Upvote Builder
                     /*
@@ -403,7 +625,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     /*
                      * If drop is liked, set resource to liked long with resource color
                      * else, resource is not liked yet
-                     */
+                     *
                     if(feedItem.getLiked().equals("yes")) {
                         ((FeedVH) holder).likeBtn.setImageResource(R.drawable.ic_liked);
                         ((FeedVH) holder).likeBtn.setColorFilter(context.getResources().getColor(R.color.likeColor));
@@ -412,6 +634,8 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         ((FeedVH) holder).likeBtn.setColorFilter(context.getResources().getColor(R.color.Gray));
                     }
 
+                     */
+
                     // Set up Actions
 
                     //Like
@@ -419,7 +643,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                      * On click, first check if user liked already
                      * If user liked already, unlike and set resource to pre-liked state
                      * else, like along with resource change
-                     */
+                     *
                     ((FeedVH) holder).likeBtn.setOnClickListener(v -> {
                         ObjectAnimator animY = ObjectAnimator.ofFloat(((FeedVH) holder).likeBtn, "translationY", -100f, 0f);
                         animY.setDuration(1000);//1sec
@@ -429,7 +653,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         //check whether it is liked or unliked
                         if (feedItem.getLiked().equals("yes")) {
                             //isliked, unlike
-                            Toasty.info(context, "taking back like...", Toasty.LENGTH_SHORT).show();
+                            //Toasty.info(context, "taking back like...", Toasty.LENGTH_SHORT).show();
 
                             feedItem.setLiked("no");
                             ((FeedVH) holder).likeBtn.setImageResource(R.drawable.ic_like);
@@ -437,7 +661,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             doLike("unlike", feedItem.getDrop_Id(), username, feedItem.getUsername());
                         } else {
                             //like
-                            Toasty.info(context, "liking...", Toasty.LENGTH_SHORT).show();
+                            //Toasty.info(context, "liking...", Toasty.LENGTH_SHORT).show();
 
                             feedItem.setLiked("yes");
                             ((FeedVH) holder).likeBtn.setImageResource(R.drawable.ic_liked);
@@ -445,6 +669,8 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             doLike("like", feedItem.getDrop_Id(), username, feedItem.getUsername());
                         }
                     });
+
+                     */
 
                     //Upvote
                     /*
@@ -462,7 +688,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         //check whether it is upvoted or not
                         if (feedItem.getUpvoted().equals("yes")) {
                             //un-upvote
-                            Toasty.info(context, "taking back upvote...", Toasty.LENGTH_SHORT).show();
+                            //Toasty.info(context, "taking back upvote...", Toasty.LENGTH_SHORT).show();
 
                             feedItem.setUpvoted("no");
                             ((FeedVH) holder).upvoteBtn.setImageResource(R.drawable.ic_upvote);
@@ -470,7 +696,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             doUpvote("undo", feedItem.getDrop_Id(), username, feedItem.getUsername());
                         } else {
                             //upvote
-                            Toasty.info(context, "upvoting...", Toasty.LENGTH_SHORT).show();
+                            //Toasty.info(context, "upvoting...", Toasty.LENGTH_SHORT).show();
 
                             feedItem.setUpvoted("yes");
                             //run downvote check and undo if downvoted
@@ -508,7 +734,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         //check whether it is downvoted or not
                         if (feedItem.getDownvoted().equals("yes")) {
                             //un-do
-                            Toasty.info(context, "taking back downvote...", Toasty.LENGTH_SHORT).show();
+                            //Toasty.info(context, "taking back downvote...", Toasty.LENGTH_SHORT).show();
 
                             feedItem.setDownvoted("no");
                             ((FeedVH) holder).downvoteBtn.setImageResource(R.drawable.ic_downvote);
@@ -516,7 +742,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             doDownvote("undo", feedItem.getDrop_Id(), username, feedItem.getUsername());
                         } else {
                             //downvote
-                            Toasty.info(context, "downvoting...", Toasty.LENGTH_SHORT).show();
+                            //Toasty.info(context, "downvoting...", Toasty.LENGTH_SHORT).show();
 
                             feedItem.setDownvoted("yes");
                             //run upvote check and undo if upvoted
@@ -539,16 +765,31 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     });
 
                     // Expand to view more drop details
+                    ((FeedVH) holder).droptextTextLayout.setOnClickListener(v-> {
+                        DropBottomSheet bottomSheet = new DropBottomSheet(context, username, feedItem.getDrop_Id());
+                        FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
+                        bottomSheet.show(Objects.requireNonNull(manager),bottomSheet.getTag());
+                    });
+
+                    ((FeedVH) holder).replyBtn.setOnClickListener(v-> {
+                        ReplyCommentBottomSheet bottomSheet = new ReplyCommentBottomSheet(feedItem.getDrop_Id(), 0, username);
+                        bottomSheet.show(((AppCompatActivity)context).getSupportFragmentManager(), bottomSheet.getTag());
+                    });
+
                     ((FeedVH) holder).expandBtn.setOnClickListener(v -> {
                         DropBottomSheet bottomSheet = new DropBottomSheet(context, username, feedItem.getDrop_Id());
                         FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
                         bottomSheet.show(Objects.requireNonNull(manager),bottomSheet.getTag());
                     });
 
-                    ((FeedVH) holder).dropLayout.setOnClickListener(v -> {
-                        DropBottomSheet bottomSheet = new DropBottomSheet(context, username, feedItem.getDrop_Id());
-                        FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
-                        bottomSheet.show(Objects.requireNonNull(manager),bottomSheet.getTag());
+                    ((FeedVH) holder).shareBtn.setOnClickListener(v->{
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        shareIntent.setType("text/plain");
+                        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "OMGGG! Check out this drop on Qweekdots 😀");
+                        String shareMessage= "\nHey 👋, Join Qweekdots to view this drop and lots more 👍, Chat 😉, Bring your friends along 👽. It's Free! 🤩 \n\n";
+                        shareMessage = shareMessage + "https://bit.ly/QweekDotsApp" +"\n\n";
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                        context.startActivity(Intent.createChooser(shareIntent, "Choose One"));
                     });
 
                     break;
@@ -637,9 +878,9 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     /*
      * Action Helpers
      * Functions for Drop Actions
-     */
+     *
     private void doLike(final String type, final String id, final String liker,
-                              final String liked) {
+                        final String liked) {
         // Tag used to cancel the request
         String tag_string_req = "req_like";
 
@@ -653,13 +894,13 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 // Check for error node in json
                 if (!error) {
-                    String sent;
+                    //String sent;
                     if(type.equals("like")) {
-                        sent = "You liked that didn't you";
+                        //sent = "You liked that didn't you";
                     } else {
-                        sent = "You could always like it again";
+                        //sent = "You could always like it again";
                     }
-                    Toasty.success(context, sent, Toast.LENGTH_SHORT).show();
+                    //Toasty.success(context, sent, Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 // JSON error
@@ -700,8 +941,10 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
+     */
+
     private void doUpvote(final String type, final String id, final String upvoter,
-                        final String upvoted) {
+                          final String upvoted) {
         // Tag used to cancel the request
         String tag_string_req = "req_upvote";
 
@@ -715,13 +958,13 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 // Check for error node in json
                 if (!error) {
-                    String sent;
+                    //String sent;
                     if(type.equals("upvote")) {
-                        sent = "Nice, You thought more people should see this!";
+                        //sent = "Nice, You thought more people should see this!";
                     } else {
-                        sent = "Best rethink your actions";
+                        //sent = "Best rethink your actions";
                     }
-                    Toasty.success(context, sent, Toast.LENGTH_SHORT).show();
+                    //Toasty.success(context, sent, Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 // JSON error
@@ -763,7 +1006,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private void doDownvote(final String type, final String id, final String downvoter,
-                        final String downvoted) {
+                            final String downvoted) {
         // Tag used to cancel the request
         String tag_string_req = "req_downvote";
 
@@ -777,13 +1020,13 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 // Check for error node in json
                 if (!error) {
-                    String sent;
+                    //String sent;
                     if(type.equals("downvote")) {
-                        sent = "Yikes, less people will see this. You just saved lives";
+                        //sent = "Yikes, less people will see this. You just saved lives";
                     } else {
-                        sent = "Might be worth it huh";
+                        //sent = "Might be worth it huh";
                     }
-                    Toasty.success(context, sent, Toast.LENGTH_SHORT).show();
+                    //Toasty.success(context, sent, Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 // JSON error
@@ -852,6 +1095,8 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         isLoadingAdded = false;
         while (getItemCount() > 0) {
             remove(getItem(0));
+
+            notifyItemRangeRemoved(0, getItemCount());
         }
     }
 
@@ -893,7 +1138,6 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (errorMsg != null) this.errorMsg = errorMsg;
     }
 
-
    /*
    View Holders
    _________________________________________________________________________________________________
@@ -903,30 +1147,40 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
      * Feed content ViewHolder
      */
     protected class FeedVH extends RecyclerView.ViewHolder {
-        private ImageView qweeksnap, upvoteBtn, downvoteBtn, expandBtn, likeBtn, playAudio, reactionImage;
-        private RSVideoPlayerStandard video;
+        private ImageView qweeksnap, upvoteBtn, downvoteBtn, replyBtn, expandBtn, shareBtn, playAudio, reactionImage;
+        //private RSVideoPlayerStandard video;
         private LinearLayout droptextTextLayout, audioLayout, audioTxtLayout;
         private CircleImageView profilePic;
-        private TextView usernameTxt;
+        private TextView usernameTxt, upvoteNum, downvoteNum, commentsNum, timestamp, spaceTag;
         private EmojiTextView dropText, fullnameTxt, audioDropTxt;
         private RichLinkView url;
-        private CardView qweeksnapCard, reactionCard, dropLayout;
+        private CardView qweeksnapCard;
         private BlobVisualizer blastAudio;
+
+        /////
+        //private SimpleExoPlayer video_player;
+        //private long playbackPosition;
+        //private int currentWindow;
+        //private boolean playWhenReady;
+        private PlayerView exoPlayerView;
 
         FeedVH(View itemView) {
             super(itemView);
 
             fullnameTxt = itemView.findViewById(R.id.fullnameTxt);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
+            timestamp = itemView.findViewById(R.id.timestamp);
             dropText = itemView.findViewById(R.id.txtDrop);
             url = itemView.findViewById(R.id.txtUrl);
             profilePic = itemView.findViewById(R.id.profilePic);
             qweeksnap = itemView.findViewById(R.id.qweekSnap);
-            video = itemView.findViewById(R.id.videoplayer);
+            //video = itemView.findViewById(R.id.videoplayer);
+            exoPlayerView = itemView.findViewById(R.id.video);
             upvoteBtn = itemView.findViewById(R.id.upvote_btn);
             downvoteBtn = itemView.findViewById(R.id.downvote_btn);
+            replyBtn = itemView.findViewById(R.id.reply_btn);
             expandBtn = itemView.findViewById(R.id.expand_btn);
-            likeBtn = itemView.findViewById(R.id.like_btn);
+            shareBtn = itemView.findViewById(R.id.share_btn);
             droptextTextLayout = itemView.findViewById(R.id.droptext_text_layout);
             qweeksnapCard = itemView.findViewById(R.id.drop_qweekSnapCard);
             blastAudio = itemView.findViewById(R.id.blast);
@@ -934,9 +1188,11 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             audioLayout = itemView.findViewById(R.id.audioLayout);
             audioTxtLayout = itemView.findViewById(R.id.audioTxtLayout);
             audioDropTxt = itemView.findViewById(R.id.txtDrop2);
-            reactionCard = itemView.findViewById(R.id.reactionCard);
             reactionImage = itemView.findViewById(R.id.reactionImage);
-            dropLayout = itemView.findViewById(R.id.drop_layout);
+            upvoteNum = itemView.findViewById(R.id.upvoteNum);
+            downvoteNum = itemView.findViewById(R.id.downvoteNum);
+            commentsNum = itemView.findViewById(R.id.commentsNum);
+            spaceTag = itemView.findViewById(R.id.space_tag);
         }
     }
 
@@ -974,9 +1230,12 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    @Override
-    public long getItemId(int position) {
-        return (long) getItem(position).hashCode();
+    public void onDestroy() {
+        video_player.release();
+    }
+
+    public void onPause() {
+        video_player.pause();
     }
 
 }

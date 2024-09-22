@@ -86,7 +86,7 @@ public class DropText extends Fragment {
         username = user.get("username");
 
         dropTxt = rootView.findViewById(R.id.drop_txt);
-        int randomHint = mRandom.nextInt(3);
+        int randomHint = mRandom.nextInt(2);
         dropTxt.setHint(textHint[randomHint]);
 
         dropProgress = rootView.findViewById(R.id.dropTextProgress);

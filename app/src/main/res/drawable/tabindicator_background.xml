@@ -6,9 +6,9 @@
     android:start="2dp"
     android:bottom="2dp"
     tools:targetApi="m">
-    <shape android:shape="rectangle">
-        <corners android:radius="20dp" />
-        <solid android:color="?attr/colorAccent" />
+    <shape android:shape="oval">
+        <corners android:radius="0dp" />
+        <solid android:color="@color/QweekColorAccent" />
     </shape>
 </item>
 </layer-list>

@@ -10,23 +10,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
-                android:paddingLeft="25dp"
-                android:paddingRight="25dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/optTitleSheetTxt"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:textColor="@color/contentTextColor"
-                    android:text="Start A Chat"
-                    android:fontFamily="@font/amatic_regular"
-                    android:textSize="34sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/closeSheet"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:src="@drawable/ic_close2"
+                        android:tint="@color/contentTextColor"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/optTitleSheetTxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:gravity="center_horizontal"
+                        android:maxLines="1"
+                        android:textColor="@color/contentTextColor"
+                        android:text="@string/start_chat"
+                        android:fontFamily="@font/avenir_next_cyr_regular"
+                        android:textSize="24dp"
+                        android:textStyle="bold"
+                        tools:targetApi="m"
+                        tools:ignore="SpUsage" />
+                </RelativeLayout>
 
                 <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/add_chat_appbar"

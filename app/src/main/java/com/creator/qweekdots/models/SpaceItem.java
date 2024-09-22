@@ -17,6 +17,9 @@ public class SpaceItem {
     @SerializedName("space_art")
     @Expose
     private String space_art;
+    @SerializedName("space_members")
+    @Expose
+    private Integer space_members;
     @SerializedName("followed_count")
     @Expose
     private String followed_count;
@@ -125,6 +128,23 @@ public class SpaceItem {
     public String setPinned(String pinned) {
         this.pinned = pinned;
         return pinned;
+    }
+
+    /**
+     *
+     * @return
+     * The space_members
+     */
+    public Integer getSpaceMembers() {
+        return space_members;
+    }
+
+    /**
+     *
+     * The space_members
+     */
+    public void setSpaceMembers(Integer space_members) {
+        this.space_members = space_members;
     }
 
 }

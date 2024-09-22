@@ -16,9 +16,12 @@ public class UserItem {
     @SerializedName("avatar")
     @Expose
     private String avatar;
-    @SerializedName("profileCover")
+    @SerializedName("cover")
     @Expose
-    private String profileCover;
+    private String cover;
+    @SerializedName("verified_status")
+    @Expose
+    private String verified_status;
     @SerializedName("bio")
     @Expose
     private String bio;
@@ -131,15 +134,23 @@ public class UserItem {
      * The ProfileModel Cover
      */
     public String getProfileCover() {
-        return profileCover;
+        return cover;
     }
 
     /**
      *
      * The ProfileModel Cover
      */
-    public void setProfileCover(String profileCover) {
-        this.profileCover = profileCover;
+    public void setProfileCover(String cover) {
+        this.cover = cover;
+    }
+
+    public String getVerified_status() {
+        return verified_status;
+    }
+
+    public void setVerified_status(String verified_status) {
+        this.verified_status =verified_status;
     }
 
     /**

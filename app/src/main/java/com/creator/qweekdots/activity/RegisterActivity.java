@@ -11,12 +11,15 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -30,6 +33,7 @@ import com.creator.qweekdots.app.AppController;
 import com.creator.qweekdots.helper.SQLiteHandler;
 import com.creator.qweekdots.helper.SessionManager;
 import com.creator.qweekdots.models.User;
+import com.creator.qweekdots.prefs.DarkModePrefManager;
 import com.google.android.material.textfield.TextInputEditText;
 import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiManager;
@@ -70,6 +74,29 @@ public class RegisterActivity extends AppCompatActivity {
 
         decorView = Objects.requireNonNull(this).getWindow().getDecorView();
 
+        // Make Changes according to theme selected
+        if(new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setStatusBarColor(getResources().getColor(R.color.contentBodyColor));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.getDecorView().getWindowInsetsController().setSystemBarsAppearance(0, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
+            }
+        } else {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //window.setStatusBarColor(Color.TRANSPARENT);
+            window.setStatusBarColor(getResources().getColor(R.color.contentBodyColor));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.getDecorView().getWindowInsetsController().setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
+            }
+
+        }
+
         Timber.plant(new Timber.DebugTree());
 
         inputUserName = findViewById(R.id.editTextUser);
@@ -77,6 +104,22 @@ public class RegisterActivity extends AppCompatActivity {
         inputEmail = findViewById(R.id.editTextEmail);
         inputPassword = findViewById(R.id.editTextPassword);
         inputPasswordRepeat = findViewById(R.id.editTextPasswordRepeat);
+
+        TextView termsTxt = findViewById(R.id.termsTxt);
+        TextView policyTxt = findViewById(R.id.policyTxt);
+
+        termsTxt.setOnClickListener(v->{
+            Intent i = new Intent(this, WebViewActivity.class);
+            i.putExtra("url", "https://qweek.fun/qweekdots/terms");
+            startActivity(i);
+        });
+
+        // Privacy button click event
+        policyTxt.setOnClickListener(v-> {
+            Intent i = new Intent(this, WebViewActivity.class);
+            i.putExtra("url", "https://qweek.fun/qweekdots/privacy");
+            startActivity(i);
+        });
 
         btnRegister = findViewById(R.id.cirRegisterButton);
 
@@ -172,6 +215,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            @NotNull String[] permissions, @NotNull int[] grantResults) {
 
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_ID_MULTIPLE_PERMISSIONS) {
             Map<String, Integer> perms = new HashMap<>();
 
@@ -186,7 +230,7 @@ public class RegisterActivity extends AppCompatActivity {
                 for (int i = 0; i < permissions.length; i++)
                     perms.put(permissions[i], grantResults[i]);
                 // Check for both permissions
-                if(perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                if (perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
@@ -378,20 +422,5 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void stopButtonAnimation() {
         btnRegister.revertAnimation();
-    }
-
-    @Override
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
     }
 }

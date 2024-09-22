@@ -9,7 +9,7 @@ import java.util.List;
 public class ExplorePhotos {
     @SerializedName("feed")
     @Expose
-    private List<PhotoItem> feed = new ArrayList<PhotoItem>();
+    private List<FeedItem> feed = new ArrayList<FeedItem>();
     @SerializedName("cursor")
     @Expose
     private List<Pager> cursor;
@@ -19,7 +19,7 @@ public class ExplorePhotos {
      * @return
      * The results
      */
-    public List<PhotoItem> getPhotoItems() {
+    public List<FeedItem> getPhotoItems() {
         return feed;
     }
 
@@ -29,7 +29,7 @@ public class ExplorePhotos {
      * @param feed
      * The results
      */
-    public void setPhotoItems(List<PhotoItem> feed) {
+    public void setPhotoItems(List<FeedItem> feed) {
         this.feed = feed;
     }
 

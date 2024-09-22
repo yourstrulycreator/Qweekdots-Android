@@ -1,77 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:gravity="center">
+    android:layout_width="180dp"
+    android:layout_height="160dp"
+    android:gravity="center"
+    app:cardBackgroundColor="@color/contentBodyColor"
+    app:cardCornerRadius="9dp"
+    app:cardElevation="0dp"
+    android:layout_marginEnd="15dp"
+    android:id="@+id/suggestion">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/sug_container"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_marginEnd="20dp">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <ImageView
+            android:id="@+id/cover"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@color/QweekColorAccent"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            tools:ignore="ContentDescription" />
+
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profilePic"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            app:civ_border_width="4dp"
+            android:id="@+id/avatar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignTop="@id/cover"
+            app:civ_border_width="1dp"
             app:civ_border_color="@color/imageBorderColor"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="5dp"
+            app:srcCompat="@drawable/q_alien_add"
             android:backgroundTint="@color/contentTextColor"
             android:tint="@color/contentTextColor"
-            tools:targetApi="lollipop"/>
+            android:layout_marginTop="50dp"/>
 
         <TextView
-            android:id="@+id/sugName"
+            android:id="@+id/usernameTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_suggestions_bubble"
-            android:maxWidth="240dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:textSize="16sp"
-            android:textColor="#ffffff"
-            android:textAlignment="center"/>
-    </LinearLayout>
+            android:layout_alignTop="@id/avatar"
+            android:layout_marginTop="65dp"
+            android:textSize="14sp"
+            android:autoSizeMaxTextSize="16sp"
+            android:textColor="@color/QweekColorAccent"
+            android:layout_centerHorizontal="true"
+            tools:targetApi="o" />
 
-    <!--
-    <com.github.jorgecastilloprz.FABProgressCircle
-        android:id="@+id/sug_followProgress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_anchor="@id/sug_container"
-        app:layout_anchorGravity="bottom|right"
-        android:layout_marginTop="70dp"
-        android:layout_marginLeft="65dp"
-        app:arcColor="@color/ValentineDeep"
-        app:arcWidth="5dp"
-        app:reusable="true"
-        android:layout_marginStart="65dp">
+    </RelativeLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/sug_followButton"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:clickable="true"
-            app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
-            android:focusable="true"
-            app:pressedTranslationZ="12dp"
-            app:backgroundTint="@color/ValentineDeep"
-            android:scaleType="fitCenter"
-            tools:ignore="VectorDrawableCompat" />
-
-    </com.github.jorgecastilloprz.FABProgressCircle>
-    -->
-
-</RelativeLayout>
+</androidx.cardview.widget.CardView>

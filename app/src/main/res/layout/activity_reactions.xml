@@ -75,9 +75,23 @@
             tools:ignore="HardcodedText"
             android:gravity="center"
             android:textAlignment="center"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="35dp"
             android:layout_marginBottom="20dp"
+            android:paddingBottom="35dp"
             android:layout_below="@id/am_rv_tags"/>
 
     </RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/backbtn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@color/QweekColorAccent"
+        app:backgroundTint="@color/QweekColorAccent"
+        android:src="@drawable/q_close"
+        android:tint="@color/contentTextColor"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:onClick="onClick"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -16,7 +16,7 @@
         <ImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/universe"
+            android:src="@drawable/social"
             android:layout_gravity="center"/>
 
         <TextView
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/activity_margin_quarter"
-            android:text="Nothing to see here...Yet."
+            android:text="Nothing to see here ... yet. \nSwipe or Drop!"
             android:textColor="@color/SlateGray"/>
 
     </LinearLayout>

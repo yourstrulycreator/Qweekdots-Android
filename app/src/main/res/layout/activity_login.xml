@@ -9,6 +9,7 @@
     android:background="@color/login_bk_color"
     android:focusableInTouchMode="true"
     android:gravity="center"
+    android:fitsSystemWindows="false"
     android:layout_gravity="center">
     <ScrollView
         android:layout_width="match_parent"
@@ -42,41 +43,49 @@
                     app:srcCompat="@drawable/ic_register_hero"
                     android:layout_gravity="end"
                     android:layout_weight="1"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    tools:ignore="ContentDescription" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Q."
+                <ImageView
+                    android:layout_width="115dp"
+                    android:layout_height="115dp"
+                    android:src="@drawable/qdot"
                     android:gravity="center"
-                    android:layout_weight="1"
-                    android:textSize="105sp"
-                    android:fontFamily="@font/odin_rounded_bold"
-                    android:textColor="@color/QweekColorAccent"
-                    tools:ignore="HardcodedText" />
+                    android:layout_weight="1"/>
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputUser"
                 style="@style/parent"
-                android:layout_marginTop="@dimen/loginViewsMargin">
+                android:layout_marginTop="@dimen/loginViewsMargin"
+                android:textColorHint="@color/primaryTextColor"
+                app:hintTextColor="@color/primaryTextColor">
                 <EditText
                     android:id="@+id/editTextUser"
                     style="@style/modifiedEditText"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:hint="@string/hint_username"/>
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:hint="@string/hint_username"
+                    android:importantForAutofill="no" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputPassword"
                 style="@style/parent"
-                android:layout_marginTop="@dimen/loginViewsMargin">
+                android:layout_marginTop="@dimen/loginViewsMargin"
+                android:textColorHint="@color/primaryTextColor"
+                app:hintTextColor="@color/primaryTextColor"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/SlateGray">
                 <EditText
                     android:id="@+id/editTextPassword"
                     style="@style/modifiedEditText"
                     android:hint="@string/hint_password"
                     android:maxLines="1"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
                     android:inputType="textPassword"
                     android:importantForAutofill="no" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -116,20 +125,18 @@
     <View
         android:layout_marginTop="20dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
         android:layout_width="11dp"
         android:layout_height="match_parent"
         android:background="@drawable/ic_side_bg"
         android:layout_alignParentEnd="true" />
     <ImageView
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_add_img"
-        android:layout_marginRight="11dp"
         android:layout_marginBottom="30dp"
         android:onClick="onLoginClick"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="11dp" />
+        android:layout_marginEnd="11dp"
+        tools:ignore="ContentDescription" />
 </RelativeLayout>

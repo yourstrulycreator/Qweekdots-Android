@@ -29,7 +29,7 @@ public class DarkModePrefManager {
     }
 
     public boolean isNightMode() {
-        return pref.getBoolean(IS_NIGHT_MODE, false);
+        return pref.getBoolean(IS_NIGHT_MODE, true);
     }
 
 }

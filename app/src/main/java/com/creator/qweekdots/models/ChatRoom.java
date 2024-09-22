@@ -3,13 +3,13 @@ package com.creator.qweekdots.models;
 import java.io.Serializable;
 
 public class ChatRoom implements Serializable {
-    private String id, name, type, private_to, private_from, lastMessage, lastMessageTo, lastMessageFrom, timestamp, private_avatar;
+    private String id, name, type, private_to, private_from, lastMessage, lastMessageTo, lastMessageFrom, timestamp, private_avatar, space_art;
     private int unreadCount;
 
     public ChatRoom() {
     }
 
-    public ChatRoom(String id, String name, String type, String private_from, String private_to, String lastMessage, String lastMessageTo, String lastMessageFrom, String timestamp, int unreadCount, String private_avatar) {
+    public ChatRoom(String id, String name, String type, String private_from, String private_to, String lastMessage, String lastMessageTo, String lastMessageFrom, String timestamp, int unreadCount, String private_avatar, String space_art) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -21,6 +21,7 @@ public class ChatRoom implements Serializable {
         this.timestamp = timestamp;
         this.unreadCount = unreadCount;
         this.private_avatar = private_avatar;
+        this.space_art = space_art;
     }
 
     public String getId() {
@@ -109,5 +110,13 @@ public class ChatRoom implements Serializable {
 
     public void setPrivate_avatar(String private_avatar) {
         this.private_avatar = private_avatar;
+    }
+
+    public void setSpace_art(String space_art) {
+        this.space_art = space_art;
+    }
+
+    public String getSpace_art() {
+        return space_art;
     }
 }

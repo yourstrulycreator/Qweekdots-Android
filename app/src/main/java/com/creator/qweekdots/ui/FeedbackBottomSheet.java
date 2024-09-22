@@ -3,11 +3,14 @@ package com.creator.qweekdots.ui;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -42,11 +45,20 @@ public class FeedbackBottomSheet extends RoundedBottomSheetDialogFragment {
             CircularProgressButton sendBtn = view.findViewById(R.id.optSendFeedbackButton);
             sendBtn.setOnClickListener(v-> {
                 if(optFeedbackTxt.getText() != null) {
+                    String body = null;
+                    try {
+                        body = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+                        body = "\n\n-----------------------------\nPlease don't remove this information\n Device OS: Android \n Device OS version: " +
+                                Build.VERSION.RELEASE + "\n App Version: " + body + "\n Device Brand: " + Build.BRAND +
+                                "\n Device Model: " + Build.MODEL + "\n Device Manufacturer: " + Build.MANUFACTURER;
+                    } catch (PackageManager.NameNotFoundException e) {
+                    }
+
                     Intent i = new Intent(Intent.ACTION_SEND);
                     i.setType("message/rfc822");
-                    i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"theqweekcompany@gmail.com"});
+                    i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"admin@qweekdots.com"});
                     i.putExtra(Intent.EXTRA_SUBJECT, "Feedback/I Have A Suggestion/Bug Report");
-                    i.putExtra(Intent.EXTRA_TEXT   , optFeedbackTxt.getText());
+                    i.putExtra(Intent.EXTRA_TEXT   , body+optFeedbackTxt.getText());
                     try {
                         startActivity(Intent.createChooser(i, "Send mail..."));
                         Timber.tag(TAG).d("Sending feedback, report");
@@ -54,7 +66,7 @@ public class FeedbackBottomSheet extends RoundedBottomSheetDialogFragment {
                         Toasty.info(requireActivity(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toasty.info(context, "Not going to say anything ?", Toasty.LENGTH_SHORT).show();
+                    Toasty.info(context, "Your feedback is very welcome", Toasty.LENGTH_SHORT).show();
                 }
             });
         }
@@ -88,5 +100,14 @@ public class FeedbackBottomSheet extends RoundedBottomSheetDialogFragment {
             public void onSlide(@NonNull View view, float v) {}
         });
         return bottomSheet;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
     }
 }

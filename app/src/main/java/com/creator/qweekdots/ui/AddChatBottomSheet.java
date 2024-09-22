@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -117,9 +119,8 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment impleme
             btnRetry.setOnClickListener(v -> loadFirstPage());
             swipeRefreshLayout.setOnRefreshListener(this::doRefresh);
 
-            // Click TextView to Dismiss Bottom Sheet (A workaround)
-            TextView titleTxtView = view.findViewById(R.id.optTitleSheetTxt);
-            titleTxtView.setOnClickListener(v -> {
+            ImageView closeSheet = view.findViewById(R.id.closeSheet);
+            closeSheet.setOnClickListener(v -> {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 dismiss();
             });
@@ -147,17 +148,16 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment impleme
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-
+                if (BottomSheetBehavior.STATE_EXPANDED == i) {
+                    bottomSheetBehavior.setDraggable(false);
+                }
                 if (BottomSheetBehavior.STATE_HIDDEN == i) {
                     dismiss();
                 }
-
             }
 
             @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
+            public void onSlide(@NonNull View view, float v) {}
         });
 
         return bottomSheet;
@@ -188,7 +188,7 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment impleme
         queryTextListener = new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String query) {
-                //beginSearch(query);
+                beginSearch(query);
                 return true;
 
             }
@@ -257,8 +257,6 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment impleme
 
         // TODO: Check if data is stale.
         //  Execute network request if cache is expired; otherwise do not update data.
-        adapter.getUsers().clear();
-        adapter.notifyDataSetChanged();
         loadFirstPage();
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -271,6 +269,8 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment impleme
     }
 
     private void loadFirstPage() {
+        adapter.getUsers().clear();
+        adapter.notifyDataSetChanged();
         Timber.tag(TAG).d("loadFirstPage: ");
 
         // To ensure list is visible when retry button in error view is clicked
@@ -427,7 +427,7 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment impleme
             errorLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
 
-            txtError.setText(getResources().getString(R.string.error_msg_unknown));
+            txtError.setText(context.getResources().getString(R.string.error_msg_unknown));
         }
     }
 
@@ -443,12 +443,12 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment impleme
      * @return appropriate error message
      */
     private String fetchErrorMessage(Throwable throwable) {
-        String errorMsg = getResources().getString(R.string.error_msg_unknown);
+        String errorMsg = context.getResources().getString(R.string.error_msg_unknown);
 
         if (!isNetworkConnected()) {
-            errorMsg = getResources().getString(R.string.error_msg_no_internet);
+            errorMsg = context.getResources().getString(R.string.error_msg_no_internet);
         } else if (throwable instanceof TimeoutException) {
-            errorMsg = getResources().getString(R.string.error_msg_timeout);
+            errorMsg = context.getResources().getString(R.string.error_msg_timeout);
         }
 
         return errorMsg;
@@ -470,6 +470,15 @@ public class AddChatBottomSheet extends RoundedBottomSheetDialogFragment impleme
         ConnectivityManager cm = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         assert cm != null;
         return cm.getActiveNetworkInfo() != null;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
     }
 
 }

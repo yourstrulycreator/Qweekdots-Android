@@ -68,6 +68,8 @@ public class SearchReactionsActivity extends AppCompatActivity implements IGifSe
 
     View decorView;
 
+    private String dropTxt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,18 +87,21 @@ public class SearchReactionsActivity extends AppCompatActivity implements IGifSe
         mBackButton.setOnClickListener(view -> finish());
 
         mQuery = getIntent().getStringExtra(KEY_QUERY).trim();
+        dropTxt = getIntent().getStringExtra("drop_txt");
+
 
         if (!TextUtils.isEmpty(mQuery)) {
             mTitleQuery.setText(mQuery);
 
             mSearchPresenter = new GifSearchPresenter(this);
 
-            mSearchAdapter = new GifSearchAdapter<>(this);
+            mSearchAdapter = new GifSearchAdapter<>(this, dropTxt);
 
             // When a search suggestion is clicked, a new instance of SearchActivity will open
             mSearchAdapter.setOnSearchSuggestionClickListener((position, query, suggestion) -> {
                 Intent intent = new Intent(SearchReactionsActivity.this, SearchReactionsActivity.class);
                 intent.putExtra(KEY_QUERY, suggestion);
+                intent.putExtra("drop_txt", dropTxt);
                 startActivity(intent);
                 finish();
             });

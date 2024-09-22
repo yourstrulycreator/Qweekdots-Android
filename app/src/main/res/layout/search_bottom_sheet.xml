@@ -9,8 +9,8 @@ android:background="@android:color/transparent">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp">
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/search_appbar"
@@ -24,42 +24,45 @@ android:background="@android:color/transparent">
                 android:theme="@style/AppTheme.NoActionBar"
                 tools:targetApi="lollipop">
 
-                <TextView
-                    android:id="@+id/optTitleSheetTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginStart="10dp"
-                    android:maxLines="1"
-                    android:textColor="@color/contentTextColor"
-                    android:text="@string/search_qweekdots"
-                    android:fontFamily="@font/amatic_regular"
-                    android:textSize="34sp"
-                    android:textStyle="bold"
-                    android:drawableTint="@color/contentTextColor"
-                    android:drawablePadding="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="10dp"
-                    tools:targetApi="m" />
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:weightSum="5">
 
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/searchbar"
-                    style="@style/SearchViewStyle"
-                    android:layout_width="match_parent"
-                    android:hint="@string/search_qweekdots"
-                    app:queryHint="@string/search_qweekdots"
-                    android:textColorHint="@color/contentTextColor"
-                    android:background="@drawable/searchbar"
-                    android:textSize="14sp"
-                    app:iconifiedByDefault="false"
-                    app:defaultQueryHint="Search Qweekdots"
-                    app:searchHintIcon="@color/contentTextColor"
-                    android:layout_height="40dp"
-                    android:importantForAutofill="no"
-                    tools:targetApi="lollipop"
-                    android:focusableInTouchMode="true"
-                    android:fontFamily="@font/montserrat_regular"/>
+                   <androidx.appcompat.widget.SearchView
+                       android:id="@+id/searchbar"
+                       style="@style/SearchViewStyle2"
+                       android:layout_width="0dp"
+                       android:layout_weight="4.5"
+                       android:hint="@string/search_qweekdots"
+                       app:queryHint="@string/search_qweekdots"
+                       android:textColorHint="@color/contentTextColor"
+                       android:background="@drawable/searchbar"
+                       android:textSize="14sp"
+                       app:iconifiedByDefault="false"
+                       app:defaultQueryHint="Search Qweekdots"
+                       app:searchHintIcon="@color/contentTextColor"
+                       android:backgroundTint="@color/contentTextColor"
+                       android:foregroundTint="@color/contentTextColor"
+                       android:layout_height="45dp"
+                       android:importantForAutofill="no"
+                       tools:targetApi="lollipop"
+                       android:focusableInTouchMode="true"
+                       android:fontFamily="@font/montserrat_regular"
+                       tools:ignore="HardcodedText" />
+
+                   <ImageView
+                       android:id="@+id/closeSheet"
+                       android:layout_width="0dp"
+                       android:layout_height="35dp"
+                       android:src="@drawable/ic_close2"
+                       android:tint="@color/contentTextColor"
+                       android:layout_weight="0.5"
+                       android:layout_gravity="center_vertical"
+                       android:layout_marginEnd="5dp"
+                       tools:ignore="ContentDescription" />
+               </LinearLayout>
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/searchtabs"

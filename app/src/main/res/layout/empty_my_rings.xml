@@ -16,7 +16,7 @@
         <ImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/universe"
+            android:src="@drawable/social"
             android:layout_gravity="center"/>
 
         <TextView

@@ -57,6 +57,8 @@ public class ReactionsActivity extends AppCompatActivity implements IMainView {
 
     View decorView;
 
+    String dropTxt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +75,9 @@ public class ReactionsActivity extends AppCompatActivity implements IMainView {
 
         // initialize the Tenor ApiClient
         ApiClient.init(this, builder);
+
+        Intent intent = getIntent();
+        dropTxt = Objects.requireNonNull(intent.getExtras()).getString("drop_txt");
 
         mEditText = findViewById(R.id.am_et_search);
         mEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
@@ -100,7 +105,7 @@ public class ReactionsActivity extends AppCompatActivity implements IMainView {
                 StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        mTagsAdapter = new TagsAdapter<>(this);
+        mTagsAdapter = new TagsAdapter<>(this, dropTxt);
         mRecyclerView.setAdapter(mTagsAdapter);
 
         // Api calls for MainActivity performed here
@@ -113,6 +118,7 @@ public class ReactionsActivity extends AppCompatActivity implements IMainView {
         final String query = !TextUtils.isEmpty(text) ? text.toString().trim() : StringConstant.EMPTY;
         Intent intent = new Intent(this, SearchReactionsActivity.class);
         intent.putExtra(SearchReactionsActivity.KEY_QUERY, query);
+        intent.putExtra("drop_txt", dropTxt);
         startActivity(intent);
         customType(this, "right-to-left");
     }
@@ -136,6 +142,10 @@ public class ReactionsActivity extends AppCompatActivity implements IMainView {
     @Override
     public void onReceiveReactionsFailed(BaseError error) {
         // For now, we will just display nothing if the tags fail to return
+    }
+
+    public void onClick(View v) {
+        super.onBackPressed();
     }
 
     @Override
