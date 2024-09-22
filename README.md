@@ -1,0 +1,1 @@
+Qweekdots was a social networking application built for Android using Java with Android Studio. The backend was built and deployed entirely in PHP with MYSQL. The backend is no longer hosted but this repo serves as proof of the design that went into the frontend of the mobile appplication.
