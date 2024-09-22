@@ -227,7 +227,7 @@
 
     <string name="fcm_message">Qweekdots</string>
 
-    <string name="GOOGLE_MAP_KEY">AIzaSyAtzNVFdQ8M1cdYmNL4i8gqOmEsbHEb0vY</string>
+    <string name="GOOGLE_MAP_KEY"></string>
     <string name="profile_txt_followers">Followers</string>
     <string name="profile_txt_following">Following</string>
     <string name="profile_txt_drops">Drops</string>
