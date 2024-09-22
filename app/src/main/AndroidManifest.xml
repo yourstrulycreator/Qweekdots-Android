@@ -295,7 +295,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAtzNVFdQ8M1cdYmNL4i8gqOmEsbHEb0vY"/>
+            android:value=""/>
 
         <meta-data android:name="com.onesignal.NotificationOpened.DEFAULT" android:value="DISABLE" />
         <meta-data android:name="com.onesignal.NotificationAccentColor.DEFAULT" android:value="#00d2ff" />
